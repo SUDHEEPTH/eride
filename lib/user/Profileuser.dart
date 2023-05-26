@@ -1,3 +1,4 @@
+import 'package:eride/user/Minibio.dart';
 import 'package:flutter/material.dart';
 
 class ProfileUser extends StatefulWidget {
@@ -272,7 +273,10 @@ class _ProfileUserState extends State<ProfileUser>
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: () {
+                      onTap: () {Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Minibio()),
+                      );
                         // Action for "Add a mini bio" button
                       },
                       child: SizedBox(

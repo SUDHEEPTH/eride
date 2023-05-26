@@ -487,9 +487,9 @@ class homepage extends StatelessWidget {
                   Padding(
                     padding: EdgeInsets.only(right: 16.0),
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ProfileUser()));
-                      },
+                      // onTap: () {
+                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
+                      // },
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(userPhotoUrl),
                         radius: 30.0,

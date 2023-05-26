@@ -1,24 +1,18 @@
-
-
+import 'package:eride/user/Addcarrent.dart';
 import 'package:eride/user/Carrent2.dart';
 import 'package:flutter/material.dart';
 
-
 class Carrent extends StatefulWidget {
-
-
   @override
   State<Carrent> createState() => _CarrentState();
 }
 
 class _CarrentState extends State<Carrent> {
-
   // This controller will store the value of the search bar
   final TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -63,34 +57,43 @@ class _CarrentState extends State<Carrent> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
                   ),
-
                 ),
-
               ),
-
             ),
-
           ),
           Container(
             width: 310,
             child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green, // background
-                  onPrimary: Colors.white, // foreground
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.green, // background
+                onPrimary: Colors.white, // foreground
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
                 ),
-    onPressed: () {
-
-
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>Carrent2()));
-    },
-
-                child: Text("search")
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Carrent2()),
+                );
+              },
+              child: Text("search"),
             ),
           ),
         ],
+      ),
+      floatingActionButton: Container(
+        width: 80, // Custom width
+        height: 80, // Custom height
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Addcarrent()),
+            );
+          },
+          child: Icon(Icons.car_rental),
+        ),
       ),
     );
   }

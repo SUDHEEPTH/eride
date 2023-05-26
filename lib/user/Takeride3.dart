@@ -9,6 +9,8 @@ class Takeride3 extends StatefulWidget {
 }
 
 class _Takeride3State extends State<Takeride3> {
+  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +19,7 @@ class _Takeride3State extends State<Takeride3> {
         leadingWidth: 100,
         leading: ElevatedButton.icon(
           onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.green),
+          icon: const Icon(Icons.arrow_left_sharp, color: Colors.green),
           label: const Text('Back', style: TextStyle(color: Colors.green)),
           style: ElevatedButton.styleFrom(
             primary: Colors.transparent,
@@ -42,118 +44,126 @@ class _Takeride3State extends State<Takeride3> {
           ),
           Expanded(
             child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+
               children: [
-                TimelineTile(
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0,
-                  isFirst: true,
-                  endChild: Container(
-                    height: 100,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Destination 1',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TimelineTile(
+
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0,
+                    isFirst: true,
+                    endChild: Container(
+                      height: 100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Destination 1 ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Address of Destination 1',
-                            style: TextStyle(
-                              fontSize: 16,
+                          SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Address of Destination 1',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  beforeLineStyle: LineStyle(
-                    color: Colors.blue,
-                    thickness: 6,
-                  ),
-                  indicatorStyle: IndicatorStyle(
-                    width: 40,
-                    height: 40,
-                    indicator: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.blue,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        ),
+                        ],
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.location_on,
-                          color: Colors.white,
+                    ),
+                    beforeLineStyle: LineStyle(
+                      color: Colors.blue,
+                      thickness: 6,
+                    ),
+                    indicatorStyle: IndicatorStyle(
+                      width: 40,
+                      height: 40,
+                      indicator: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
 
-                TimelineTile(
-                  alignment: TimelineAlign.manual,
-                  lineXY: 0,
-                  isLast: true,
-                  endChild: Container(
-                    height: 100,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Destination 2',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0),
+                  child: TimelineTile(
+                    alignment: TimelineAlign.manual,
+                    lineXY: 0,
+                    isLast: true,
+                    endChild: Container(
+                      height: 100,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Destination 2',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
-                        ),
-                        SizedBox(height: 8),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Address of Destination 2',
-                            style: TextStyle(
-                              fontSize: 16,
+                          SizedBox(height: 8),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              'Address of Destination 2',
+                              style: TextStyle(
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  beforeLineStyle: LineStyle(
-                    color: Colors.orange,
-                    thickness: 6,
-                  ),
-                  indicatorStyle: IndicatorStyle(
-                    width: 40,
-                    height: 40,
-                    indicator: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.orange,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        ),
+                        ],
                       ),
-                      child: const Center(
-                        child: Icon(
-                          Icons.location_on,
-                          color: Colors.white,
+                    ),
+                    beforeLineStyle: LineStyle(
+                      color: Colors.orange,
+                      thickness: 6,
+                    ),
+                    indicatorStyle: IndicatorStyle(
+                      width: 40,
+                      height: 40,
+                      indicator: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.orange,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                        ),
+                        child: const Center(
+                          child: Icon(
+                            Icons.location_on,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -165,8 +175,8 @@ class _Takeride3State extends State<Takeride3> {
                   child: Padding(
                     padding: EdgeInsets.zero,
                     child: Divider(
-                      color: Colors.grey,
-                      thickness: 5,
+                      color: Colors.grey[300],
+                      thickness: 9,
                     ),
                   ),
                 ),
@@ -186,7 +196,7 @@ class _Takeride3State extends State<Takeride3> {
                         ),
                       ),
                       Text(
-                        'Rs 700',
+                        'Rs 900',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
@@ -203,16 +213,79 @@ class _Takeride3State extends State<Takeride3> {
                   child: Padding(
                     padding: EdgeInsets.zero,
                     child: Divider(
-                      color: Colors.grey,
-                      thickness: 5,
+
+                      color: Colors.grey[300],
+                      thickness: 9,
                     ),
                   ),
                 ),
 
                 SizedBox(height: 8,),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'User',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 16.0),
+                          Text(
+                            'Rating:5.0/5',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 145),
+                      child: GestureDetector(
+                        // onTap: () {
+                        //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
+                        // },
+                        child: CircleAvatar(
+                          backgroundImage: NetworkImage(userPhotoUrl),
+                          radius: 30.0,
+                        ),
+
+                      ),
+
+                    ),
+                    Row(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(right: 16.0),
+                          child: Icon(Icons.keyboard_arrow_right),
+                        ),
+                      ],
+                    )
+
+                  ],
+                ),
+                SizedBox(height: 4),
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 18,right: 18),
+                    child: Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                    ),
+                  ),
+                ),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  
+                  padding: const EdgeInsets.symmetric(horizontal: 18),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -225,7 +298,7 @@ class _Takeride3State extends State<Takeride3> {
                       ),
                       SizedBox(height: 4),
                       Text(
-                        'John Doe', // Replace with the desired contact name
+                        'John Doe',
                         style: TextStyle(
                           fontSize: 16,
                         ),
@@ -237,7 +310,7 @@ class _Takeride3State extends State<Takeride3> {
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
                   child: Padding(
-                    padding: EdgeInsets.zero,
+                    padding: EdgeInsets.only(left: 18,right: 18),
                     child: Divider(
                       color: Colors.grey,
                       thickness: 1,
@@ -245,36 +318,46 @@ class _Takeride3State extends State<Takeride3> {
                   ),
                 ),
                 SizedBox(height: 4),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
+                Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Contact ',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'Contact ',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       SizedBox(height: 15),
-                      Text(
-                        'John Doe', // Replace with the desired contact name
-                        style: TextStyle(
-                          fontSize: 16,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'John Doe',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       SizedBox(height: 15),
-                      Text(
-                        'car', // Replace with the desired contact name
-                        style: TextStyle(
-                          fontSize: 16,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'car',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
-                      Text(
-                        'car', // Replace with the desired contact name
-                        style: TextStyle(
-                          fontSize: 16,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'car',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                       SizedBox(height: 4),
@@ -283,22 +366,25 @@ class _Takeride3State extends State<Takeride3> {
                         child: Padding(
                           padding: EdgeInsets.zero,
                           child: Divider(
-                            color: Colors.grey,
-                            thickness: 5,
+                            color: Colors.grey[300],
+                            thickness: 9,
                           ),
                         ),
                       ),
                       SizedBox(height: 4),
-                      Text(
-                        'Report ride', // Replace with the desired contact name
-                        style: TextStyle(
-                          fontSize: 16,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 18.0),
+                        child: Text(
+                          'Report ride',
+                          style: TextStyle(
+                            fontSize: 16,
+                          ),
                         ),
                       ),
 
                     ],
                   ),
-                ),
+
               ],
             ),
           ),
@@ -309,19 +395,19 @@ class _Takeride3State extends State<Takeride3> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ElevatedButton(
               onPressed: () {
-                // Add your logic here for the continue button
+
               },
-              child: Text('Continue'),
+              child: Text('Request'),
               style: ElevatedButton.styleFrom(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 16),
-                minimumSize: Size(double.infinity, 50), // Set the width and height of the button
+                minimumSize: Size(double.infinity, 50),
               ),
             ),
           ),
-          SizedBox(height: 12),
+          SizedBox(height: 5),
         ],
       ),
     );

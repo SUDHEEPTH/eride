@@ -46,53 +46,88 @@ class Driverrent extends StatelessWidget {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: ListView.builder(
+      body: GridView.builder(
+        padding: EdgeInsets.all(16),
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 16,
+          mainAxisSpacing: 16,
+          childAspectRatio: 0.75,
+        ),
         itemCount: drivers.length,
         itemBuilder: (context, index) {
           final driver = drivers[index];
           return Card(
             elevation: 2,
-            margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundImage: AssetImage(driver.photoUrl),
-              ),
-              title: Text(
-                driver.name,
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Text(
-                'Rating: ${driver.rating}',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey[600],
-                ),
-              ),
-              trailing: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green, // background
-                  onPrimary: Colors.white, // foreground
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.vertical(
+                        top: Radius.circular(10),
+                      ),
+                      image: DecorationImage(
+                        image: AssetImage(driver.photoUrl),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
                 ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => DriverRequestPage(driver: driver),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        driver.name,
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber, size: 16),
+                          SizedBox(width: 4),
+                          Text(
+                            driver.rating.toString(),
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DriverRequestPage(driver: driver),
+                        ),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(
+                          bottom: Radius.circular(10),
+                        ),
+                      ),
                     ),
-                  );
-                },
-                child: Text('Available Now'),
-              ),
-              onTap: () {
-                // Add your logic for handling driver selection here
-              },
+                    child: Text('Available Now'),
+                  ),
+                ),
+              ],
             ),
           );
         },
@@ -101,11 +136,19 @@ class Driverrent extends StatelessWidget {
   }
 }
 
-
-class DriverRequestPage extends StatelessWidget {
+class DriverRequestPage extends StatefulWidget {
   final Driver driver;
+  final TextEditingController daysController = TextEditingController();
 
-  const DriverRequestPage({Key? key, required this.driver}) : super(key: key);
+  DriverRequestPage({Key? key, required this.driver}) : super(key: key);
+
+  @override
+  _DriverRequestPageState createState() => _DriverRequestPageState();
+}
+
+class _DriverRequestPageState extends State<DriverRequestPage> {
+  TimeOfDay? selectedTime;
+  DateTime? selectedDate;
 
   @override
   Widget build(BuildContext context) {
@@ -131,16 +174,41 @@ class DriverRequestPage extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 80,
-                backgroundImage: AssetImage(driver.photoUrl),
+              Center(
+                child: CircleAvatar(
+                  radius: 80,
+                  backgroundImage: AssetImage(widget.driver.photoUrl),
+                ),
               ),
               SizedBox(height: 16),
               Text(
-                'Driver Name: ${driver.name}',
+                'Driver Name: ${widget.driver.name}',
                 style: TextStyle(fontSize: 18),
               ),
-              SizedBox(height: 16),
+              SizedBox(height: 24),
+              Text(
+                'Number of Days:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 8),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.grey[200],
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: TextField(
+                    controller: widget.daysController,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      hintText: 'Enter number of days',
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(height: 24),
               Text(
                 'Destination:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -148,23 +216,15 @@ class DriverRequestPage extends StatelessWidget {
               TextField(
                 decoration: InputDecoration(
                   hintText: 'Enter destination',
+                  border: OutlineInputBorder(),
                 ),
               ),
-              SizedBox(height: 16),
-              Text(
-                'Arrival Time:',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Enter arrival time',
-                ),
-              ),
-              SizedBox(height: 16),
+              SizedBox(height: 24),
               Text(
                 'Availability:',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
+              SizedBox(height: 8),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -187,7 +247,9 @@ class DriverRequestPage extends StatelessWidget {
 
                       // Do something with the selected date
                       if (selectedDate != null) {
-                        // Handle selected date
+                        setState(() {
+                          this.selectedDate = selectedDate;
+                        });
                       }
                     },
                     child: Text('Choose Date'),
@@ -195,6 +257,12 @@ class DriverRequestPage extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 16),
+              if (selectedDate != null)
+                Text(
+                  'Selected Date: ${selectedDate!.toString()}',
+                  style: TextStyle(fontSize: 18),
+                ),
+              SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -232,9 +300,17 @@ class DriverRequestPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+                  final int numberOfDays = int.tryParse(widget.daysController.text) ?? 0;
                   // Add your logic for submitting the driver request here
+                  // You can use the numberOfDays variable to access the selected number of days
                 },
-                child: Text('Submit Request'),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Text(
+                    'Submit Request',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
               ),
             ],
           ),

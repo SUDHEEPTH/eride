@@ -1,6 +1,7 @@
 import 'package:eride/user/Carrent3.dart';
 import 'package:eride/user/Takeride3.dart';
 import 'package:flutter/material.dart';
+import 'package:timeline_tile/timeline_tile.dart';
 
 class Takeride2 extends StatefulWidget {
   const Takeride2({Key? key}) : super(key: key);
@@ -10,39 +11,19 @@ class Takeride2 extends StatefulWidget {
 }
 
 class _Takeride2State extends State<Takeride2> {
-  final List<Map<String, dynamic>> cars = [
-    {
-      'name': 'Car 1',
-      'picture': 'images/download.jpeg',
-      'details': 'take the ride .',
-      'rentPrice': '50\$',
-      'location': 'New York',
-      'automated': 'true',
-      'seats': '4',
-      'engineType': 'Gasoline',
-    },
-    {
-      'name': 'Car 2',
-      'picture': 'images/istockphoto.jpg',
-      'details':
-      ' feel the car .',
-      'rentPrice': '60\$',
-      'location': 'Los Angeles',
-      'automated': 'false',
-      'seats': '5',
-      'engineType': 'Diesel',
-    },
-    {
-      'name': 'Car 3',
-      'picture': 'images/images (2).jpeg',
-      'details':
-      'nice and wonder car.',
-      'rentPrice': '70\$',
-      'location': 'Miami',
-      'automated': 'true',
-      'seats': '2',
-      'engineType': 'Electric',
-    },
+  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
+
+  final List<String> Destination1 =
+    [
+       'goa','thiruvananthapuram','malappuram',
+
+    ];
+  final List<String> Destination2 =
+  [
+    'thiruvananthapuram','goa','malappuram',];
+  List<String> rate1=
+  [
+    '600','600','500',
   ];
 @override
   Widget build(BuildContext context) {
@@ -64,9 +45,10 @@ class _Takeride2State extends State<Takeride2> {
       ),
       body: ListView.builder(
         padding: EdgeInsets.all(8),
-        itemCount: cars.length,
+        itemCount: Destination1.length,
+
         itemBuilder: (BuildContext context, int index) {
-          final car = cars[index];
+
 
 
 
@@ -102,79 +84,201 @@ class _Takeride2State extends State<Takeride2> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              car['name'] ?? '',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Container(
-                              alignment: Alignment.center,
-                              width: double.infinity,
-                              height: 150,
-                              child: Stack(
-                                children: [
-                                 Text("data")
-                                ],
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                height: 2,
-                                color: Colors.grey,
-                              ),
-                            ),
+
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Location:',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: TimelineTile(
+
+                                alignment: TimelineAlign.manual,
+                                lineXY: 0,
+                                isFirst: true,
+                                endChild: Container(
+                                  height: 100,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(left: 8.0,top: 8,right: 8),
+                                        child: Align(
+                                          alignment: Alignment.centerRight,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '₹ ${rate1[index]}  ' ,
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text( Destination2[index] ??'',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+
+                                      SizedBox(height: 8),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Address of Destination 1',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                                beforeLineStyle: LineStyle(
+                                  color: Colors.black,
+                                  thickness: 6,
+                                ),
+                                indicatorStyle: IndicatorStyle(
+                                  width: 40,
+                                  height: 40,
+                                  indicator: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.black,
+                                      border: Border.all(
+                                        color: Colors.black,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.location_on,
+                                        color: Colors.white,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    car['location'] ?? '',
+                                ),
+                              ),
+                            ),
+
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: TimelineTile(
+                                alignment: TimelineAlign.manual,
+                                lineXY: 0,
+                                isLast: true,
+                                endChild: Container(
+                                  height: 100,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          Destination1[index] ?? '',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 8),
+                                      Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Address of Destination 2',
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  SizedBox(height: 8),
-                                  Text(
-                                    'Automated: ${car['automated'] ?? ''}',
+                                ),
+                                beforeLineStyle: LineStyle(
+                                  color: Colors.black,
+                                  thickness: 6,
+                                ),
+                                indicatorStyle: IndicatorStyle(
+                                  width: 40,
+                                  height: 40,
+                                  indicator: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.black,
+                                      border: Border.all(
+                                        color: Colors.white,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    child: const Center(
+                                      child: Icon(
+                                        Icons.location_on,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
-                                  Text(
-                                    'Seats: ${car['seats'] ?? ''}',
+                                ),
+                              ),
+                            ),
+
+                            Padding(
+                              padding: const EdgeInsets.only(left: 16.0,bottom: 15),
+                              child: Row(
+
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(right: 8),
+                                    child: GestureDetector(
+                                      // onTap: () {
+                                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
+                                      // },
+                                      child: CircleAvatar(
+                                        backgroundImage: NetworkImage(userPhotoUrl),
+                                        radius: 20.0,
+                                      ),
+
+                                    ),
+
                                   ),
-                                  Text(
-                                    'Engine Type: ${car['engineType'] ?? ''}',
-                                  ),
-                                  SizedBox(height: 8),
-                                  Align(
-                                    alignment: Alignment.centerRight,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+
+                                    Column(
+                                      // crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          'Rent Price:',
+                                          'User',
                                           style: TextStyle(
+                                            fontSize: 15.0,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
+
                                         Text(
-                                          car['rentPrice'] ?? '',
+                                          'Rating:5.0/5',
+                                          style: TextStyle(
+                                            fontSize: 16.0,
+                                          ),
                                         ),
                                       ],
                                     ),
-                                  ),
+
+
+
+
                                 ],
                               ),
                             ),
-                          ],
+
+
+
+                            ]
                         ),
                       ),
                     ),

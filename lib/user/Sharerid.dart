@@ -1,5 +1,6 @@
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:eride/user/Sharerid.dart';
+import 'package:eride/user/Shareride2.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -19,10 +20,12 @@ class _StartRidePageState extends State<StartRidePage> {
   late DateTime date;
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Form is valid, perform submission logic here
-      // You can access the input values using startingPlace, destination, and time variables
-    }
+    // if (_formKey.currentState!.validate()) {
+    //   Navigator.push(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => Shareride2()),
+    //   );
+    // }
   }
 
   @override

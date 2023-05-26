@@ -23,8 +23,7 @@ class _Carrent2State extends State<Carrent2> {
     {
       'name': 'Car 2',
       'picture': 'images/istockphoto.jpg',
-      'details':
-      ' feel the car .',
+      'details': ' feel the car .',
       'rentPrice': '60\$',
       'location': 'Los Angeles',
       'automated': 'false',
@@ -34,8 +33,7 @@ class _Carrent2State extends State<Carrent2> {
     {
       'name': 'Car 3',
       'picture': 'images/images (2).jpeg',
-      'details':
-      'nice and wonder car.',
+      'details': 'nice and wonder car.',
       'rentPrice': '70\$',
       'location': 'Miami',
       'automated': 'true',
@@ -67,19 +65,14 @@ class _Carrent2State extends State<Carrent2> {
         itemCount: cars.length,
         itemBuilder: (BuildContext context, int index) {
           final car = cars[index];
-          String cname=car['name'];
-          String cprice= car['picture'];
-          String cpicture= car['picture'];
-          String clication= car['location'];
-          String cautomated= car['automated'];
-          String cseats=  car['seats'];
-          String cengineType=  car['engineType'];
-          String crentPrice=   car['rentPrice'];
-
-
-
-
-
+          String cname = car['name'];
+          String cprice = car['picture'];
+          String cpicture = car['picture'];
+          String clication = car['location'];
+          String cautomated = car['automated'];
+          String cseats = car['seats'];
+          String cengineType = car['engineType'];
+          String crentPrice = car['rentPrice'];
 
           return Padding(
             padding: EdgeInsets.all(8.0),
@@ -91,10 +84,20 @@ class _Carrent2State extends State<Carrent2> {
                     SizedBox(height: 8),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Carrent3(cname:cname,cprice:cprice,cpicture:cpicture,clication:clication,cautomated:cautomated,cseats:cseats,cengineType:cengineType,crentPrice:crentPrice)));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Carrent3(
+                                    cname: cname,
+                                    cprice: cprice,
+                                    cpicture: cpicture,
+                                    clication: clication,
+                                    cautomated: cautomated,
+                                    cseats: cseats,
+                                    cengineType: cengineType,
+                                    crentPrice: crentPrice)));
                       },
                       child: Container(
-
                         decoration: BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.circular(8),
@@ -168,7 +171,8 @@ class _Carrent2State extends State<Carrent2> {
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
                                         Text(
                                           'Rent Price:',
