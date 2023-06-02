@@ -1,4 +1,5 @@
 import 'package:eride/user/Minibio.dart';
+import 'package:eride/user/Preferences.dart';
 import 'package:flutter/material.dart';
 
 class ProfileUser extends StatefulWidget {
@@ -30,18 +31,7 @@ class _ProfileUserState extends State<ProfileUser>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leadingWidth: 100,
-        leading: ElevatedButton.icon(
-          onPressed: () => Navigator.of(context).pop(),
-          icon: const Icon(Icons.arrow_back, color: Colors.green),
-          label: const Text(
-            'Back',
-            style: TextStyle(color: Colors.green),
-          ),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.transparent,
-            elevation: 0,
-          ),
-        ),
+
         backgroundColor: Colors.transparent,
         elevation: 0,
         bottom: TabBar(
@@ -306,8 +296,11 @@ class _ProfileUserState extends State<ProfileUser>
                     ),
                     const SizedBox(height: 20),
                     GestureDetector(
-                      onTap: () {
-                        // Action for "Add my preferences" button
+                      onTap: (){Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => Preferences()),
+                      );
+                        // Action for "Add a mini bio" button
                       },
                       child: SizedBox(
                         width: double.infinity,

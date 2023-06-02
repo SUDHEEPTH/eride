@@ -1,3 +1,4 @@
+import 'package:eride/user/Takeuser.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -221,56 +222,65 @@ class _Takeride3State extends State<Takeride3> {
                 ),
 
                 SizedBox(height: 8,),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(left: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'User',
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
+
+              Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Takeuser()));
+                          },
+                          child: Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'User',
+                                  style: TextStyle(
+                                    fontSize: 24.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 16.0),
+                                Text(
+                                  'Rating:5.0/5',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          SizedBox(height: 16.0),
-                          Text(
-                            'Rating:5.0/5',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                            ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 145),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context)=>Takeuser()));
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: NetworkImage(userPhotoUrl),
+                            radius: 30.0,
+                          ),
+
+                        ),
+
+                      ),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(right: 16.0),
+                            child: Icon(Icons.keyboard_arrow_right),
                           ),
                         ],
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 145),
-                      child: GestureDetector(
-                        // onTap: () {
-                        //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
-                        // },
-                        child: CircleAvatar(
-                          backgroundImage: NetworkImage(userPhotoUrl),
-                          radius: 30.0,
-                        ),
+                      )
 
-                      ),
+                    ],
+                  ),
 
-                    ),
-                    Row(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(right: 16.0),
-                          child: Icon(Icons.keyboard_arrow_right),
-                        ),
-                      ],
-                    )
-
-                  ],
-                ),
                 SizedBox(height: 4),
                 Container(
                   padding: const EdgeInsets.symmetric(vertical: 8),
