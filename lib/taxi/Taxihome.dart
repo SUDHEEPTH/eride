@@ -48,7 +48,7 @@ class Taxihome extends StatefulWidget {
 
 class _TaxihomeState extends State<Taxihome> {
   final String userPhotoUrl =
-      'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
+      'https://example.com/user_photo.jpg';
   final List<Driver> drivers = [
     Driver(
       name: 'user 1',

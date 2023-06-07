@@ -1,6 +1,8 @@
 import 'package:eride/driver/singdriver.dart';
+import 'package:eride/login.dart';
 import 'package:eride/taxi/singtaxi.dart';
 import 'package:eride/user/singuser.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 class Singup1 extends StatefulWidget {
@@ -53,7 +55,7 @@ class _Singup1State extends State<Singup1> {
             child: Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: Text(
-                "Singup",
+                "Signup",
                 style: TextStyle(
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
@@ -169,8 +171,12 @@ class _Singup1State extends State<Singup1> {
               text: TextSpan(
                 text: "Already have a account! ",
                 style: TextStyle(fontSize: 18, color: Colors.green),
-                children: const <TextSpan>[
-                  TextSpan(text: 'login', style: TextStyle(fontWeight: FontWeight.bold)),
+                children:  <TextSpan>[
+                  TextSpan(text: 'login', style: TextStyle(fontWeight: FontWeight.bold),
+    recognizer: TapGestureRecognizer()
+    ..onTap = () {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+    }),
 
                 ],
               ),

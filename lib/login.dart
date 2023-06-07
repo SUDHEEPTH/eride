@@ -1,6 +1,9 @@
+import 'package:eride/Admin/Admin.dart';
 import 'package:eride/driver/Driverhome.dart';
+import 'package:eride/singup1.dart';
 import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/user/homepage.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class Login extends StatefulWidget {
@@ -15,6 +18,7 @@ class _LoginState extends State<Login> {
   String user="user";
   String driver="driver";
   String taxi="taxi";
+  String admin="admin";
 
   TextEditingController passcontroller=TextEditingController();
   @override
@@ -138,21 +142,37 @@ controller: passcontroller,
     }
                   else if(passcontroller.text == taxi){Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxihome()));
                   }
+                  else if(passcontroller.text == admin){Navigator.push(context, MaterialPageRoute(builder: (context)=>Admin()));
+                  }
                 },
 
                 child: Text("login")
             ),
           ),
-            RichText(
-              text: TextSpan(
-                text: "don't have a acount?",
-                style: TextStyle(fontSize: 18, color: Colors.green),
-                children: const <TextSpan>[
-                  TextSpan(text: 'singup', style: TextStyle(fontWeight: FontWeight.bold)),
+            Container(
+                padding: EdgeInsets.all(10),
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(
+                        text: 'Don\'t have an account?',
+                        style: TextStyle(
+                            color: Colors.green, fontSize: 18),
+                        children: <TextSpan>[
+                          TextSpan(text: ' Sign up',
+                              style: TextStyle(
+                                  color: Colors.green, fontSize: 18,fontWeight: FontWeight.bold),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=>Singup1()));
+    }
 
-                ],
-              ),
+                          )
+                        ]
+                    ),
+                  ),
+                )
             )
+
           ],
         ),
       ),

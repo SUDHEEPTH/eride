@@ -84,7 +84,7 @@ class _welcompageState extends State<welcompage> {
                         onPressed: () {
                           Navigator.push(context, MaterialPageRoute(builder: (context)=>Singup1()));
                         },
-                        child: Text("singup")),
+                        child: Text("sign up")),
                   ),
                 ],
               ),

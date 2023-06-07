@@ -80,7 +80,11 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ),
                         ),
-                        const Icon(Icons.arrow_forward),
+
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: const Icon(Icons.arrow_forward_ios),
+                        ),
                       ],
                     ),
                     const SizedBox(height: 16),

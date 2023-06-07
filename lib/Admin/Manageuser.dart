@@ -1,3 +1,4 @@
+import 'package:eride/Admin/Details.dart';
 import 'package:flutter/material.dart';
 
 class Manageuser extends StatelessWidget {
@@ -7,9 +8,10 @@ class Manageuser extends StatelessWidget {
     'images/rest.png',
     'images/rest.png',
   ];
-  final List<String> entries1 = ['vishnu', 'lis'];
+  final List<String> entries1 = ['shamli ', 'fazi'];
   final List<String> userIds = ['001', '002'];
   final List<String> entries = ['vishnu', 'lis', 'Gen', 'raj'];
+  final List<String> userIds2 = ['007', '008','009','003'];
 
   @override
   Widget build(BuildContext context) {
@@ -34,65 +36,72 @@ class Manageuser extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Visibility(
-            visible: entries1.isNotEmpty,
-            maintainSize: false,
-            child: Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: entries1.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage(containerImages[index]),
-                    ),
-                    title: Text(
-                      entries1[index],
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'ID: ${userIds[index]}',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 14,
-                      ),
-                    ),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: Icon(
-                            Icons.check,
-                            color: Colors.green,
-                          ),
-                          onPressed: () {
-                            // Handle approve button pressed
-                            _approveUser(index);
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            Icons.close,
-                            color: Colors.red,
-                          ),
-                          onPressed: () {
-                            // Handle decline button pressed
-                            _declineUser(index);
-                          },
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-            ),
+          Text(
+            'Request',
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
-          const Divider(
+             GestureDetector(
+               onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>Details()));},
+               child: ListView.separated(
+                 shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: entries1.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(containerImages[index]),
+                      ),
+                      title: Text(
+                        entries1[index],
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'ID: ${userIds[index]}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                            onPressed: () {
+                              // Handle approve button pressed
+                              _approveUser(index);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              // Handle decline button pressed
+                              _declineUser(index);
+                            },
+                          ),
+
+                        ],
+                      ),
+                      tileColor: Colors.grey.withOpacity(0.4),
+                    );
+                  }, separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+                ),
+             ),
+
+
+           Divider(
             thickness: 2,
             color: Colors.black,
           ),
@@ -100,8 +109,10 @@ class Manageuser extends StatelessWidget {
             'All User',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
-          Expanded(
-            child: ListView.separated(
+
+            ListView.separated(
+              shrinkWrap: true,
+
               padding: const EdgeInsets.all(8),
               itemCount: entries.length,
               itemBuilder: (BuildContext context, int index) {
@@ -116,6 +127,13 @@ class Manageuser extends StatelessWidget {
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ID: ${userIds2[index]}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
                     ),
                   ),
                   trailing: IconButton(
@@ -134,13 +152,13 @@ class Manageuser extends StatelessWidget {
               separatorBuilder: (BuildContext context, int index) =>
               const Divider(),
             ),
-          ),
+
         ],
       ),
     );
   }
 
-  Future<void> _showDeleteConfirmationDialog(
+  void _showDeleteConfirmationDialog(
       BuildContext context, int index) async {
     return showDialog<void>(
       context: context,
