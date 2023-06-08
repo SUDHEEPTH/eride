@@ -1,3 +1,5 @@
+import 'package:eride/Admin/ManageDriver.dart';
+import 'package:eride/Admin/ManageTaxi.dart';
 import 'package:eride/Admin/Manageuser.dart';
 import 'package:flutter/material.dart';
 
@@ -174,7 +176,7 @@ class _AdminState extends State<Admin> {
                 const EdgeInsets.only(left: 20.0, right: 15, top: 20, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>Driverrent()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDriver()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1,
@@ -182,7 +184,7 @@ class _AdminState extends State<Admin> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.black87,
+                      color: Colors.black,
                     ),
                     child: Center(
                       child: Column(
@@ -213,7 +215,7 @@ class _AdminState extends State<Admin> {
                 const EdgeInsets.only(left: 20.0, right: 15, top: 20, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigator.push(context, MaterialPageRoute(builder: (context)=>Driverrent()));
+                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageTaxi()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1,
@@ -221,7 +223,7 @@ class _AdminState extends State<Admin> {
                     decoration: BoxDecoration(
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(20),
-                      color: Colors.black87,
+                      color: Colors.black,
                     ),
                     child: Center(
                       child: Column(

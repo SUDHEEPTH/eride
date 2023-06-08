@@ -7,27 +7,15 @@ class Details extends StatefulWidget {
   State<Details> createState() => _DetailsState();
 }
 
-final List<String> Fname = [
-  'lis',
-];
-final List<String> Lname = [
-  'gen',
-];
-final List<String> Email = [
-  'lisgen77@gmail.com',
-];
-final List<String> Ph = [
-  '989578005',
-];
-final List<String> Id = [
-  'Driving licence',
-];
-final List<String> Adresss = [
-  ' mangalasheri(H)tirur(po) pin 676101 Malappuram kerala',
-];
-final List<String> Gender = [
-  ' Female',
-];
+final List<String> Fname = ['lis'];
+final List<String> Lname = ['gen'];
+final List<String> Email = ['lisgen77@gmail.com'];
+final List<String> Ph = ['989578005'];
+final List<String> Id = ['Driving licence'];
+final List<String> Adresss = ['mangalasheri(H)tirur(po) pin 676101 Malappuram kerala'];
+final List<String> Gender = ['Female'];
+final List<String> Idf = ['001'];
+
 class _DetailsState extends State<Details> {
   @override
   Widget build(BuildContext context) {
@@ -50,154 +38,172 @@ class _DetailsState extends State<Details> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Column(
-        children: [
-
-          Center(
-            child: Padding(
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/images.jpg'),
+                backgroundImage: AssetImage('images/shamli.jpg'),
                 radius: 65,
               ),
             ),
-          ),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'First Name:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
+            SizedBox(height: 1,),
+            Container(
+              padding: const EdgeInsets.only(top: 20.0, left: 2, right: 20, bottom: 20),
+              decoration: BoxDecoration(
+                color: Colors.grey[300], // Set container background color
+                border: Border.all(
+                  color: Colors.grey,
+                  width: 1.0,
                 ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Fname[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Last Name:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Lname[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Email:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Email[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Mobile number:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Ph[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Gender:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Gender[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Id card:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Id[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only(top: 25.0, left: 18),
-                child: Text(
-                  'Adress:',
-                  style: TextStyle(fontSize: 16, color: Colors.grey[500]),
-                ),
-              )),
-          Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: const EdgeInsets.only( left: 65,top: 5),
-                child: Text(
-                  '${Adresss[0]}',
-                  style: TextStyle(fontSize: 17, color: Colors.black,fontWeight: FontWeight.bold),
-                ),
-
-              )),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              margin: const EdgeInsets.all(16.0),
 
 
-        ],
+
+              // Set container padding
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+
+                        Text(
+                          'ID:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Idf[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+
+                        Text(
+                          'First Name:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Fname[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Last Name:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Lname[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Email:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Email[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Mobile number:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Ph[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Gender:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Gender[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Id card:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          '${Id[0]}',
+                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 25.0, left: 18),
+                    child: Row(
+                      children: [
+                        Text(
+                          'Address:',
+                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            '${Adresss[0]}',
+                            style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
