@@ -1,3 +1,4 @@
+import 'package:eride/Admin/Change.dart';
 import 'package:eride/Admin/ManageDriver.dart';
 import 'package:eride/Admin/ManageTaxi.dart';
 import 'package:eride/Admin/Manageuser.dart';
@@ -14,13 +15,7 @@ class _AdminState extends State<Admin> {
   String dropdownValue = 'Item 1';
 
   // List of items in our dropdown menu
-  var items = [
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-  ];
+
   final String userPhotoUrl = 'https://example.com/user_photo.jpg';
 
   @override
@@ -34,7 +29,6 @@ class _AdminState extends State<Admin> {
             children: [
               SizedBox(height: 24.0),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: 16.0),
@@ -52,41 +46,36 @@ class _AdminState extends State<Admin> {
                       ],
                     ),
                   ),
+                  SizedBox(
+                    width: 100,
+                  ),
                   Padding(
-                    padding: EdgeInsets.only(right: 1.0),
+                    padding: EdgeInsets.only(right: 1),
                     child: GestureDetector(
                       // onTap: () {
-                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
+                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminProfile()));
                       // },
+
                       child: CircleAvatar(
                         backgroundImage: NetworkImage(userPhotoUrl),
                         radius: 30.0,
                       ),
                     ),
                   ),
-                  DropdownButton<String>(
-                    // Initial Value
-                    value: dropdownValue,
+                  PopupMenuButton(
+                    itemBuilder: (context) {
+                      return [
+                        PopupMenuItem(
+                            child: GestureDetector(child: Text('Logout'))),
+                        PopupMenuItem(child: GestureDetector(
+    onTap: () {
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>Change()));
+     },
 
-                    // Down Arrow Icon
-                    icon: const Icon(Icons.list),
-
-                    // Array list of items
-                    items: items.map((String item) {
-                      return DropdownMenuItem<String>(
-                        value: item,
-                        child: Text(item),
-                      );
-                    }
-                    ).toList(),
-                    // After selecting the desired option, it will
-                    // change the button value to the selected value
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        dropdownValue = newValue!;
-                      });
+    child: Text('Change password')))
+                      ];
                     },
-                  ),
+                  )
                 ],
               ),
               SizedBox(height: 24.0),
@@ -133,11 +122,12 @@ class _AdminState extends State<Admin> {
                 ),
               ),
               Padding(
-                padding:
-                const EdgeInsets.only(left: 20.0, right: 15, top: 20, bottom: 8),
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 15, top: 20, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                     Navigator.push(context, MaterialPageRoute(builder: (context)=>Manageuser()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => Manageuser()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1,
@@ -172,11 +162,14 @@ class _AdminState extends State<Admin> {
               SizedBox(width: 10),
               // Curved Rectangle
               Padding(
-                padding:
-                const EdgeInsets.only(left: 20.0, right: 15, top: 20, bottom: 8),
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 15, top: 20, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageDriver()));
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ManageDriver()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1,
@@ -211,11 +204,12 @@ class _AdminState extends State<Admin> {
               SizedBox(width: 10),
               // Curved Rectangle
               Padding(
-                padding:
-                const EdgeInsets.only(left: 20.0, right: 15, top: 20, bottom: 8),
+                padding: const EdgeInsets.only(
+                    left: 20.0, right: 15, top: 20, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>ManageTaxi()));
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => ManageTaxi()));
                   },
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1,

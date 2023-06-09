@@ -1,4 +1,5 @@
 import 'package:eride/Admin/Details.dart';
+import 'package:eride/Admin/Manageuser.dart';
 import 'package:flutter/material.dart';
 
 class ManageDriver extends StatefulWidget {
@@ -117,46 +118,52 @@ class _ManageDriverState extends State<ManageDriver> {
             'All Driver',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
-          ListView.separated(
-            shrinkWrap: true,
-            padding: const EdgeInsets.all(8),
-            itemCount: entries.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage(containerImages[index]),
-                ),
-                title: Text(
-                  entries[index],
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                subtitle: Text(
-                  'ID: ${userIds2[index]}',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 14,
-                  ),
-                ),
-                trailing: IconButton(
-                  icon: Icon(
-                    Icons.delete,
-                    color: Colors.red,
-                  ),
-                  onPressed: () {
-                    // Handle delete button pressed
-                    _showDeleteConfirmationDialog(context, index);
-                  },
-                ),
-                tileColor: Colors.grey.withOpacity(0.4),
-              );
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context, MaterialPageRoute(builder: (context) => Details()));
             },
-            separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
+            child: ListView.separated(
+              shrinkWrap: true,
+              padding: const EdgeInsets.all(8),
+              itemCount: entries.length,
+              itemBuilder: (BuildContext context, int index) {
+                return ListTile(
+                  leading: CircleAvatar(
+                    backgroundImage: AssetImage(containerImages[index]),
+                  ),
+                  title: Text(
+                    entries[index],
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                  subtitle: Text(
+                    'ID: ${userIds2[index]}',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14,
+                    ),
+                  ),
+                  trailing: IconButton(
+                    icon: Icon(
+                      Icons.delete,
+                      color: Colors.red,
+                    ),
+                    onPressed: () {
+                      // Handle delete button pressed
+                      _showDeleteConfirmationDialog(context, index);
+                    },
+                  ),
+                  tileColor: Colors.grey.withOpacity(0.4),
+                );
+              },
+              separatorBuilder: (BuildContext context, int index) =>
+                  const Divider(),
+            ),
           ),
         ],
       ),
@@ -217,3 +224,6 @@ class _ManageDriverState extends State<ManageDriver> {
     print('User ${entries[index]} declined.');
   }
 }
+
+
+
