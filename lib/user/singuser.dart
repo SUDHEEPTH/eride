@@ -145,6 +145,7 @@ class _singuserState extends State<singuser> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -183,7 +184,7 @@ class _singuserState extends State<singuser> {
                     controller: _addressController,
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please enter Address';
+                        return 'Please enter Email';
                       }
                       return null;
                     },
@@ -194,7 +195,7 @@ class _singuserState extends State<singuser> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      labelText: "Enter Address",
+                      labelText: "Enter Email",
                       labelStyle: TextStyle(color: Colors.green),
                     ),
                   ),

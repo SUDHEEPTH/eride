@@ -47,7 +47,7 @@ class _AdminState extends State<Admin> {
                     ),
                   ),
                   SizedBox(
-                    width: 100,
+                    width: 50,
                   ),
                   Padding(
                     padding: EdgeInsets.only(right: 1),

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class Change extends StatefulWidget {
-  const Change({Key? key}) : super(key: key);
+class ChangePass extends StatefulWidget {
+  const ChangePass({Key? key}) : super(key: key);
 
   @override
-  State<Change> createState() => _ChangeState();
+  State<ChangePass> createState() => _ChangePassState();
 }
 
-class _ChangeState extends State<Change> {
+class _ChangePassState extends State<ChangePass> {
   final _formKey = GlobalKey<FormState>();
 
   String? _password;

@@ -1,3 +1,4 @@
+import 'package:eride/user/ChangePass.dart';
 import 'package:eride/user/Minibio.dart';
 import 'package:eride/user/Preferences.dart';
 import 'package:flutter/material.dart';
@@ -443,22 +444,25 @@ class _ProfileUserState extends State<ProfileUser>
                         ),
 
                         const SizedBox(height: 20),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Password ',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontSize: 18,
+                        GestureDetector(onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context) => ChangePass(),));},
+
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Password ',
+                                style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 18,
+                                ),
+                                textAlign: TextAlign.left,
                               ),
-                              textAlign: TextAlign.left,
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios,
-                              color: Colors.green,
-                            ),
-                          ],
+                              Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.green,
+                              ),
+                            ],
+                          ),
                         ),
 
                         const SizedBox(height: 20),

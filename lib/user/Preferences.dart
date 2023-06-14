@@ -1,3 +1,7 @@
+import 'package:eride/user/preferencess/Chattiness.dart';
+import 'package:eride/user/preferencess/Music.dart';
+import 'package:eride/user/preferencess/Pets.dart';
+import 'package:eride/user/preferencess/Smoking.dart';
 import 'package:flutter/material.dart';
 
 class Preferences extends StatefulWidget {
@@ -38,118 +42,135 @@ class _PreferencesState extends State<Preferences> {
               ),
             ),
           ),
-          SizedBox(
-            height: 40,
-          ),
-          Padding(
+          SizedBox(height: 40),
+          GestureDetector(
+            onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Chattiness(),));},
+            child: Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Chattiness",
-                    style: TextStyle(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Chattiness",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[500],
-                        fontSize: 15),
-                  ))),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 35.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "I'm chatty when I feel comfortable",
-                    style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "I'm chatty when I feel comfortable",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
-                        fontSize: 20),
-                  ))),
-          SizedBox(
-            height: 40,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          Padding(
+          SizedBox(height: 40),
+          GestureDetector(
+            onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Music(),));},
+            child: Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Music",
-                    style: TextStyle(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Music",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[500],
-                        fontSize: 15),
-                  ))),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 35.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "I,ll jam depending on the mood ",
-                    style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "I'll jam depending on the mood",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
-                        fontSize: 20),
-                  ))),
-          SizedBox(
-            height: 40,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          Padding(
+          SizedBox(height: 40),
+          GestureDetector(
+            onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Smoking(),));},
+
+            child: Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Smoking",
-                    style: TextStyle(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Smoking",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[500],
-                        fontSize: 15),
-                  ))),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 35.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Cigarette breaks outside the car are ok ",
-                    style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "Cigarette breaks outside the car are ok",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
-                        fontSize: 20),
-                  ))),
-          SizedBox(
-            height: 40,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
-          Padding(
+          SizedBox(height: 40),
+          GestureDetector(
+            onTap: () {Navigator.push(context, MaterialPageRoute(builder: (context) => Pets(),));},
+            child: Padding(
               padding: const EdgeInsets.only(left: 35.0),
               child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "Pets",
-                    style: TextStyle(
+                alignment: Alignment.topLeft,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Pets",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.grey[500],
-                        fontSize: 15),
-                  ))),
-          SizedBox(
-            height: 5,
-          ),
-          Padding(
-              padding: const EdgeInsets.only(left: 35.0),
-              child: Align(
-                  alignment: Alignment.topLeft,
-                  child: Text(
-                    "I'll travel with depending on animal ",
-                    style: TextStyle(
+                        fontSize: 15,
+                      ),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      "I'll travel with depending on animal",
+                      style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.green,
-                        fontSize: 20),
-                  ))),
+                        fontSize: 20,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
