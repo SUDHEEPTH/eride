@@ -3,6 +3,8 @@ import 'package:eride/user/Carrent.dart';
 import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Profileuser.dart';
 import 'package:eride/user/Share1.dart';
+import 'package:eride/user/ShareRideDetasils.dart';
+import 'package:eride/user/YourShare.dart';
 import 'package:eride/user/taxi.dart';
 
 import 'package:flutter/material.dart';
@@ -705,14 +707,34 @@ class homepage extends StatelessWidget {
                 shrinkWrap: true,
                 itemCount: 2,
                 itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    leading: Icon(Icons.notifications_active),
-                    title: Text(index == 0 ? "Shared Ride Details" : "Your Shared Ride"),
-                    subtitle: Text(index == 0 ? "John shared a ride from XYZ to ABC" : "You are sharing a ride from DEF to GHI"),
-                    trailing: Icon(Icons.arrow_forward_ios),
-                  );
+                  if (index == 0) {
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ShareRideDetails()));
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.notifications_active),
+                        title: Text("Joined Ride Details"),
+                        subtitle: Text("John shared a ride from XYZ to ABC"),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                      ),
+                    );
+                  } else {
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>YourShare()));
+                      },
+                      child: ListTile(
+                        leading: Icon(Icons.notifications_active),
+                        title: Text("Your Shared Ride"),
+                        subtitle: Text("You are sharing a ride from DEF to GHI"),
+                        trailing: Icon(Icons.arrow_forward_ios),
+                      ),
+                    );
+                  }
                 },
               ),
+
             ], // Added closing bracket for the Column widget
           ),
         ),
