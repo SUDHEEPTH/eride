@@ -1,4 +1,13 @@
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/login.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+
+
 
 class singuser extends StatefulWidget {
   const singuser({Key? key}) : super(key: key);
@@ -8,6 +17,10 @@ class singuser extends StatefulWidget {
 }
 
 class _singuserState extends State<singuser> {
+
+  bool  _isLoading = false;
+
+
   final _formKey = GlobalKey<FormState>();
   String? _idCardType;
   String? _selectedGender;
@@ -22,6 +35,7 @@ class _singuserState extends State<singuser> {
     'Female',
     'Other',
   ];
+  final TextEditingController _dobController = TextEditingController();
   final TextEditingController _firstNameController = TextEditingController();
   final TextEditingController _lastNameController = TextEditingController();
   final TextEditingController _phoneNumberController = TextEditingController();
@@ -30,9 +44,16 @@ class _singuserState extends State<singuser> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _confirmPasswordController =
   TextEditingController();
+  final TextEditingController _userNameController =
+  TextEditingController();
+  final ImagePicker _imagePicker = ImagePicker();
+  File? _selectedImage;
+
 
   @override
   void dispose() {
+    _dobController.dispose();
+    _userNameController.dispose();
     _firstNameController.dispose();
     _lastNameController.dispose();
     _phoneNumberController.dispose();
@@ -41,6 +62,68 @@ class _singuserState extends State<singuser> {
     _emailController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
+
+
+  }
+  Future<void> _selectImage() async {
+    final pickedImage = await _imagePicker.pickImage(source: ImageSource.gallery);
+    setState(() {
+      if (pickedImage != null) {
+        _selectedImage = File(pickedImage.path);
+      }
+    });
+  }
+
+  void registerUser() async {
+    // Check if an image is selected
+    if (_selectedImage == null) {
+      Fluttertoast.showToast(
+        msg: 'Please select an image',
+        backgroundColor: Colors.grey,
+      );
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      "dob": _dobController.text,
+      "username": _userNameController.text,
+      "firstName": _firstNameController.text,
+      "lastName": _firstNameController.text,
+      "password": _passwordController.text,
+      "gender": _selectedGender,
+      "idcard":_idCardType,
+      "address": _addressController.text,
+      "phoneNumber": _phoneNumberController.text,
+      "email": _emailController.text,
+      "img1": _selectedImage,
+
+    };
+    var res = await Api().authData(data,'/register/user-register');
+    var body = json.decode(res.body);
+
+    if(body['success']==true)
+    {
+      print(body);
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+    }
   }
 
   @override
@@ -77,7 +160,7 @@ class _singuserState extends State<singuser> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 70.0),
                     child: Text(
-                      "Signup",
+                      "Sign up",
                       style: TextStyle(
                         fontSize: 50,
                         fontWeight: FontWeight.bold,
@@ -107,8 +190,36 @@ class _singuserState extends State<singuser> {
                     bottom: 10,
                   ),
                   child: TextFormField(
+                    controller: _userNameController,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please enter User Name';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      labelText: "Enter User Name",
+                      labelStyle: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 50.0,
+                    right: 50,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: TextFormField(
                     controller: _firstNameController,
                     validator: (value) {
+
                       if (value!.isEmpty) {
                         return 'Please enter First Name';
                       }
@@ -153,6 +264,35 @@ class _singuserState extends State<singuser> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 50.0,
+                    right: 50,
+                    top: 10,
+                    bottom: 10,
+                  ),
+                  child: TextFormField(
+                    controller: _dobController,
+                    validator: (value) {
+
+                      if (value!.isEmpty) {
+                        return 'Please enter Date of birth';
+                      }
+                      return null;
+                    },
+                    decoration: InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      labelText: "Enter Date of birth",
+                      labelStyle: TextStyle(color: Colors.green),
+                    ),
+                  ),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -208,43 +348,59 @@ class _singuserState extends State<singuser> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(
-                    left: 50.0,
-                    right: 50,
-                    top: 10,
-                    bottom: 10,
-                  ),
-                  child: DropdownButtonFormField(
-                    value: _idCardType,
-                    validator: (value) {
-                      if (value == null) {
-                        return 'Please select ID Card Type';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      setState(() {
-                        _idCardType = value.toString();
-                      });
-                    },
-                    items: _idCardTypeList.map((idCardType) {
-                      return DropdownMenuItem(
-                        child: Text(idCardType),
-                        value: idCardType,
-                      );
-                    }).toList(),
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
+                  padding: const EdgeInsets.only( left: 50.0,
+                      right: 50,
+                      top: 10,
+                      bottom: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: DropdownButtonFormField(
+                          value: _idCardType,
+                          validator: (value) {
+                            if (value == null) {
+                              return 'Please select ID Card Type';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {
+                            setState(() {
+                              _idCardType = value.toString();
+                            });
+                          },
+                          items: _idCardTypeList.map((idCardType) {
+                            return DropdownMenuItem(
+                              child: Text(idCardType),
+                              value: idCardType,
+                            );
+                          }).toList(),
+                          decoration: InputDecoration(
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                            ),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            labelText: "Select ID Card Type",
+                            labelStyle: TextStyle(color: Colors.green),
+                          ),
+                        ),
                       ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10.0),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 20.0),
+                        child: Expanded(
+                          child: ElevatedButton(
+                            onPressed: _selectImage,
+                            child: const Text('Select Image'),
+                          ),
+                        ),
                       ),
-                      labelText: "Select ID Card Type",
-                      labelStyle: TextStyle(color: Colors.green),
-                    ),
+                      const SizedBox(width: 20.0), // Add spacing between the two elements
+
+                    ],
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -377,9 +533,7 @@ class _singuserState extends State<singuser> {
                   child: ElevatedButton(
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
-                        // Process the form data
-                        // ...
-                        // Navigate to the next screen or do something else
+                        registerUser();
                       }
                     },
                     child: Text('Sign Up'),
@@ -394,8 +548,4 @@ class _singuserState extends State<singuser> {
   }
 }
 
-void main() {
-  runApp(MaterialApp(
-    home: singuser(),
-  ));
-}
+

@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:eride/Admin/Admin.dart';
+import 'package:eride/api/api.dart';
 import 'package:eride/driver/Driverhome.dart';
 import 'package:eride/singup1.dart';
 import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/user/homepage.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Login extends StatefulWidget {
   const Login({Key? key}) : super(key: key);
@@ -15,12 +20,90 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   @override
-  String user="user";
-  String driver="driver";
-  String taxi="taxi";
-  String admin="admin";
+  String user="1";
+  String driver="3";
+  String taxi="2";
+  String Admin="0";
+  String storedvalue='1';
+
+
+  late String role;
+  late String status;
+
 
   TextEditingController passcontroller=TextEditingController();
+  TextEditingController usercontroller=TextEditingController();
+
+  bool _isLoading = false;
+  late SharedPreferences localStorage;
+  _pressLoginButton() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var data = {
+      'username': passcontroller.text.trim(), //username for email
+      'password': usercontroller.text.trim()
+    };
+    var res = await Api().authData(data,'/login');
+    var body = json.decode(res.body);
+
+    if (body['success'] == true) {
+      print(body);
+
+      role = json.encode(body['role']);
+      status = json.encode(body['status']);
+
+      localStorage = await SharedPreferences.getInstance();
+      localStorage.setString('role', role.toString());
+      localStorage.setString('login_id', json.encode(body['login_id']));
+
+      print('login_idss ${json.encode(body['login_id'])}');
+
+      if (user == role.replaceAll('"', '') &&
+          storedvalue == status.replaceAll('"', '')) {
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => homepage()));
+      } else if (taxi == role.replaceAll('"', '') &&
+          storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Taxihome(),
+        ));
+
+
+      }
+      else if (driver == role.replaceAll('"', '') &&
+          storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Driverhome(),
+        ));
+
+
+
+      }
+      else if (Admin == role.replaceAll('"', '') &&
+          storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) => Admin(),
+        ));
+
+
+
+      }
+      else {
+        Fluttertoast.showToast(
+          msg: "Please wait for admin approval",
+          backgroundColor: Colors.grey,
+        );
+      }
+
+
+    } else {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +171,9 @@ appBar: AppBar(
             Padding(
               padding: const EdgeInsets.only(left: 50.0,right: 50,top: 10,bottom: 20),
               child: TextField(
+                controller: usercontroller,
                 decoration: InputDecoration(
+
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green)),
                   border: OutlineInputBorder(
@@ -134,16 +219,8 @@ controller: passcontroller,
                   ),
                 ),
                 onPressed: () {
-                  if(passcontroller.text == user){
+                  _pressLoginButton();
 
-                    Navigator.push(context, MaterialPageRoute(builder: (context)=>Homeuser()));
-                  }
-                  else if(passcontroller.text == driver){Navigator.push(context, MaterialPageRoute(builder: (context)=>Driverhome()));
-    }
-                  else if(passcontroller.text == taxi){Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxihome()));
-                  }
-                  else if(passcontroller.text == admin){Navigator.push(context, MaterialPageRoute(builder: (context)=>Admin()));
-                  }
                 },
 
                 child: Text("login")

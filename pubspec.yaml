@@ -29,6 +29,7 @@ environment:
 # versions available, run `flutter pub outdated`.
 dependencies:
 
+
   carousel_slider: ^4.2.1
   gap: ^3.0.0
   awesome_bottom_bar: any
@@ -51,11 +52,16 @@ dependencies:
   timeline_tile: ^2.0.0
   flutter_chat_ui: ^1.6.6
   quantity_input: ^1.0.2
-  image_picker: ^0.8.7+5
+  image_picker: ^1.0.0
   giffy_dialog: ^1.8.0
   gestures: ^1.0.0
   email_validator: ^2.1.17
   dropdown_button2: ^2.1.3
+  http: ^0.13.6
+  fluttertoast: ^8.2.2
+  rflutter_alert: ^2.0.7
+  shared_preferences: ^2.1.2
+  flutter_image_compress: ^2.0.3
 
 dev_dependencies:
   flutter_test:
