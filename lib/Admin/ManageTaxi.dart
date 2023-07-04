@@ -1,4 +1,7 @@
 import 'package:eride/Admin/Details.dart';
+import 'package:eride/Admin/model/usermodel.dart';
+import 'package:eride/api/api_services.dart';
+
 import 'package:flutter/material.dart';
 
 class ManageTaxi extends StatefulWidget {
@@ -7,6 +10,8 @@ class ManageTaxi extends StatefulWidget {
   @override
   State<ManageTaxi> createState() => _ManageTaxiState();
 }
+
+List _loadprooducts = [];
 
 final List<String> containerImages = [
   'images/rest.png',
@@ -18,6 +23,7 @@ final List<String> entries1 = ['mac ', 'rio'];
 final List<String> userIds = ['001', '002'];
 final List<String> entries = ['vish', 'leo', 'don', 'rajeev'];
 final List<String> userIds2 = ['007', '008', '009', '003'];
+ApiService client = ApiService();
 
 class _ManageTaxiState extends State<ManageTaxi> {
   @override
@@ -52,69 +58,77 @@ class _ManageTaxiState extends State<ManageTaxi> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Details()));
             },
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              itemCount: entries1.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(containerImages[index]),
-                  ),
-                  title: Text(
-                    entries1[index],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ID: ${userIds[index]}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                        onPressed: () {
-                          // Handle approve button pressed
-                          _approveUser(index);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ),
-                        onPressed: () {
-                          // Handle decline button pressed
-                          _declineUser(index);
-                        },
-                      ),
-                    ],
-                  ),
-                  tileColor: Colors.grey.withOpacity(0.4),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
-            ),
+            child: FutureBuilder<List<UserModel>>(
+                future: client.fetchtaxi(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<UserModel>> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.separated(
+                      shrinkWrap: true,
+                      padding: const EdgeInsets.all(8),
+                      itemCount: snapshot.data!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(containerImages[index]),
+                          ),
+                          title: Text(
+                            '${snapshot.data![index].fname} ${snapshot.data![index].lname}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'ID: ${snapshot.data![index].id}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.check,
+                                  color: Colors.green,
+                                ),
+                                onPressed: () {
+                                  // Handle approve button pressed
+                                  _approveUser(index);
+                                },
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.close,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  // Handle decline button pressed
+                                  _declineUser(index);
+                                },
+                              ),
+                            ],
+                          ),
+                          tileColor: Colors.grey.withOpacity(0.4),
+                        );
+                      },
+                      separatorBuilder: (BuildContext context, int index) =>
+                          const Divider(),
+                    );
+                  }
+                  return Center(child: CircularProgressIndicator());
+                }),
           ),
           Divider(
             thickness: 2,
             color: Colors.black,
           ),
           Text(
-            'All User',
+            'All Taxi',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
           GestureDetector(
@@ -161,7 +175,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
                 );
               },
               separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
+                  const Divider(),
             ),
           ),
         ],

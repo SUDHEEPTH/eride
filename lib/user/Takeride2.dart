@@ -15,15 +15,23 @@ class _Takeride2State extends State<Takeride2> {
 
   final List<String> Destination1 =
     [
-       'goa','thiruvananthapuram','malappuram',
+       'Bangalore','Bangalore',
 
     ];
   final List<String> Destination2 =
   [
-    'thiruvananthapuram','goa','malappuram',];
+    'Cochin','Cochin',];
   List<String> rate1=
   [
-    '600','600','500',
+    '600','700',
+  ];
+  List<String> des1=
+  [
+    'near postoffice','falooda nation ',
+  ];
+  List<String> des2=
+  [
+    'near lulu mall','wall nation ',
   ];
 @override
   Widget build(BuildContext context) {
@@ -130,7 +138,7 @@ class _Takeride2State extends State<Takeride2> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          'Address of Destination 1',
+                                          des2[index] ??'',
                                           style: TextStyle(
                                             fontSize: 16,
                                           ),
@@ -193,7 +201,7 @@ class _Takeride2State extends State<Takeride2> {
                                       Align(
                                         alignment: Alignment.centerLeft,
                                         child: Text(
-                                          'Address of Destination 2',
+                                          des1[index] ??'',
                                           style: TextStyle(
                                             fontSize: 16,
                                           ),

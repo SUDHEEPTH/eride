@@ -33,7 +33,7 @@ class Driverhome extends StatefulWidget {
 }
 
 class _DriverhomeState extends State<Driverhome> {
-  final String userPhotoUrl = 'https://example.com/user_photo.jpg';
+  final String userPhotoUrl = '';
 
   int _currentIndex = 0;
 
@@ -234,6 +234,15 @@ class _DriverhomeState extends State<Driverhome> {
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        // Add your logic here
+                      },
+                      style: ElevatedButton.styleFrom(
+                        primary: Colors.black, // Background color
+                      ),
+                      child: Text('Accept'),
                     ),
                   ],
                 ),

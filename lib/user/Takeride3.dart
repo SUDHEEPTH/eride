@@ -63,7 +63,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 1 ',
+                              'Cochin',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -74,7 +74,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 1',
+                              'near lulu mall',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -124,7 +124,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 2',
+                              'Bangalore',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -135,7 +135,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 2',
+                              'near postoffice',
                               style: TextStyle(
                                 fontSize: 16,
                               ),

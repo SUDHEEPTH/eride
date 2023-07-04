@@ -51,16 +51,16 @@ class _TaxihomeState extends State<Taxihome> {
       'https://example.com/user_photo.jpg';
   final List<Driver> drivers = [
     Driver(
-      name: 'user 1',
+      name: 'joe',
       photoUrl: 'images/images.jpg',
       rating: 4.5,
-      adress: 'adress1',
+      adress: 'lulu mall near post office',
     ),
     Driver(
-      name: 'user 2',
+      name: 'max',
       photoUrl: 'images/images (1).jpg',
       rating: 4.2,
-      adress: 'adress2',
+      adress: 'ariyallur near post office',
     ),
   ];
 

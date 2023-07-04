@@ -60,7 +60,7 @@ class _ShareRideDetailsState extends State<ShareRideDetails> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 1 ',
+                              'bangalur ',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -71,7 +71,7 @@ class _ShareRideDetailsState extends State<ShareRideDetails> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 1',
+                              'faluda nation',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -120,7 +120,7 @@ class _ShareRideDetailsState extends State<ShareRideDetails> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 2',
+                              'chochin',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -131,7 +131,7 @@ class _ShareRideDetailsState extends State<ShareRideDetails> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 2',
+                              'lulu mall',
                               style: TextStyle(
                                 fontSize: 16,
                               ),

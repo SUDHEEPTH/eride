@@ -99,7 +99,7 @@ class _singuserState extends State<singuser> {
       "address": _addressController.text,
       "phoneNumber": _phoneNumberController.text,
       "email": _emailController.text,
-      "img1": _selectedImage,
+
 
     };
     var res = await Api().authData(data,'/register/user-register');
@@ -349,7 +349,7 @@ class _singuserState extends State<singuser> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only( left: 50.0,
-                      right: 50,
+                      right: 23,
                       top: 10,
                       bottom: 10),
                   child: Row(
@@ -387,13 +387,13 @@ class _singuserState extends State<singuser> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
-                        child: Expanded(
+                        padding: const EdgeInsets.only(left: 5.0),
+
                           child: ElevatedButton(
                             onPressed: _selectImage,
                             child: const Text('Select Image'),
                           ),
-                        ),
+
                       ),
                       const SizedBox(width: 20.0), // Add spacing between the two elements
 

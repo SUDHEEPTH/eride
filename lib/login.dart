@@ -20,38 +20,37 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   @override
-  String user="1";
-  String driver="3";
-  String taxi="2";
-  String Admin="0";
-  String storedvalue='1';
+  bool _isLoading = false;
+  String admin = "0";
+  String user = "1";
+  String taxi = "2";
+  String driver = "3";
+  String storedvalue = '1';
 
+  TextEditingController passcontroller = TextEditingController();
+  TextEditingController usercontroller = TextEditingController();
 
   late String role;
   late String status;
-
-
-  TextEditingController passcontroller=TextEditingController();
-  TextEditingController usercontroller=TextEditingController();
-
-  bool _isLoading = false;
   late SharedPreferences localStorage;
   _pressLoginButton() async {
     setState(() {
       _isLoading = true;
     });
-    var data = {
-      'username': passcontroller.text.trim(), //username for email
-      'password': usercontroller.text.trim()
-    };
-    var res = await Api().authData(data,'/login');
-    var body = json.decode(res.body);
 
+    var data = {
+      'username': usercontroller.text.trim(),
+      'password': passcontroller.text.trim(),
+    };
+
+    var res = await Api().authData(data, '/login/login');
+    var body = json.decode(res.body);
+    print("body${body}");
     if (body['success'] == true) {
       print(body);
 
-      role = json.encode(body['role']);
-      status = json.encode(body['status']);
+      role = json.encode(body['details']['role']);
+      status = json.encode(body['details']['status']);
 
       localStorage = await SharedPreferences.getInstance();
       localStorage.setString('role', role.toString());
@@ -59,44 +58,29 @@ class _LoginState extends State<Login> {
 
       print('login_idss ${json.encode(body['login_id'])}');
 
-      if (user == role.replaceAll('"', '') &&
-          storedvalue == status.replaceAll('"', '')) {
+      print('role: ${role}');
+      print('role: ${role.runtimeType}');
+      print('status: ${status}');
+
+
+      if (admin == role.replaceAll('"', '')) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => homepage()));
-      } else if (taxi == role.replaceAll('"', '') &&
-          storedvalue == status.replaceAll('"', '')) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Taxihome(),
-        ));
-
-
-      }
-      else if (driver == role.replaceAll('"', '') &&
-          storedvalue == status.replaceAll('"', '')) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Driverhome(),
-        ));
-
-
-
-      }
-      else if (Admin == role.replaceAll('"', '') &&
-          storedvalue == status.replaceAll('"', '')) {
-        Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => Admin(),
-        ));
-
-
-
-      }
-      else {
+            context, MaterialPageRoute(builder: (context) => Adminhome()));
+      } else if (taxi == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Taxihome()));
+      } else if (driver == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => Driverhome()));
+      } else if (user == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => homepage()));
+      } else {
         Fluttertoast.showToast(
           msg: "Please wait for admin approval",
           backgroundColor: Colors.grey,
         );
       }
-
-
     } else {
       Fluttertoast.showToast(
         msg: body['message'].toString(),
@@ -104,38 +88,33 @@ class _LoginState extends State<Login> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-
-appBar: AppBar(
-  // Overide the default Back button
-  automaticallyImplyLeading: false,
-  leadingWidth: 100,
-  leading: ElevatedButton.icon(
-    onPressed: () => Navigator.of(context).pop(),
-    icon: const Icon(Icons.arrow_left_sharp,color: Colors.green,),
-    label: const Text('Back',style: TextStyle(color:Colors.green )),
-    style: ElevatedButton.styleFrom(
-
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-    ),
-
-  ),
-  backgroundColor: Colors.transparent,
-  elevation: 0,
-  // other stuff
-
-),
-
-      body:
-
-
-      SingleChildScrollView(
+      appBar: AppBar(
+        // Overide the default Back button
+        automaticallyImplyLeading: false,
+        leadingWidth: 100,
+        leading: ElevatedButton.icon(
+          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(
+            Icons.arrow_left_sharp,
+            color: Colors.green,
+          ),
+          label: const Text('Back', style: TextStyle(color: Colors.green)),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+          ),
+        ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        // other stuff
+      ),
+      body: SingleChildScrollView(
         child: Column(
-
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
@@ -144,7 +123,9 @@ appBar: AppBar(
                 height: 250,
                 width: 300,
                 decoration: BoxDecoration(
-                  image: DecorationImage(image: AssetImage("images/banner.png"),fit: BoxFit.cover),
+                  image: DecorationImage(
+                      image: AssetImage("images/banner.png"),
+                      fit: BoxFit.cover),
                 ),
               ),
             ),
@@ -169,11 +150,11 @@ appBar: AppBar(
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(left: 50.0,right: 50,top: 10,bottom: 20),
+              padding: const EdgeInsets.only(
+                  left: 50.0, right: 50, top: 10, bottom: 20),
               child: TextField(
                 controller: usercontroller,
                 decoration: InputDecoration(
-
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green)),
                   border: OutlineInputBorder(
@@ -191,7 +172,7 @@ appBar: AppBar(
                 right: 50.0,
               ),
               child: TextField(
-controller: passcontroller,
+                controller: passcontroller,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.green)),
@@ -205,51 +186,47 @@ controller: passcontroller,
               ),
             ),
             SizedBox(
-
-              height: 20,),
-
-          Container(
-            width: 310,
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.green, // background
-                  onPrimary: Colors.white, // foreground
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  _pressLoginButton();
-
-                },
-
-                child: Text("login")
+              height: 20,
             ),
-          ),
+            Container(
+              width: 310,
+              child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: Colors.green, // background
+                    onPrimary: Colors.white, // foreground
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  onPressed: () {
+                    _pressLoginButton();
+                  },
+                  child: Text("login")),
+            ),
             Container(
                 padding: EdgeInsets.all(10),
                 child: Center(
                   child: RichText(
                     text: TextSpan(
                         text: 'Don\'t have an account?',
-                        style: TextStyle(
-                            color: Colors.green, fontSize: 18),
+                        style: TextStyle(color: Colors.green, fontSize: 18),
                         children: <TextSpan>[
-                          TextSpan(text: ' Sign up',
+                          TextSpan(
+                              text: ' Sign up',
                               style: TextStyle(
-                                  color: Colors.green, fontSize: 18,fontWeight: FontWeight.bold),
+                                  color: Colors.green,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=>Singup1()));
-    }
-
-                          )
-                        ]
-                    ),
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => Singup1()));
+                                })
+                        ]),
                   ),
-                )
-            )
-
+                ))
           ],
         ),
       ),

@@ -352,7 +352,7 @@ class _singtaxiState extends State<singtaxi> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only( left: 50.0,
-                      right: 50,
+                      right: 23,
                       top: 10,
                       bottom: 10),
                   child: Row(
@@ -390,7 +390,7 @@ class _singtaxiState extends State<singtaxi> {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(left: 20.0),
+                        padding: const EdgeInsets.only(left: 5.0),
                         child: Expanded(
                           child: ElevatedButton(
                             onPressed: _selectImage,

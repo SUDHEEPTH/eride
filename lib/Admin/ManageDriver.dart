@@ -1,5 +1,7 @@
 import 'package:eride/Admin/Details.dart';
 import 'package:eride/Admin/Manageuser.dart';
+import 'package:eride/Admin/model/usermodel.dart';
+import 'package:eride/api/api_services.dart';
 import 'package:flutter/material.dart';
 
 class ManageDriver extends StatefulWidget {
@@ -8,7 +10,8 @@ class ManageDriver extends StatefulWidget {
   @override
   State<ManageDriver> createState() => _ManageDriverState();
 }
-
+List _loadprooducts = [];
+ApiService client = ApiService();
 final List<String> containerImages = [
   'images/rest.png',
   'images/rest.png',
@@ -53,63 +56,76 @@ class _ManageDriverState extends State<ManageDriver> {
               Navigator.push(
                   context, MaterialPageRoute(builder: (context) => Details()));
             },
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              itemCount: entries1.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(containerImages[index]),
-                  ),
-                  title: Text(
-                    entries1[index],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
+
+
+    child: FutureBuilder<List<UserModel>>(
+    future: client.fetchdriver(),
+    builder: (BuildContext context,
+    AsyncSnapshot<List<UserModel>> snapshot) {
+      if (snapshot.hasData) {
+        return ListView.separated(
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(8),
+          itemCount: snapshot.data!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              leading: CircleAvatar(
+                backgroundImage: AssetImage(containerImages[index]),
+              ),
+              title: Text(
+                snapshot.data![index].fname,
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  fontStyle: FontStyle.italic,
+                ),
+              ),
+              subtitle: Text(
+                'ID: ${snapshot.data![index].id}',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 14,
+                ),
+              ),
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  IconButton(
+                    icon: Icon(
+                      Icons.check,
+                      color: Colors.green,
                     ),
+                    onPressed: () {
+                      // Handle approve button pressed
+                      _approveUser(index);
+                    },
                   ),
-                  subtitle: Text(
-                    'ID: ${userIds[index]}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
+                  IconButton(
+                    icon: Icon(
+                      Icons.close,
+                      color: Colors.red,
                     ),
+                    onPressed: () {
+                      // Handle decline button pressed
+                      _declineUser(index);
+                    },
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: Icon(
-                          Icons.check,
-                          color: Colors.green,
-                        ),
-                        onPressed: () {
-                          // Handle approve button pressed
-                          _approveUser(index);
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(
-                          Icons.close,
-                          color: Colors.red,
-                        ),
-                        onPressed: () {
-                          // Handle decline button pressed
-                          _declineUser(index);
-                        },
-                      ),
-                    ],
-                  ),
-                  tileColor: Colors.grey.withOpacity(0.4),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
+                ],
+              ),
+              tileColor: Colors.grey.withOpacity(0.4),
+            );
+          },
+          separatorBuilder: (BuildContext context, int index) =>
+          const Divider(),
+        );
+      }
+      return Center(child: CircularProgressIndicator());
+    }
             ),
           ),
+
+
           Divider(
             thickness: 2,
             color: Colors.black,

@@ -69,7 +69,7 @@ class _YourShareState extends State<YourShare> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 1',
+                              'chochi',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -81,7 +81,7 @@ class _YourShareState extends State<YourShare> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 1',
+                              'lulu mall',
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -130,7 +130,7 @@ class _YourShareState extends State<YourShare> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Destination 2',
+                              'gavi',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -142,7 +142,7 @@ class _YourShareState extends State<YourShare> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Address of Destination 2',
+                              'aluva puza',
                               style: TextStyle(
                                 fontSize: 16,
                               ),

@@ -4,19 +4,19 @@ import 'package:eride/Admin/ManageTaxi.dart';
 import 'package:eride/Admin/Manageuser.dart';
 import 'package:flutter/material.dart';
 
-class Admin extends StatefulWidget {
-  const Admin({Key? key}) : super(key: key);
+class Adminhome extends StatefulWidget {
+  const Adminhome({Key? key}) : super(key: key);
 
   @override
-  State<Admin> createState() => _AdminState();
+  State<Adminhome> createState() => _AdminhomeState();
 }
 
-class _AdminState extends State<Admin> {
+class _AdminhomeState extends State<Adminhome> {
   String dropdownValue = 'Item 1';
 
   // List of items in our dropdown menu
 
-  final String userPhotoUrl = 'https://example.com/user_photo.jpg';
+
 
   @override
   Widget build(BuildContext context) {
@@ -47,32 +47,34 @@ class _AdminState extends State<Admin> {
                     ),
                   ),
                   SizedBox(
-                    width: 50,
+                    width: 160,
                   ),
-                  Padding(
-                    padding: EdgeInsets.only(right: 1),
-                    child: GestureDetector(
-                      // onTap: () {
-                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>AdminProfile()));
-                      // },
 
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(userPhotoUrl),
-                        radius: 30.0,
-                      ),
-                    ),
-                  ),
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return [
                         PopupMenuItem(
-                            child: GestureDetector(child: Text('Logout'))),
-                        PopupMenuItem(child: GestureDetector(
-    onTap: () {
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>Change()));
-     },
+                          child: GestureDetector(
+                            onTap: () {
+                              // Perform logout action here
+                              // Example: Clear user session and navigate to the login screen
+                              // Your implementation may vary based on your specific requirements
 
-    child: Text('Change password')))
+                            },
+                            child: Text('Logout'),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => Change()),
+                              );
+                            },
+                            child: Text('Change password'),
+                          ),
+                        ),
                       ];
                     },
                   )

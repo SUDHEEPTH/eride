@@ -15,12 +15,12 @@ class Driver {
 class Driverrent extends StatelessWidget {
   final List<Driver> drivers = [
     Driver(
-      name: 'Driver 1',
+      name: 'max',
       photoUrl: 'images/images.jpg',
       rating: 4.5,
     ),
     Driver(
-      name: 'Driver 2',
+      name: 'jack',
       photoUrl: 'images/images (1).jpg',
       rating: 4.2,
     ),
