@@ -9,6 +9,7 @@ import 'package:eride/user/taxi.dart';
 
 import 'package:flutter/material.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class Message {
@@ -373,84 +374,12 @@ class ChatSection extends StatelessWidget {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class homepage extends StatelessWidget {
+  final String username ='jeo';
   final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
-
+  List _loadprooducts = [];
+  late SharedPreferences prefs;
+  late int login;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -471,7 +400,7 @@ class homepage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Hello, User',
+                          'Hello, ${username}',
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,

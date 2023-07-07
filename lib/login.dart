@@ -64,17 +64,21 @@ class _LoginState extends State<Login> {
 
 
       if (admin == role.replaceAll('"', '')) {
+        print('data: $data');
         Navigator.push(
             context, MaterialPageRoute(builder: (context) => Adminhome()));
       } else if (taxi == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        print('data: $data');
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Taxihome()));
       } else if (driver == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        print('data: $data');
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => Driverhome()));
       } else if (user == role.replaceAll('"', '') && storedvalue == status.replaceAll('"', '')) {
+        print('data: $data');
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => homepage()));
+            .push(MaterialPageRoute(builder: (context) => Homeuser()));
       } else {
         Fluttertoast.showToast(
           msg: "Please wait for admin approval",

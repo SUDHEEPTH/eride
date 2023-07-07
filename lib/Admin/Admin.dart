@@ -2,6 +2,8 @@ import 'package:eride/Admin/Change.dart';
 import 'package:eride/Admin/ManageDriver.dart';
 import 'package:eride/Admin/ManageTaxi.dart';
 import 'package:eride/Admin/Manageuser.dart';
+
+import 'package:eride/login.dart';
 import 'package:flutter/material.dart';
 
 class Adminhome extends StatefulWidget {
@@ -14,9 +16,16 @@ class Adminhome extends StatefulWidget {
 class _AdminhomeState extends State<Adminhome> {
   String dropdownValue = 'Item 1';
 
-  // List of items in our dropdown menu
+  void performLogout() {
 
 
+
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => Login()),
+          (route) => false,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +58,14 @@ class _AdminhomeState extends State<Adminhome> {
                   SizedBox(
                     width: 160,
                   ),
-
                   PopupMenuButton(
                     itemBuilder: (context) {
                       return [
                         PopupMenuItem(
                           child: GestureDetector(
                             onTap: () {
-                              // Perform logout action here
-                              // Example: Clear user session and navigate to the login screen
-                              // Your implementation may vary based on your specific requirements
-
+                              // Perform logout action
+                              performLogout();
                             },
                             child: Text('Logout'),
                           ),

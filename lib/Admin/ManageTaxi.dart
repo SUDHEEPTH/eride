@@ -1,8 +1,12 @@
+import 'dart:convert';
+
 import 'package:eride/Admin/Details.dart';
 import 'package:eride/Admin/model/usermodel.dart';
+import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ManageTaxi extends StatefulWidget {
   const ManageTaxi({Key? key}) : super(key: key);
@@ -24,7 +28,22 @@ final List<String> userIds = ['001', '002'];
 final List<String> entries = ['vish', 'leo', 'don', 'rajeev'];
 final List<String> userIds2 = ['007', '008', '009', '003'];
 ApiService client = ApiService();
-
+Future approveUser(String userid) async {
+  print("u ${userid}");
+  var response = await Api().getData('/register/approve/'+userid);
+  if (response.statusCode == 200) {
+    var items = json.decode(response.body);
+    print("approve status${items}");
+    Fluttertoast.showToast(
+      msg: "Approved",
+    );
+  } else {
+    Fluttertoast.showToast(
+      msg: "Error",
+    );
+  }
+}
+late String userid;
 class _ManageTaxiState extends State<ManageTaxi> {
   @override
   Widget build(BuildContext context) {
@@ -56,7 +75,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
           GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details()));
+                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
             },
             child: FutureBuilder<List<UserModel>>(
                 future: client.fetchtaxi(),
@@ -68,6 +87,8 @@ class _ManageTaxiState extends State<ManageTaxi> {
                       padding: const EdgeInsets.all(8),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (BuildContext context, int index) {
+                        userid=snapshot.data![index].lid;
+                        print(userid);
                         return ListTile(
                           leading: CircleAvatar(
                             backgroundImage: AssetImage(containerImages[index]),
@@ -82,7 +103,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
                             ),
                           ),
                           subtitle: Text(
-                            'ID: ${snapshot.data![index].id}',
+                            'ID: ${snapshot.data![index].lid}',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 14,
@@ -98,7 +119,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
                                 ),
                                 onPressed: () {
                                   // Handle approve button pressed
-                                  _approveUser(index);
+                                  approveUser(userid);
                                 },
                               ),
                               IconButton(
@@ -134,7 +155,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
           GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details()));
+                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
             },
             child: ListView.separated(
               shrinkWrap: true,

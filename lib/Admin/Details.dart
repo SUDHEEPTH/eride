@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Details extends StatefulWidget {
-  const Details({Key? key}) : super(key: key);
+  const Details({Key? key, required String userid}) : super(key: key);
 
   @override
   State<Details> createState() => _DetailsState();

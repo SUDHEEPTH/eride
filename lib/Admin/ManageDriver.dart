@@ -13,10 +13,10 @@ class ManageDriver extends StatefulWidget {
 List _loadprooducts = [];
 ApiService client = ApiService();
 final List<String> containerImages = [
-  'images/rest.png',
-  'images/rest.png',
-  'images/rest.png',
-  'images/rest.png',
+  'images/ava3.png',
+  'images/ava3.png',
+  'images/ava3.png',
+  'images/ava3.png',
 ];
 final List<String> entries1 = ['rajan ', 'sasi'];
 final List<String> userIds = ['001', '002'];
@@ -54,7 +54,7 @@ class _ManageDriverState extends State<ManageDriver> {
           GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details()));
+                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
             },
 
 
@@ -82,7 +82,7 @@ class _ManageDriverState extends State<ManageDriver> {
                 ),
               ),
               subtitle: Text(
-                'ID: ${snapshot.data![index].id}',
+                'ID: ${snapshot.data![index].lid}',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 14,
@@ -137,7 +137,7 @@ class _ManageDriverState extends State<ManageDriver> {
           GestureDetector(
             onTap: () {
               Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details()));
+                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
             },
             child: ListView.separated(
               shrinkWrap: true,
