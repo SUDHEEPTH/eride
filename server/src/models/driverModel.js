@@ -12,6 +12,7 @@ const driverSchema = new schema({
     email: { type: String },
     gender: { type: String },
     dob: { type: String },
+    idcard: { type: String },
     
   
     

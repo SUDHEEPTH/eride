@@ -22,6 +22,7 @@ class _LoginState extends State<Login> {
   @override
   bool _isLoading = false;
   String admin = "0";
+  String users = "";
   String user = "1";
   String taxi = "2";
   String driver = "3";
@@ -50,11 +51,14 @@ class _LoginState extends State<Login> {
       print(body);
 
       role = json.encode(body['details']['role']);
+      users = json.encode(body['details']['username']);
       status = json.encode(body['details']['status']);
 
+      print('u: ${users}');
       localStorage = await SharedPreferences.getInstance();
       localStorage.setString('role', role.toString());
       localStorage.setString('login_id', json.encode(body['login_id']));
+      localStorage.setString('username', users.toString());
 
       print('login_idss ${json.encode(body['login_id'])}');
 

@@ -4,9 +4,11 @@ const userModel = require('../models/userModel')
 const taxiModel = require('../models/taxiModel')
 const driverMOdel = require('../models/driverModel')
 const loginModel = require('../Models/loginModel')
+const { default: mongoose } = require('mongoose')
+const objectid = mongoose.Types.ObjectId
 
 const registerRouter = express.Router()
-registerRouter.get('/view-driver', async function (req, res) {
+registerRouter.get('/viewstatus-driver', async function (req, res) {
     try {
 
         const allUser = await driverMOdel.aggregate([
@@ -20,6 +22,12 @@ registerRouter.get('/view-driver', async function (req, res) {
             },
             {
                 '$unwind':"$login"
+            },
+            {
+              '$match':{
+                'login.status':'1'
+            }
+
             },
             {
                 '$group':{
@@ -78,6 +86,11 @@ registerRouter.get('/view-taxi', async function (req, res) {
                 '$unwind':"$login"
             },
             {
+              '$match':{
+                'login.status':'0'
+            }
+            },
+            {
                 '$group':{
                     '_id':'$_id',
                     'id':{'$first':'$login._id'},
@@ -116,6 +129,66 @@ registerRouter.get('/view-taxi', async function (req, res) {
             message:"Something went wrong"
         })
     }
+})
+registerRouter.get('/viewstatus-taxi', async function (req, res) {
+  try {
+
+      const allUser = await taxiModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'login_tbs', 
+                  'localField': 'login_id', 
+                  'foreignField': '_id', 
+                  'as': 'login'
+              }
+          },
+          {
+              '$unwind':"$login"
+          },
+          {
+            '$match':{
+              'login.status':'1'
+          }
+          },
+          {
+              '$group':{
+                  '_id':'$_id',
+                  'id':{'$first':'$login._id'},
+                  'first_name':{'$first':'$first_name'},
+                  'Phone_no':{'$first':'$Phone_no'},
+                  'last_name':{'$first':'$last_name'},
+                  'status':{'$first':'$login.status'},
+                  'address':{'$first':'$address'},
+                  'email':{'$first':'$email'},
+                  'gender':{'$first':'$gender'},
+                  'username':{'$first':'$login.username'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
 })
 
 registerRouter.get('/view-users', async function (req, res) {
@@ -180,6 +253,7 @@ registerRouter.get('/view-users', async function (req, res) {
 })
 
 
+
 registerRouter.get('/viewstatus-users', async function (req, res) {
     try {
 
@@ -241,6 +315,68 @@ registerRouter.get('/viewstatus-users', async function (req, res) {
     }
 })
 
+registerRouter.get('/view-driver', async function (req, res) {
+  try {
+
+      const allUser = await driverMOdel.aggregate([
+          {
+            '$lookup': {
+              'from': 'login_tbs', 
+              'localField': 'login_id', 
+              'foreignField': '_id', 
+              'as': 'login'
+            }
+          },
+          {
+              '$unwind':"$login"
+          },
+          {
+              '$match':{
+                  'login.status':'0'
+              }
+          },
+          {
+              '$group':{
+                  '_id':'$_id',
+                  'id':{'$first':'$login._id'},
+                  'first_name':{'$first':'$first_name'},
+                  'Phone_no':{'$first':'$Phone_no'},
+                  'last_name':{'$first':'$last_name'},
+                  'status':{'$first':'$login.status'},
+                  'address':{'$first':'$address'},
+                  'email':{'$first':'$email'},
+                  'gender':{'$first':'$gender'},
+                  'username':{'$first':'$login.username'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:true,
+          error:false,
+          message:"Something went wrong"
+      })
+  }
+})
+
+
 
 registerRouter.post('/user-register', async function (req, res) {
     try {
@@ -280,7 +416,8 @@ registerRouter.post('/user-register', async function (req, res) {
                 address: req.body.address,    
                 gender: req.body.gender,    
                 dob: req.body.dob,
-                img1: req.body.img1,  
+                img1: req.body.img1, 
+                idcard: req.body.idcard, 
 
 
             }
@@ -344,6 +481,7 @@ registerRouter.post('/taxi-register', async function (req, res) {
                 gender: req.body.gender,    
                 dob: req.body.dob,  
                 car_num : req.body.car_num,
+                idcard: req.body.idcard, 
             }
             const save_user = await taxiModel(user_data).save()
             if(save_user){
@@ -405,6 +543,7 @@ registerRouter.post('/driver-register', async function (req, res) {
                 gender: req.body.gender,    
                 dob: req.body.dob,  
                 car_num : req.body.car_num,
+                idcard: req.body.idcard, 
             }
             const save_user = await driverMOdel(user_data).save()
             if(save_user){
@@ -485,67 +624,186 @@ registerRouter.get('/approve/:id', async (req, res) => {
   });
 
   
-  registerRouter.get('/view-detail/:id', async function (req, res) {
+  registerRouter.get('/viewselect-user/:id', async function (req, res) { 
     try {
-      const id = req.params.id;
-  
-      const user = await userModel.aggregate([
-        {
-          '$match': {
-            'id': mongoose.Types.ObjectId(id)
-          }
-        },
-        {
-          '$lookup': {
-            'from': 'login_tbs',
-            'localField': 'login_id',
-            'foreignField': '_id',
-            'as': 'login'
-          }
-        },
-        {
-          '$unwind': "$login"
-        },
-        {
-          '$group': {
-            '_id': '$_id',
-            'id': { '$first': '$login._id' },
-            'first_name': { '$first': '$first_name' },
-            'Phone_no': { '$first': '$Phone_no' },
-            'last_name': { '$first': '$last_name' },
-            'status': { '$first': '$login.status' },
-            'address': { '$first': '$address' },
-            'email': { '$first': '$email' },
-            'gender': { '$first': '$gender' },
-            'username': { '$first': '$login.username' },
-          }
+        const userId = req.params.id; 
+console.log(userId);
+        const allUser = await userModel.aggregate([
+            
+            {
+                '$lookup': {
+                    'from': 'login_tbs',
+                    'localField': 'login_id',
+                    'foreignField': '_id',
+                    'as': 'login'
+                }
+            },
+            {
+                '$unwind': "$login"
+            },
+            {
+              '$match': { 'login._id': new objectid (userId) } 
+          },
+            {
+                '$group': {
+                    '_id': '$_id',
+                    'login_id': { '$first': '$login._id' },
+                    'idcard': { '$first': '$idcard' },
+                    'first_name': { '$first': '$first_name' },
+                    'Phone_no': { '$first': '$Phone_no' },
+                    'last_name': { '$first': '$last_name' },
+                    'status': { '$first': '$login.status' },
+                    'address': { '$first': '$address' },
+                    'email': { '$first': '$email' },
+                    'gender': { '$first': '$gender' },
+                    'username': { '$first': '$login.username' },
+                }
+            }
+        ]);
+
+        if (allUser.length === 0) { 
+            return res.status(400).json({
+                success: false,
+                error: true,
+                message: "No data exist"
+            });
         }
-      ]);
-  
-      if (!user.length) {
-        return res.status(400).json({
-          success: false,
-          error: true,
-          message: "User not found"
+
+        return res.status(200).json({
+            success: true,
+            error: false,
+            data: allUser
         });
-      }
-  
-      return res.status(200).json({
-        success: true,
-        error: false,
-        data: user[0]
-      });
-  
+
     } catch (error) {
-      return res.status(400).json({
-        success: false,
-        error: true,
-        message: "Something went wrong"
-      });
+        return res.status(400).json({
+            success: false,
+            error: true,
+            message: "Something went wrong"
+        });
     }
-  });
-  
- 
+});
+registerRouter.get('/viewselect-driver/:id', async function (req, res) { 
+    try {
+        const userId = req.params.id; 
+console.log(userId);
+        const allUser = await driverMOdel.aggregate([
+            
+            {
+                '$lookup': {
+                    'from': 'login_tbs',
+                    'localField': 'login_id',
+                    'foreignField': '_id',
+                    'as': 'login'
+                }
+            },
+            {
+                '$unwind': "$login"
+            },
+            {
+              '$match': { 'login._id': new objectid (userId) } 
+          },
+            {
+                '$group': {
+                    '_id': '$_id',
+                    'login_id': { '$first': '$login._id' },
+                    'idcard': { '$first': '$idcard' },
+                    'first_name': { '$first': '$first_name' },
+                    'Phone_no': { '$first': '$Phone_no' },
+                    'last_name': { '$first': '$last_name' },
+                    'status': { '$first': '$login.status' },
+                    'address': { '$first': '$address' },
+                    'email': { '$first': '$email' },
+                    'gender': { '$first': '$gender' },
+                    'username': { '$first': '$login.username' },
+                }
+            }
+        ]);
+
+        if (allUser.length === 0) { 
+            return res.status(400).json({
+                success: false,
+                error: true,
+                message: "No data exist"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            error: false,
+            data: allUser
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: true,
+            message: "Something went wrong"
+        });
+    }
+});
+registerRouter.get('/viewselect-taxi/:id', async function (req, res) { 
+    try {
+        const userId = req.params.id; 
+console.log(userId);
+        const allUser = await taxiModel.aggregate([
+            
+            {
+                '$lookup': {
+                    'from': 'login_tbs',
+                    'localField': 'login_id',
+                    'foreignField': '_id',
+                    'as': 'login'
+                }
+            },
+            {
+                '$unwind': "$login"
+            },
+            {
+              '$match': { 'login._id': new objectid (userId) } 
+          },
+            {
+                '$group': {
+                    '_id': '$_id',
+                    'login_id': { '$first': '$login._id' },
+                    'idcard': { '$first': '$idcard' },
+                    'car_num': { '$first': '$car_num' },
+                    'first_name': { '$first': '$first_name' },
+                    'Phone_no': { '$first': '$Phone_no' },
+                    'last_name': { '$first': '$last_name' },
+                    'status': { '$first': '$login.status' },
+                    'address': { '$first': '$address' },
+                    'email': { '$first': '$email' },
+                    'gender': { '$first': '$gender' },
+                    'username': { '$first': '$login.username' },
+                }
+            }
+        ]);
+
+        if (allUser.length === 0) { 
+            return res.status(400).json({
+                success: false,
+                error: true,
+                message: "No data exist"
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            error: false,
+            data: allUser
+        });
+
+    } catch (error) {
+        return res.status(400).json({
+            success: false,
+            error: true,
+            message: "Something went wrong"
+        });
+    }
+});
+
+
   
   
   

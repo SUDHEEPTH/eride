@@ -68,6 +68,34 @@ class ApiService {
       return products;
     }
   }
+  Future<List<UserModel>> fetchdriverstaus() async {
+    var response = await Api().getData('/register/viewstatus-driver');
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      print((items));
+
+      List<UserModel> products = List<UserModel>.from(
+          items['data'].map((e) => UserModel.fromJson(e)).toList());
+      return products;
+    } else {
+      List<UserModel> products = [];
+      return products;
+    }
+  }
+  Future<List<UserModel>> fetchtaxistaus() async {
+    var response = await Api().getData('/register/viewstatus-taxi');
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      print((items));
+
+      List<UserModel> products = List<UserModel>.from(
+          items['data'].map((e) => UserModel.fromJson(e)).toList());
+      return products;
+    } else {
+      List<UserModel> products = [];
+      return products;
+    }
+  }
 
 
 

@@ -1,8 +1,13 @@
-import 'package:eride/user/Sharerid.dart';
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/user/homepage.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Taxi extends StatefulWidget {
   const Taxi({Key? key}) : super(key: key);
@@ -12,28 +17,77 @@ class Taxi extends StatefulWidget {
 }
 
 class _TaxiState extends State<Taxi> {
+
+  DateTime currentDate = DateTime.now();
+  DateTime currentTime = DateTime.now();
+  late SharedPreferences prefs;
+  String username = "";
+  String login_id = "";
+  bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
-  late String startingPlace;
-  late String destination;
-  late String time;
-  late DateTime date;
+  final TextEditingController startingPlace = TextEditingController();
+  final TextEditingController destination = TextEditingController();
+  final TextEditingController time = TextEditingController();
+  final TextEditingController date = TextEditingController();
 
-  List<String> searchResults = []; // List to store search results
+  @override
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      // Form is valid, perform submission logic here
-      // You can access the input values using startingPlace, destination, time, and date variables
-      // For now, let's just simulate search results
-      setState(() {
-        searchResults = [
-          'Result 1',
-          'Result 2',
-          'Result 3',
-        ];
-      });
-    }
+  void dispose() {
+    startingPlace.dispose();
+    destination.dispose();
+    time.dispose();
+    date.dispose();
+
+    super.dispose();
   }
+
+  void taxiRide() async {
+    String formattedDate = "${currentDate.year}-${currentDate.month}-${currentDate.day}";
+    String formattedTime = "${currentTime.hour}:${currentTime.minute}:${currentTime.second}";
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username') ?? '';
+      login_id = prefs.getString('login_id') ?? '';
+    });
+    print("username: $username");
+    print("login_id: $login_id");
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      "user_id": login_id.replaceAll('"', ''),
+      "address": startingPlace.text,
+      "destination": destination.text,
+      "Date": date.text,
+      "posting_date":formattedDate,
+      "posting_tim":formattedTime,
+
+    };
+    print(data);
+    var res = await Api().authData(data,'/taxiride/taxiride');
+    var body = json.decode(res.body);
+    print(body);
+    if (body['success'] == true) {
+
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => homepage()));
+    } else {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -96,13 +150,9 @@ class _TaxiState extends State<Taxi> {
                   child: Column(
                     children: [
                       TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            startingPlace = value;
-                          });
-                        },
+                        controller: startingPlace,
                         decoration: InputDecoration(
-                          labelText: 'Starting Place',
+                          labelText: 'Address',
                           filled: true,
                           fillColor: Colors.green[300]?.withOpacity(0.5),
                           border: OutlineInputBorder(
@@ -118,11 +168,25 @@ class _TaxiState extends State<Taxi> {
                       ),
                       SizedBox(height: 16.0),
                       TextFormField(
-                        onChanged: (value) {
-                          setState(() {
-                            destination = value;
-                          });
+                        controller: time,
+                        decoration: InputDecoration(
+                          labelText: 'time',
+                          filled: true,
+                          fillColor: Colors.green[300]?.withOpacity(0.5),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the time';
+                          }
+                          return null;
                         },
+                      ),
+                      SizedBox(height: 16.0),
+                      TextFormField(
+                        controller: destination,
                         decoration: InputDecoration(
                           labelText: 'Destination',
                           filled: true,
@@ -140,11 +204,7 @@ class _TaxiState extends State<Taxi> {
                       ),
                       SizedBox(height: 16.0),
                       DateTimeField(
-                        onChanged: (value) {
-                          setState(() {
-                            date = value!;
-                          });
-                        },
+                        controller: date,
                         decoration: InputDecoration(
                           labelText: 'Date',
                           filled: true,
@@ -180,9 +240,13 @@ class _TaxiState extends State<Taxi> {
                       Container(
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: _submitForm,
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              taxiRide();
+                            }
+                          },
                           child: Text(
-                            'Search',
+                            'Submit',
                             style: TextStyle(fontSize: 18.0),
                           ),
                           style: ElevatedButton.styleFrom(
@@ -195,29 +259,6 @@ class _TaxiState extends State<Taxi> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 16.0),
-                      if (searchResults.isNotEmpty)
-                        Column(
-                          children: [
-                            Text(
-                              'Search Results:',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16.0,
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            ListView.builder(
-                              shrinkWrap: true,
-                              itemCount: searchResults.length,
-                              itemBuilder: (context, index) {
-                                return ListTile(
-                                  title: Text(searchResults[index]),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
                     ],
                   ),
                 ),
@@ -243,8 +284,7 @@ class _TaxiState extends State<Taxi> {
                       alignment: Alignment.center,
                       padding: const EdgeInsets.all(16.0),
                       child: Image.asset(
-                        'images/taxi.png'
-                            ,
+                        'images/taxi.png',
                         // Replace with your desired image path
                         width: 50.0,
                         height: 50.0,

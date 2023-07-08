@@ -1,4 +1,9 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/user/Carrent.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Addcarrent extends StatefulWidget {
   const Addcarrent({Key? key}) : super(key: key);
@@ -8,6 +13,7 @@ class Addcarrent extends StatefulWidget {
 }
 
 class _AddcarrentState extends State<Addcarrent> {
+  bool _isLoading = false;
   final TextEditingController _carNameController = TextEditingController();
   final TextEditingController _carPriceController = TextEditingController();
   final TextEditingController _carDescriptionController =
@@ -16,6 +22,44 @@ class _AddcarrentState extends State<Addcarrent> {
   String _seatsValue = '4';
   String _engineTypeValue = 'Petrol';
 
+
+  void startRide() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      "name": _carNameController.text,
+      "prize": _carPriceController.text,
+      "car_details": _carDescriptionController.text,
+      "auto": _automatedValue,
+      "seat": _seatsValue,
+      "petrol": _engineTypeValue,
+
+    };
+    print(data);
+    var res = await Api().authData(data,'/car/car');
+    var body = json.decode(res.body);
+    print(body);
+    if (body['success'] == true) {
+
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Carrent()));
+    } else {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -139,39 +183,31 @@ class _AddcarrentState extends State<Addcarrent> {
             SizedBox(height: 16.0),
             ElevatedButton(
               onPressed: () {
-                // Perform the form submission here
-                String carName = _carNameController.text;
-                String carPrice = _carPriceController.text;
-                String carDescription = _carDescriptionController.text;
 
-                // Perform further processing or data submission
-                // e.g., sending data to a backend server
 
-                // Reset the form after submission
-                _carNameController.clear();
-                _carPriceController.clear();
-                _carDescriptionController.clear();
+                startRide();
+
 
                 // Show a confirmation dialog or navigate to another screen
-                showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return AlertDialog(
-                      title: Text('Car Added'),
-                      content: Text(
-                          'The car $carName has been added for rent.'),
-                      actions: [
-                        TextButton(
-                          onPressed: () {
-                            Navigator.pop(context); // Close the dialog
-                            Navigator.pop(context); // Go back to previous screen
-                          },
-                          child: Text('OK'),
-                        ),
-                      ],
-                    );
-                  },
-                );
+                // showDialog(
+                //   context: context,
+                //   builder: (BuildContext context) {
+                //     return AlertDialog(
+                //       title: Text('Car Added'),
+                //       content: Text(
+                //           'The car $carName has been added for rent.'),
+                //       actions: [
+                //         TextButton(
+                //           onPressed: () {
+                //             Navigator.pop(context); // Close the dialog
+                //             Navigator.pop(context); // Go back to previous screen
+                //           },
+                //           child: Text('OK'),
+                //         ),
+                //       ],
+                //     );
+                //   },
+                // );
               },
               style: ElevatedButton.styleFrom(
                 primary: Colors.green,

@@ -7,9 +7,13 @@ const carSchema = new schema({
     car_details: { type: String },
     car_image: { type: String },
     status: { type: String },
- 
-  
-    
+    seat: { type: String },
+    auto: { type: String },
+    petrol: { type: String },
+    prize: { type: String },
+    name: { type: String },
+    location: { type: String },
+    discription: { type: String },
 })
 
 const carModel = mongoose.model('car_tb',carSchema)

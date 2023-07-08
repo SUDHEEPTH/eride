@@ -7,7 +7,7 @@ const share_rideSchema = new schema({
     starting_place: { type: String },
     ending_place: { type: String },
     starting_time: { type: String },
-    message: { type: String },
+    person: { type: String },
     posting_date: { type: String },
     posting_tim: { type: String },
    

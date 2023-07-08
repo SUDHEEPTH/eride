@@ -4,7 +4,7 @@ const share_rideModel = require('../models/share_rideModel');
 
 const share_rideRouter = express.Router();
 
-share_rideRouter.post('/share_ride', async function (req, res) {
+share_rideRouter.post('/shareride1', async function (req, res) {
   try {
     const data = {
       user_id: req.body.user_id,        
@@ -13,7 +13,7 @@ share_rideRouter.post('/share_ride', async function (req, res) {
       starting_time: req.body.starting_time,
       posting_tim: req.body.posting_tim,
       posting_date: req.body.posting_date,
-
+      person: req.body.person,
 };
 
     const savedData = await share_rideModel(data).save();
@@ -35,5 +35,6 @@ share_rideRouter.post('/share_ride', async function (req, res) {
     });
   }
 });
+
 
 module.exports = share_rideRouter;

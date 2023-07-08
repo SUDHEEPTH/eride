@@ -1,22 +1,56 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class Details extends StatefulWidget {
-  const Details({Key? key, required String userid}) : super(key: key);
+import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../api/api.dart';
+
+class Detailsuser extends StatefulWidget {
+  final String userid;
+
+  Detailsuser({required this.userid});
 
   @override
-  State<Details> createState() => _DetailsState();
+  State<Detailsuser> createState() => _DetailsuserState();
 }
 
-final List<String> Fname = ['lis'];
-final List<String> Lname = ['gen'];
-final List<String> Email = ['lisgen77@gmail.com'];
-final List<String> Ph = ['989578005'];
-final List<String> Id = ['Driving licence'];
-final List<String> Adresss = ['mangalasheri(H)tirur(po) pin 676101 Malappuram kerala'];
-final List<String> Gender = ['Female'];
-final List<String> Idf = ['001'];
+class _DetailsuserState extends State<Detailsuser> {
+  late String loginid;
+  String first_name = "";
+  String Phone_no = "";
+  String last_name = "";
+  String address = "";
+  String email = "";
+  String gender = "";
+  String username = "";
+  String idcard = "";
 
-class _DetailsState extends State<Details> {
+  late SharedPreferences prefs;
+
+  @override
+  initState() {
+    super.initState();
+    _viewPro();
+  }
+
+  Future<void> _viewPro() async {
+    String se=widget.userid;
+    print("user selected id is${se}");
+    var res = await Api().getData('/register/viewselect-user/'+widget.userid);
+    var body = json.decode(res.body);
+    print("body${body}");
+    setState(() {
+      first_name = body['data'][0]['first_name'];
+      Phone_no = body['data'][0]['Phone_no'];
+      last_name = body['data'][0]['last_name'];
+      address = body['data'][0]['address'];
+      email = body['data'][0]['email'];
+      gender = body['data'][0]['gender'];
+      username = body['data'][0]['username'];
+      idcard = body['data'][0]['idcard'];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,9 +94,6 @@ class _DetailsState extends State<Details> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               margin: const EdgeInsets.all(16.0),
-
-
-
               // Set container padding
               child: Column(
                 children: [
@@ -70,36 +101,36 @@ class _DetailsState extends State<Details> {
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
                       children: [
-
                         Text(
                           'ID:',
                           style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Idf[0]}',
+                          username,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
                       children: [
-
                         Text(
                           'First Name:',
                           style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Fname[0]}',
+                          first_name,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
@@ -110,7 +141,7 @@ class _DetailsState extends State<Details> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Lname[0]}',
+                          last_name,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -127,12 +158,13 @@ class _DetailsState extends State<Details> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Email[0]}',
+                          email,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
@@ -143,12 +175,13 @@ class _DetailsState extends State<Details> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Ph[0]}',
+                          Phone_no,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
@@ -159,12 +192,13 @@ class _DetailsState extends State<Details> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Gender[0]}',
+                          gender,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
@@ -175,12 +209,13 @@ class _DetailsState extends State<Details> {
                         ),
                         SizedBox(width: 10),
                         Text(
-                          '${Id[0]}',
+                          idcard,
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
-                  ),  Divider(),
+                  ),
+                  Divider(),
                   Padding(
                     padding: const EdgeInsets.only(top: 25.0, left: 18),
                     child: Row(
@@ -192,7 +227,7 @@ class _DetailsState extends State<Details> {
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
-                            '${Adresss[0]}',
+                            address,
                             style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                           ),
                         ),

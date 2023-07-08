@@ -12,6 +12,7 @@ const taxiSchema = new schema({
     gender: { type: String },
     Dob: { type: String },
     car_num: { type: String },
+    idcard: { type: String },
   
     
 })

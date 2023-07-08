@@ -9,6 +9,16 @@ carRouter.post('/car', async function (req, res) {
       user_id: req.body.user_id,        
       car_details: req.body.car_details,
       car_image: req.body.car_image,
+      seat: req.body.seat,
+      auto: req.body.auto,
+      petrol: req.body.petrol,
+      prize: req.body.prize,
+      name: req.body.name,
+      location: req.body.location,
+      status: 0,
+     
+
+
     };
 
     const savedData = await carModel(data).save();

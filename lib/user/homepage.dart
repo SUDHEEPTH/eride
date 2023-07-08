@@ -43,8 +43,10 @@ class Homeuser extends StatefulWidget {
   _HomeuserState createState() => _HomeuserState();
 }
 
+
 class _HomeuserState extends State<Homeuser> {
   final String userPhotoUrl = 'https://example.com/user_photo.jpg';
+
 
   int _currentIndex = 0;
 
@@ -374,12 +376,37 @@ class ChatSection extends StatelessWidget {
 }
 
 
-class homepage extends StatelessWidget {
-  final String username ='jeo';
-  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
-  List _loadprooducts = [];
+class homepage extends StatefulWidget {
+  @override
+  State<homepage> createState() => _homepageState();
+}
+
+class _homepageState extends State<homepage> {
+  String username = "";
+
   late SharedPreferences prefs;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchuser();
+  }
+
+  fetchuser()async{
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    print("usr${username}");
+
+  }
+
+
+  final String userPhotoUrl = 'https://example.com/user_photo.jpg';
+ // Replace with the user's photo URL
+  List _loadprooducts = [];
+
   late int login;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -400,7 +427,7 @@ class homepage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Hello, ${username}',
+                          'Hello,'+username.replaceAll('"', ''),
                           style: TextStyle(
                             fontSize: 24.0,
                             fontWeight: FontWeight.bold,

@@ -12,6 +12,7 @@ const userSchema = new schema({
     gender: { type: String },
     dob: { type: String },
     img1: { type: String },
+    idcard: { type: String },
 
 
 })

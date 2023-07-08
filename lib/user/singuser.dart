@@ -51,6 +51,7 @@ class _singuserState extends State<singuser> {
 
 
   @override
+
   void dispose() {
     _dobController.dispose();
     _userNameController.dispose();

@@ -1,8 +1,13 @@
-import 'package:eride/Admin/Details.dart';
+import 'dart:convert';
+
+import 'package:eride/Admin/Detailsdriver.dart';
+import 'package:eride/Admin/Detailsuser.dart';
 import 'package:eride/Admin/Manageuser.dart';
 import 'package:eride/Admin/model/usermodel.dart';
+import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class ManageDriver extends StatefulWidget {
   const ManageDriver({Key? key}) : super(key: key);
@@ -22,6 +27,38 @@ final List<String> entries1 = ['rajan ', 'sasi'];
 final List<String> userIds = ['001', '002'];
 final List<String> entries = ['jhon', 'lis', 'rino', 'ravi'];
 final List<String> userIds2 = ['007', '008', '009', '003'];
+Future approveUser(String userid) async {
+  print("u ${userid}");
+  var response = await Api().getData('/register/approve/'+userid);
+  if (response.statusCode == 200) {
+    var items = json.decode(response.body);
+    print("approve status${items}");
+    Fluttertoast.showToast(
+      msg: "Approved",
+    );
+  } else {
+    Fluttertoast.showToast(
+      msg: "Error",
+    );
+  }
+}
+Future reject(String userid) async {
+  print("u ${userid}");
+  var response = await Api().getData('/register/reject/'+userid);
+  if (response.statusCode == 200) {
+    var items = json.decode(response.body);
+    print("approve status${items}");
+    Fluttertoast.showToast(
+      msg: "reject",
+    );
+  } else {
+    Fluttertoast.showToast(
+      msg: "Error",
+    );
+  }
+}
+late String userid;
+late String uid;
 
 class _ManageDriverState extends State<ManageDriver> {
   @override
@@ -51,79 +88,80 @@ class _ManageDriverState extends State<ManageDriver> {
             'Request',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
-            },
-
-
-    child: FutureBuilder<List<UserModel>>(
-    future: client.fetchdriver(),
-    builder: (BuildContext context,
-    AsyncSnapshot<List<UserModel>> snapshot) {
-      if (snapshot.hasData) {
-        return ListView.separated(
-          shrinkWrap: true,
-          padding: const EdgeInsets.all(8),
-          itemCount: snapshot.data!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: AssetImage(containerImages[index]),
-              ),
-              title: Text(
-                snapshot.data![index].fname,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              subtitle: Text(
-                'ID: ${snapshot.data![index].lid}',
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                ),
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(
-                      Icons.check,
-                      color: Colors.green,
-                    ),
-                    onPressed: () {
-                      // Handle approve button pressed
-                      _approveUser(index);
+          FutureBuilder<List<UserModel>>(
+          future: client.fetchdriver(),
+          builder: (BuildContext context,
+          AsyncSnapshot<List<UserModel>> snapshot) {
+            if (snapshot.hasData) {
+              return ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(8),
+                itemCount: snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  uid=snapshot.data![index].lid;
+                  print(userid);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid: uid)));
                     },
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: Colors.red,
+
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(containerImages[index]),
+                      ),
+                      title: Text(
+                        snapshot.data![index].fname,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'ID: ${snapshot.data![index].lid}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: Icon(
+                              Icons.check,
+                              color: Colors.green,
+                            ),
+                            onPressed: () {
+                              // Handle approve button pressed
+                              approveUser(userid);
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.close,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              // Handle decline button pressed
+                              reject(userid);
+                            },
+                          ),
+                        ],
+                      ),
+                      tileColor: Colors.grey.withOpacity(0.4),
                     ),
-                    onPressed: () {
-                      // Handle decline button pressed
-                      _declineUser(index);
-                    },
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          }
                   ),
-                ],
-              ),
-              tileColor: Colors.grey.withOpacity(0.4),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) =>
-          const Divider(),
-        );
-      }
-      return Center(child: CircularProgressIndicator());
-    }
-            ),
-          ),
 
 
           Divider(
@@ -134,52 +172,63 @@ class _ManageDriverState extends State<ManageDriver> {
             'All Driver',
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.push(
-                  context, MaterialPageRoute(builder: (context) => Details(userid: '',)));
-            },
-            child: ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              itemCount: entries.length,
-              itemBuilder: (BuildContext context, int index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(containerImages[index]),
-                  ),
-                  title: Text(
-                    entries[index],
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
-                  subtitle: Text(
-                    'ID: ${userIds2[index]}',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 14,
-                    ),
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.red,
-                    ),
-                    onPressed: () {
-                      // Handle delete button pressed
-                      _showDeleteConfirmationDialog(context, index);
+          FutureBuilder<List<UserModel>>(
+          future: client.fetchdriverstaus(),
+          builder: (BuildContext context,
+          AsyncSnapshot<List<UserModel>> snapshot) {
+            if (snapshot.hasData) {
+              return ListView.separated(
+                shrinkWrap: true,
+                padding: const EdgeInsets.all(8),
+                itemCount:  snapshot.data!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  userid=snapshot.data![index].lid;
+                  print(userid);
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid: userid)));
                     },
-                  ),
-                  tileColor: Colors.grey.withOpacity(0.4),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-                  const Divider(),
-            ),
+                    child: ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: AssetImage(containerImages[index]),
+                      ),
+                      title: Text(
+                        snapshot.data![index].fname,
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                      subtitle: Text(
+                        'ID: ${snapshot.data![index].id}',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                        ),
+                      ),
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          // Handle delete button pressed
+                          _showDeleteConfirmationDialog(context, index);
+                        },
+                      ),
+                      tileColor: Colors.grey.withOpacity(0.4),
+                    ),
+                  );
+                },
+                separatorBuilder: (BuildContext context, int index) =>
+                const Divider(),
+              );
+            }
+            return Center(child: CircularProgressIndicator());
+          }
           ),
         ],
       ),
