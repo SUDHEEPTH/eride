@@ -26,11 +26,11 @@ class _StartRidePageState extends State<StartRidePage> {
   String username = "";
   String login_id = "";
   bool _isLoading = false;
-
+  late SharedPreferences prefs;
   DateTime currentDate = DateTime.now();
   DateTime currentTime = DateTime.now();
 
-  late SharedPreferences prefs;
+
 
   @override
   void initState() {

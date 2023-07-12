@@ -44,7 +44,7 @@ class _LoginState extends State<Login> {
       'password': passcontroller.text.trim(),
     };
 
-    var res = await Api().authData(data, '/login/login');
+    var res = await Api().authData(data,'/login/login');
     var body = json.decode(res.body);
     print("body${body}");
     if (body['success'] == true) {
@@ -183,16 +183,21 @@ class _LoginState extends State<Login> {
                 controller: passcontroller,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.green)),
+                    borderSide: BorderSide(color: Colors.green),
+                  ),
                   border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10.0)),
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
                   labelText: "Enter password",
                   labelStyle: TextStyle(
                     color: Colors.green,
                   ),
                 ),
+                obscureText: true, // Hide the password characters
+
               ),
             ),
+
             SizedBox(
               height: 20,
             ),

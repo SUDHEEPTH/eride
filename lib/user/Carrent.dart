@@ -8,8 +8,25 @@ class Carrent extends StatefulWidget {
 }
 
 class _CarrentState extends State<Carrent> {
-  // This controller will store the value of the search bar
   final TextEditingController _searchController = TextEditingController();
+  String searchValue = ''; // Variable to store the search value
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void performSearch() {
+    setState(() {
+      searchValue = _searchController.text;
+    });
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => Carrent2(searchValue: searchValue)),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,24 +52,18 @@ class _CarrentState extends State<Carrent> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              // Add padding around the search bar
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              // Use a Material design search bar
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
                   hintText: 'Search... location',
-                  // Add a clear button to the search bar
                   suffixIcon: IconButton(
                     icon: Icon(Icons.clear),
                     onPressed: () => _searchController.clear(),
                   ),
-                  // Add a search icon or button to the search bar
                   prefixIcon: IconButton(
                     icon: Icon(Icons.search),
-                    onPressed: () {
-                      // Perform the search here
-                    },
+                    onPressed: performSearch, // Call performSearch() when search button is pressed
                   ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20.0),
@@ -65,26 +76,21 @@ class _CarrentState extends State<Carrent> {
             width: 310,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                primary: Colors.green, // background
-                onPrimary: Colors.white, // foreground
+                primary: Colors.green,
+                onPrimary: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Carrent2()),
-                );
-              },
+              onPressed: performSearch, // Call performSearch() when "search" button is pressed
               child: Text("search"),
             ),
           ),
         ],
       ),
       floatingActionButton: Container(
-        width: 80, // Custom width
-        height: 80, // Custom height
+        width: 80,
+        height: 80,
         child: FloatingActionButton(
           onPressed: () {
             Navigator.push(

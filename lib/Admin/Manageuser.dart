@@ -8,26 +8,40 @@ import 'package:eride/api/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
-class Manageuser extends StatelessWidget {
+class Manageuser extends StatefulWidget {
+  @override
+  State<Manageuser> createState() => _ManageuserState();
+}
+
+class _ManageuserState extends State<Manageuser> {
   List _loadprooducts = [];
+
   String uid='';
+
   final List<String> containerImages = [
     'images/ava3.png',
     'images/ava3.png',
     'images/ava3.png',
     'images/ava3.png',
   ];
+
   final List<String> entries1 = ['shamli ', 'fazi'];
+
   final List<String> userIds = ['001', '002'];
+
   final List<String> entries = ['vishnu', 'lis', 'Gen', 'raj'];
+
   final List<String> userIds2 = ['007', '008','009','003'];
+
   ApiService client = ApiService();
+
   Future approveUser(String userid) async {
     print("u ${userid}");
     var response = await Api().getData('/register/approve/'+userid);
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
       print("approve status${items}");
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Manageuser()));
       Fluttertoast.showToast(
         msg: "Approved",
       );
@@ -37,6 +51,7 @@ class Manageuser extends StatelessWidget {
       );
     }
   }
+
   Future reject(String userid) async {
     print("u ${userid}");
     var response = await Api().getData('/register/reject/'+userid);
@@ -44,7 +59,7 @@ class Manageuser extends StatelessWidget {
       var items = json.decode(response.body);
       print("approve status${items}");
       Fluttertoast.showToast(
-        msg: "Approved",
+        msg: "reject",
       );
     } else {
       Fluttertoast.showToast(
@@ -52,7 +67,9 @@ class Manageuser extends StatelessWidget {
       );
     }
   }
+
   late String userid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +142,11 @@ class Manageuser extends StatelessWidget {
                                 color: Colors.green,
                               ),
                               onPressed: () {
-                                approveUser(userid);
+                                setState(() {
+                                  approveUser(userid);
+
+                                });
+
                               },
                             ),
                             IconButton(
@@ -135,7 +156,9 @@ class Manageuser extends StatelessWidget {
                               ),
                               onPressed: () {
 
-                                reject(userid);
+                                setState(() {
+                                  reject(userid);
+                                });
                               },
                             ),
 
@@ -268,10 +291,8 @@ class Manageuser extends StatelessWidget {
 
   }
 
-
-
     void _declineUser(int index) {
 
 
     }
-  }
+}

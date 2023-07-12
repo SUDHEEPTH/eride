@@ -804,9 +804,97 @@ console.log(userId);
 });
 
 
-  
-  
-  
+// registerRouter.get('/view-single-product/:id', async function (req, res) { 
+//     try {
+//         const productId = req.params.id; 
+//         const product = await productModel.findOne({_id:productId})
 
+//         if (!product) { 
+//             return res.status(400).json({
+//                 success: false,
+//                 error: true,
+//                 message: "No data exist"
+//             });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             error: false,
+//             data: product
+//         });
+
+//     } catch (error) {
+//         return res.status(400).json({
+//             success: false,
+//             error: true,
+//             message: "Something went wrong"
+//         });
+//     }
+// });  
+  
+// registerRouter.get('/update-single-product/:id', async function (req, res) { 
+//     try {
+//         const productId = req.params.id; 
+//         const details = {
+//             product_name : req.body.product_name
+//             product_name : req.body.product_name
+//             product_name : req.body.product_name
+//         }
+//         const product = await taxiModel.updateOne({_id:productId},{$set:details})
+
+//         if (product.modifiedCount!=1) { 
+//             return res.status(400).json({
+//                 success: false,
+//                 error: true,
+//                 message: "Data not updated"
+//             });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             error: false,
+//             data: product,
+//             message:"Data updated"
+//         });
+
+//     } catch (error) {
+//         return res.status(400).json({
+//             success: false,
+//             error: true,
+//             message: "Something went wrong"
+//         });
+//     }
+// });  
+  
+// registerRouter.get('/update-single-product/:id', async function (req, res) { 
+//     try {
+//         const productId = req.params.id; 
+      
+//         const product = await taxiModel.deleteOne({_id:productId})
+
+//         if (product.deletedCount!=1) { 
+//             return res.status(400).json({
+//                 success: false,
+//                 error: true,
+//                 message: "Data not deleted"
+//             });
+//         }
+
+//         return res.status(200).json({
+//             success: true,
+//             error: false,
+//             data: product,
+//             message:"Data deleted"
+//         });
+
+//     } catch (error) {
+//         return res.status(400).json({
+//             success: false,
+//             error: true,
+//             message: "Something went wrong"
+//         });
+//     }
+// });  
+  
 
 module.exports = registerRouter

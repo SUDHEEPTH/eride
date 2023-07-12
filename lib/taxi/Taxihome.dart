@@ -50,6 +50,7 @@ class _TaxihomeState extends State<Taxihome> {
   final String userPhotoUrl =
       'https://example.com/user_photo.jpg';
   final List<Driver> drivers = [
+
     Driver(
       name: 'joe',
       photoUrl: 'images/images.jpg',

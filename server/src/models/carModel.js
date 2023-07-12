@@ -5,6 +5,7 @@ const schema = mongoose.Schema
 const carSchema = new schema({
     user_id: { type: mongoose.Types.ObjectId, ref:'user_tb' },
     car_details: { type: String },
+    District: { type: String },
     car_image: { type: String },
     status: { type: String },
     seat: { type: String },

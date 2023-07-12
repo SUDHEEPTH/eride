@@ -17,7 +17,7 @@ class Detailtaxi extends StatefulWidget {
 class _DetailtaxiState extends State<Detailtaxi> {
   late String loginid;
   String first_name = "";
-  String Phone_no = "";
+  String phone_no = ""; // Updated variable name to camel case
   String last_name = "";
   String address = "";
   String email = "";
@@ -28,18 +28,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
   late SharedPreferences prefs;
 
   @override
-  initState() {
+  void initState() {
     super.initState();
     _viewPro();
   }
 
   Future<void> _viewPro() async {
-    var res = await Api().getData('/register/viewselect-taxi/'+widget.userid);
+    var res = await Api().getData('/register/viewselect-taxi/${widget.userid}'); // Updated URL formatting
     var body = json.decode(res.body);
     print("body${body}");
     setState(() {
       first_name = body['data'][0]['first_name'];
-      Phone_no = body['data'][0]['Phone_no'];
+      phone_no = body['data'][0]['Phone_no'];
       last_name = body['data'][0]['last_name'];
       address = body['data'][0]['address'];
       email = body['data'][0]['email'];
@@ -80,11 +80,12 @@ class _DetailtaxiState extends State<Detailtaxi> {
                 radius: 65,
               ),
             ),
-            SizedBox(height: 1,),
+            SizedBox(height: 1),
             Container(
-              padding: const EdgeInsets.only(top: 20.0, left: 2, right: 20, bottom: 20),
+              padding: const EdgeInsets.only(
+                  top: 20.0, left: 2, right: 20, bottom: 20),
               decoration: BoxDecoration(
-                color: Colors.grey[300], // Set container background color
+                color: Colors.grey[300],
                 border: Border.all(
                   color: Colors.grey,
                   width: 1.0,
@@ -92,7 +93,6 @@ class _DetailtaxiState extends State<Detailtaxi> {
                 borderRadius: BorderRadius.circular(8.0),
               ),
               margin: const EdgeInsets.all(16.0),
-              // Set container padding
               child: Column(
                 children: [
                   Padding(
@@ -101,12 +101,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'ID:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           username,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -118,12 +124,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'First Name:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           first_name,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -135,12 +147,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Last Name:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           last_name,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -152,12 +170,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Email:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           email,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -169,12 +193,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Mobile number:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
-                          Phone_no,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          phone_no,
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -186,12 +216,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Gender:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           gender,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -203,12 +239,18 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Id card:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Text(
                           idcard,
-                          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
                         ),
                       ],
                     ),
@@ -220,13 +262,19 @@ class _DetailtaxiState extends State<Detailtaxi> {
                       children: [
                         Text(
                           'Address:',
-                          style: TextStyle(fontSize: 16, color: Colors.green[500],fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.green[500],
+                              fontWeight: FontWeight.bold),
                         ),
                         SizedBox(width: 10),
                         Expanded(
                           child: Text(
                             address,
-                            style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 17,
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                       ],

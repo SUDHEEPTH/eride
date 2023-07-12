@@ -12,7 +12,7 @@ class Carrent3 extends StatefulWidget {
   final String cengineType;
   final String crentPrice;
 
-  Carrent3({required this.cname, required this.cprice, required this.cpicture, required this.clication, required this.cautomated, required this.cseats, required this.cengineType, required this.crentPrice});
+  Carrent3({required this.cname, required this.cprice, required this.cpicture, required this.clication, required this.cautomated, required this.cseats, required this.cengineType, required this.crentPrice, required String clocation});
 
 
 
