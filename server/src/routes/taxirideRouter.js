@@ -38,5 +38,23 @@ taxirideRouter.post('/taxiride', async function (req, res) {
   }
 });
 
+taxirideRouter.get('/viewtaxi', async function (req, res) {
+  try {
+    const cars = await taxirideModel.find();
+    return res.status(200).json({
+      success: true,
+      error: false,
+      cars: cars,
+      message: "data found"
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({
+      success: false,
+      error: true,
+      message: "Something went wrong"
+    });
+  }
+});
 
 module.exports = taxirideRouter;
