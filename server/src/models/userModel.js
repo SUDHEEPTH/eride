@@ -13,6 +13,7 @@ const userSchema = new schema({
     dob: { type: String },
     img1: { type: String },
     idcard: { type: String },
+    idcardimag: { type: String },
 
 
 })

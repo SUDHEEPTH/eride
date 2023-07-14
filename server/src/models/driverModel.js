@@ -13,6 +13,7 @@ const driverSchema = new schema({
     gender: { type: String },
     dob: { type: String },
     idcard: { type: String },
+    idcardimag: { type: String },
     
   
     

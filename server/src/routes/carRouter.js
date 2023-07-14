@@ -4,20 +4,21 @@ const multer = require('multer');
 
 const carRouter = express.Router();
 
-const storage = multer.diskStorage({
+var storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "../images"); 
+      cb(null, "./public/images/")
   },
   filename: function (req, file, cb) {
-    cb(null, file.filename);
+      cb(null,file.originalname)
   }
-});
+})
 
-const upload = multer({ storage: storage });
+var upload = multer({ storage: storage })
 
-carRouter.post('/images', upload.single("file"), (req, res) => {
-  return res.json("file uploaded");
-});
+carRouter.post('/upload', upload.single("file"), (req, res) => {
+  console.log("jh",req.file.filename);
+  return res.json("file uploaded")
+})
 
 carRouter.post('/car', async function (req, res) {
   try {

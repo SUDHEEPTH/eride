@@ -5,9 +5,21 @@ const taxiModel = require('../models/taxiModel')
 const driverMOdel = require('../models/driverModel')
 const loginModel = require('../Models/loginModel')
 const { default: mongoose } = require('mongoose')
+const multer = require('multer');
 const objectid = mongoose.Types.ObjectId
 
 const registerRouter = express.Router()
+var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "./public/images/")
+    },
+    filename: function (req, file, cb) {
+        cb(null,file.originalname)
+    }
+  })
+  
+  var upload = multer({ storage: storage })
+
 registerRouter.get('/viewstatus-driver', async function (req, res) {
     try {
 
@@ -376,7 +388,10 @@ registerRouter.get('/view-driver', async function (req, res) {
   }
 })
 
-
+registerRouter.post('/userid', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
 
 registerRouter.post('/user-register', async function (req, res) {
     try {
@@ -418,7 +433,7 @@ registerRouter.post('/user-register', async function (req, res) {
                 dob: req.body.dob,
                 img1: req.body.img1, 
                 idcard: req.body.idcard, 
-
+                idcardimag: req.body.idcardimag, 
 
             }
             const save_user = await userModel(user_data).save()
@@ -441,6 +456,10 @@ registerRouter.post('/user-register', async function (req, res) {
         })
     }
 })
+registerRouter.post('/taxiid', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
 
 registerRouter.post('/taxi-register', async function (req, res) {
     try {
@@ -482,6 +501,7 @@ registerRouter.post('/taxi-register', async function (req, res) {
                 dob: req.body.dob,  
                 car_num : req.body.car_num,
                 idcard: req.body.idcard, 
+                idcardimag: req.body.idcardimag, 
             }
             const save_user = await taxiModel(user_data).save()
             if(save_user){
@@ -503,6 +523,10 @@ registerRouter.post('/taxi-register', async function (req, res) {
         })
     }
 })
+registerRouter.post('/driverid', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
 
 registerRouter.post('/driver-register', async function (req, res) {
     try {
@@ -544,6 +568,7 @@ registerRouter.post('/driver-register', async function (req, res) {
                 dob: req.body.dob,  
                 car_num : req.body.car_num,
                 idcard: req.body.idcard, 
+                idcardimag: req.body.idcardimag, 
             }
             const save_user = await driverMOdel(user_data).save()
             if(save_user){

@@ -38,6 +38,8 @@ taxirideRouter.post('/taxiride', async function (req, res) {
   }
 });
 
+
+
 taxirideRouter.get('/viewtaxi', async function (req, res) {
   try {
     const cars = await taxirideModel.find();
@@ -56,5 +58,63 @@ taxirideRouter.get('/viewtaxi', async function (req, res) {
     });
   }
 });
+
+taxirideRouter.get('/taxid2', async function (req, res) {
+  try {
+
+      const allUser = await taxirideModel.aggregate([
+          {
+            '$lookup': {
+              'from': 'user_tbs', 
+              'localField': 'user_id', 
+              'foreignField': '_id', 
+              'as': 'user'
+          }
+          },
+          {
+              '$unwind':"$user"
+          },
+         
+          {
+              '$group':{
+                 
+                  'address':{'$first':'$address'},
+                  'destination':{'$first':'$destination'},
+                  'Date':{'$first':'$Date'},
+                  'Date':{'$first':'$last_name'},
+                  'Status':{'$first':'$Status'},
+                  'pickup':{'$first':'$pickup'},
+                  'ace':{'$first':'$ace'},
+                  'posting_date':{'$first':'$posting_date'},
+                  'posting_tim':{'$first':'$posting_tim'},
+                  'first_name':{'$first':'$user.first_name'},
+                  
+      
+                  'last_name':{'$first':'$user.last_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      }) 
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
 
 module.exports = taxirideRouter;

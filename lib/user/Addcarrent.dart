@@ -7,6 +7,7 @@ import 'package:eride/user/Carrent.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Addcarrent extends StatefulWidget {
@@ -17,6 +18,11 @@ class Addcarrent extends StatefulWidget {
 }
 
 class _AddcarrentState extends State<Addcarrent> {
+  late final _filename;
+  File? imageFile;
+  late String storedImage;
+  File? _image;
+  final picker = ImagePicker();
   bool _isLoading = false;
   final TextEditingController _carNameController = TextEditingController();
   final TextEditingController _carPriceController = TextEditingController();
@@ -25,14 +31,13 @@ class _AddcarrentState extends State<Addcarrent> {
   String _automatedValue = 'Manual';
   String _seatsValue = '4';
   String _engineTypeValue = 'Petrol';
-  File? _image;
-  String _filename = '';
+
   String username = "";
   String login_id = "";
 
   late SharedPreferences prefs;
 
-  void startRide() async {
+  void startRide()async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
       _isLoading = true;
@@ -41,7 +46,6 @@ class _AddcarrentState extends State<Addcarrent> {
     });
     print("username: $username");
     print("login_id: $login_id");
-
 
     var data = {
       "user_id": login_id.replaceAll('"', ''),
@@ -52,49 +56,55 @@ class _AddcarrentState extends State<Addcarrent> {
       "auto": _automatedValue,
       "seat": _seatsValue,
       "petrol": _engineTypeValue,
+      "car_image": _filename,
     };
     print(data);
-
     var res = await Api().authData(data, '/car/car');
     var body = json.decode(res.body);
-    print(res.body);
-    if (body['success'] == true) {
-      Fluttertoast.showToast(
-        msg: body['message'].toString(),
-        backgroundColor: Colors.grey,
-      );
+    print("image ${body}");
+
+    if(body['success']==true)
+    {
+      print(body);
       addCarImage();
-      Navigator.push(context, MaterialPageRoute(builder: (context) => Carrent()));
-    } else {
       Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
       );
-    }
+      Navigator.push(
+        this.context, //add this so it uses the context of the class
+        MaterialPageRoute(
+          builder: (context) => Carrent(),
+        ), //MaterialpageRoute
+      );
 
-    setState(() {
-      _isLoading = false;
-    });
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+    }
   }
 
-  void _selectImage() async {
-    final imagePicker = ImagePicker();
-    final pickedImage = await imagePicker.pickImage(source: ImageSource.gallery);
-    if (pickedImage != null) {
-      setState(() {
-        _image = File(pickedImage.path);
-        print(_image);
-        _filename = pickedImage.path.split('/').last;
-      });
-    }
-  }
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
-  void addCarImage() async {
     setState(() {
-      _isLoading = true;
-    });
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+        _filename = basename(_image!.path).toString();
 
-    final uri = Uri.parse('http://192.168.1.72:3000/images');
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
+  void addCarImage()async{
+
+    final uri = Uri.parse(Api().url+'/car/upload');
     final request = http.MultipartRequest('POST', uri);
     final imageStream = http.ByteStream(_image!.openRead());
     final imageLength = await _image!.length();
@@ -107,20 +117,28 @@ class _AddcarrentState extends State<Addcarrent> {
     );
     request.files.add(multipartFile);
 
+    print("multipart${multipartFile}");
     final response = await request.send();
-    if (response.statusCode == 200) {
-      Fluttertoast.showToast(
-        msg: "Image uploaded successfully",
-        backgroundColor: Colors.grey,
-      );
-    } else {
-      Fluttertoast.showToast(
-        msg: "Failed to upload image",
-        backgroundColor: Colors.grey,
-      );
-    }
-  }
+    if(response.statusCode == 200)
+    {
 
+      Fluttertoast.showToast(
+        msg:"success",
+        backgroundColor: Colors.grey,
+      );
+
+
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg:"Failed",
+        backgroundColor: Colors.grey,
+      );
+
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -257,7 +275,7 @@ class _AddcarrentState extends State<Addcarrent> {
                 child: Container(
                   width: 120,
                   child: ElevatedButton(
-                    onPressed: _selectImage,
+                    onPressed: getImage,
                     child: const Text('Select Image'),
                   ),
                 ),
@@ -272,7 +290,7 @@ class _AddcarrentState extends State<Addcarrent> {
               ElevatedButton(
                 onPressed: () {
                   startRide();
-                  addCarImage();
+
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.green,

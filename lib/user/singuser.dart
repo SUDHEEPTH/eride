@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:http/http.dart' as http;
 
 import 'package:eride/api/api.dart';
 import 'package:eride/login.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path/path.dart';
 
 
 
@@ -17,6 +19,11 @@ class singuser extends StatefulWidget {
 }
 
 class _singuserState extends State<singuser> {
+  late final _filename;
+  File? imageFile;
+  late String storedImage;
+  File? _image;
+  final picker = ImagePicker();
 
   bool  _isLoading = false;
 
@@ -66,24 +73,24 @@ class _singuserState extends State<singuser> {
 
 
   }
-  Future<void> _selectImage() async {
-    final pickedImage = await _imagePicker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedImage != null) {
-        _selectedImage = File(pickedImage.path);
-      }
-    });
-  }
+
+    Future _selectImage() async {
+      final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+          _filename = basename(_image!.path).toString();
+
+        } else {
+          print('No image selected.');
+        }
+      });
+    }
 
   void registerUser() async {
     // Check if an image is selected
-    if (_selectedImage == null) {
-      Fluttertoast.showToast(
-        msg: 'Please select an image',
-        backgroundColor: Colors.grey,
-      );
-      return;
-    }
+
 
     setState(() {
       _isLoading = true;
@@ -100,6 +107,7 @@ class _singuserState extends State<singuser> {
       "address": _addressController.text,
       "phoneNumber": _phoneNumberController.text,
       "email": _emailController.text,
+      "idcardimag": _filename
 
 
     };
@@ -108,13 +116,20 @@ class _singuserState extends State<singuser> {
 
     if(body['success']==true)
     {
+      id();
       print(body);
       Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
       );
 
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>Login()));
+      Navigator.push(
+        this.context, //add this so it uses the context of the class
+        MaterialPageRoute(
+          builder: (context) => Login(),
+        ), //MaterialpageRoute
+      );
+
 
     }
     else
@@ -125,6 +140,43 @@ class _singuserState extends State<singuser> {
       );
 
     }
+  }
+  void id()async{
+
+    final uri = Uri.parse(Api().url+'/register/userid');
+    final request = http.MultipartRequest('POST', uri);
+    final imageStream = http.ByteStream(_image!.openRead());
+    final imageLength = await _image!.length();
+
+    final multipartFile = http.MultipartFile(
+      'file',
+      imageStream,
+      imageLength,
+      filename: _filename,
+    );
+    request.files.add(multipartFile);
+
+    print("multipart${multipartFile}");
+    final response = await request.send();
+    if(response.statusCode == 200)
+    {
+
+      Fluttertoast.showToast(
+        msg:"success",
+        backgroundColor: Colors.grey,
+      );
+
+
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg:"Failed",
+        backgroundColor: Colors.grey,
+      );
+
+    }
+
   }
 
   @override

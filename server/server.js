@@ -8,7 +8,7 @@ const driver_bookingRouter = require('./src/routes/driver_bookingRouter');
 const paymentRouter = require('./src/routes/paymentRouter');
 const reviewRouter = require('./src/routes/reviewRouter');
 const share_rideRouter = require('./src/routes/share_rideRouter');
-const taxirideModel = require('./src/models/taxirideModel');
+
 const taxirideRouter = require('./src/routes/taxirideRouter');
 taxirideRouter
 
@@ -21,6 +21,11 @@ app.get('/', function (req, res) {
   res.send("hellossdfsdf");
 });
 
+
+app.use(express.static('./public'));
+app.use(express.static('./userid'));
+app.use(express.static('./taxiid'));
+app.use(express.static('./driverid'));
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/car_renting', car_rentingRouter);

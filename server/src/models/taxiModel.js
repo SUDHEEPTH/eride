@@ -13,6 +13,7 @@ const taxiSchema = new schema({
     Dob: { type: String },
     car_num: { type: String },
     idcard: { type: String },
+    idcardimag: { type: String },
   
     
 })
