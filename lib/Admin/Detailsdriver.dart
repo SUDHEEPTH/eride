@@ -24,6 +24,7 @@ class _DetaildriverState extends State<Detaildriver> {
   String gender = "";
   String username = "";
   String idcard = "";
+  String idcardimag = "";
 
   late SharedPreferences prefs;
 
@@ -46,6 +47,9 @@ class _DetaildriverState extends State<Detaildriver> {
       gender = body['data'][0]['gender'];
       username = body['data'][0]['username'];
       idcard = body['data'][0]['idcard'];
+      idcard = body['data'][0]['idcard'];
+      idcardimag = body['data'][0]['idcardimag'];
+      print("img${idcardimag}");
     });
   }
 
@@ -76,7 +80,7 @@ class _DetaildriverState extends State<Detaildriver> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/SJG.png'),
+                backgroundImage: AssetImage("server/public/images/"+idcardimag),
                 radius: 65,
               ),
             ),
@@ -211,6 +215,21 @@ class _DetaildriverState extends State<Detaildriver> {
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
+                    ),
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 500,
+                      height: 200,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("server/public/images/" + idcardimag),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                   Divider(),

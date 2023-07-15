@@ -383,6 +383,7 @@ class homepage extends StatefulWidget {
 
 class _homepageState extends State<homepage> {
   String username = "";
+  String login_id = "";
 
   late SharedPreferences prefs;
 
@@ -396,7 +397,9 @@ class _homepageState extends State<homepage> {
   fetchuser()async{
     prefs = await SharedPreferences.getInstance();
     username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
     print("usr${username}");
+    print("usr${login_id}");
 
   }
 
@@ -622,7 +625,7 @@ class _homepageState extends State<homepage> {
                     SizedBox(width: 10),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxi()));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxi( )));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width/3,

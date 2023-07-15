@@ -56,7 +56,7 @@ class _AdminhomeState extends State<Adminhome> {
                     ),
                   ),
                   SizedBox(
-                    width: 160,
+                    width: 100,
                   ),
                   PopupMenuButton(
                     itemBuilder: (context) {

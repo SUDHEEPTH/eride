@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'package:eride/Admin/Detailtaxi.dart';
 import 'package:eride/Admin/model/usermodel.dart';
 import 'package:eride/api/api.dart';
@@ -23,6 +22,9 @@ final List<String> containerImages = [
   'ava3.png',
   'ava3.png',
   'ava3.png',
+  'ava3.png',
+  'ava3.png',
+  'ava3.png',
 ];
 final List<String> entries1 = ['mac ', 'rio'];
 final List<String> userIds = ['001', '002'];
@@ -31,7 +33,7 @@ final List<String> userIds2 = ['007', '008', '009', '003'];
 ApiService client = ApiService();
 Future approveUser(String userid) async {
   print("u ${userid}");
-  var response = await Api().getData('/register/approve/'+userid);
+  var response = await Api().getData('/register/approve/' + userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
@@ -44,9 +46,10 @@ Future approveUser(String userid) async {
     );
   }
 }
+
 Future reject(String userid) async {
   print("u ${userid}");
-  var response = await Api().getData('/register/reject/'+userid);
+  var response = await Api().getData('/register/reject/' + userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
@@ -59,9 +62,9 @@ Future reject(String userid) async {
     );
   }
 }
+
 late String uerid;
 late String userid;
-
 
 class _ManageTaxiState extends State<ManageTaxi> {
   @override
@@ -164,7 +167,6 @@ class _ManageTaxiState extends State<ManageTaxi> {
               return Center(child: CircularProgressIndicator());
             },
           ),
-
           Divider(
             thickness: 2,
             color: Colors.black,
@@ -174,64 +176,66 @@ class _ManageTaxiState extends State<ManageTaxi> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
           FutureBuilder<List<UserModel>>(
-          future: client.fetchtaxistaus(),
-          builder: (BuildContext context,
-          AsyncSnapshot<List<UserModel>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.separated(
-              shrinkWrap: true,
-              padding: const EdgeInsets.all(8),
-              itemCount:  snapshot.data!.length,
-              itemBuilder: (BuildContext context, int index) {
-                uerid=snapshot.data![index].lid;
-                return GestureDetector(
-                  onTap: () {
-
-                    Navigator.push(
-                        context, MaterialPageRoute(builder: (context) => Detailtaxi(userid:uerid)));
+            future: client.fetchtaxistaus(),
+            builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    uerid = snapshot.data![index].lid;
+                    if (index < containerImages.length) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Detailtaxi(userid: uerid)),
+                          );
+                        },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage(containerImages[index]),
+                          ),
+                          title: Text(
+                            snapshot.data![index].fname,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          subtitle: Text(
+                            'ID: ${snapshot.data![index].lid}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              // Handle delete button pressed
+                              _showDeleteConfirmationDialog(context, index);
+                            },
+                          ),
+                          tileColor: Colors.grey.withOpacity(0.4),
+                        ),
+                      );
+                    } else {
+                      return SizedBox(); // Return an empty SizedBox if the index is out of bounds
+                    }
                   },
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage(containerImages[index]),
-                    ),
-                    title: Text(
-                      snapshot.data![index].fname,
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-                    subtitle: Text(
-                      'ID: ${snapshot.data![index].lid}',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                      ),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {
-                        // Handle delete button pressed
-                        _showDeleteConfirmationDialog(context, index);
-                      },
-                    ),
-                    tileColor: Colors.grey.withOpacity(0.4),
-                  ),
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
                 );
-              },
-              separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
-            );
-
-            }
-          return Center(child: CircularProgressIndicator());
-          }
-                  ),
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
         ],
       ),
     );
@@ -278,9 +282,6 @@ class _ManageTaxiState extends State<ManageTaxi> {
     entries.removeAt(index);
     containerImages.removeAt(index);
   }
-
-
-
 
   void _declineUser(int index) {
     // Perform the decline operation here

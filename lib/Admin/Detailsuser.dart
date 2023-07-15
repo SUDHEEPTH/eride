@@ -24,6 +24,7 @@ class _DetailsuserState extends State<Detailsuser> {
   String gender = "";
   String username = "";
   String idcard = "";
+  String idcardimag = "";
 
   late SharedPreferences prefs;
 
@@ -48,6 +49,7 @@ class _DetailsuserState extends State<Detailsuser> {
       gender = body['data'][0]['gender'];
       username = body['data'][0]['username'];
       idcard = body['data'][0]['idcard'];
+      idcardimag = body['data'][0]['idcardimag'];
     });
   }
 
@@ -78,10 +80,12 @@ class _DetailsuserState extends State<Detailsuser> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/SJG.png'),
+                backgroundImage: AssetImage("server/public/images/"+idcardimag),
+
                 radius: 65,
               ),
             ),
+
             SizedBox(height: 1,),
             Container(
               padding: const EdgeInsets.only(top: 20.0, left: 2, right: 20, bottom: 20),
@@ -213,6 +217,21 @@ class _DetailsuserState extends State<Detailsuser> {
                           style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
                         ),
                       ],
+                    ),
+                  ),
+                  Divider(),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      width: 500,
+                      height: 200,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage("server/public/images/" + idcardimag),
+                          fit: BoxFit.cover,
+                        ),
+                      ),
                     ),
                   ),
                   Divider(),

@@ -1,7 +1,10 @@
 const express = require('express');
 const taxirideModel = require('../models/taxirideModel');
+const userModel = require('../models/userModel');
 
+const { default: mongoose } = require('mongoose')
 const taxirideRouter = express.Router();
+const objectid = mongoose.Types.ObjectId
 
 taxirideRouter.post('/taxiride', async function (req, res) {
   try {
@@ -15,7 +18,7 @@ taxirideRouter.post('/taxiride', async function (req, res) {
       Status: '0',
       pickup: '0',
       ace: '0',
-      taxi_id:"64a5390b69140b96667af959",
+      taxi_id:null,
     };
 
     const savedData = await taxirideModel(data).save();
@@ -40,26 +43,9 @@ taxirideRouter.post('/taxiride', async function (req, res) {
 
 
 
-taxirideRouter.get('/viewtaxi', async function (req, res) {
-  try {
-    const cars = await taxirideModel.find();
-    return res.status(200).json({
-      success: true,
-      error: false,
-      cars: cars,
-      message: "data found"
-    });
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json({
-      success: false,
-      error: true,
-      message: "Something went wrong"
-    });
-  }
-});
 
-taxirideRouter.get('/taxid2', async function (req, res) {
+
+taxirideRouter.get('/viewtaxi', async function (req, res) {
   try {
 
       const allUser = await taxirideModel.aggregate([
@@ -116,5 +102,66 @@ taxirideRouter.get('/taxid2', async function (req, res) {
       })
   }
 })
+
+taxirideRouter.get('/viewuse/:id', async function (req, res) { 
+  try {
+      const userId = req.params.id; 
+console.log(userId);
+      const allUser = await userModel.aggregate([
+          
+          {
+              '$lookup': {
+                  'from': 'login_tbs',
+                  'localField': 'login_id',
+                  'foreignField': '_id',
+                  'as': 'login'
+              }
+          },
+          {
+              '$unwind': "$login"
+          },
+          {
+            '$match': { 'login._id': new objectid (userId) } 
+        },
+          {
+              '$group': {
+                  '_id': '$_id',
+                  'login_id': { '$first': '$login._id' },
+                  'idcard': { '$first': '$idcard' },
+                  'first_name': { '$first': '$first_name' },
+                  'Phone_no': { '$first': '$Phone_no' },
+                  'last_name': { '$first': '$last_name' },
+                  'status': { '$first': '$login.status' },
+                  'address': { '$first': '$address' },
+                  'email': { '$first': '$email' },
+                  'gender': { '$first': '$gender' },
+                  'username': { '$first': '$login.username' },
+                  'idcardimag':{'$first':'$idcardimag'},
+              }
+          }
+      ]);
+
+      if (allUser.length === 0) { 
+          return res.status(400).json({
+              success: false,
+              error: true,
+              message: "No data exist"
+          });
+      }
+
+      return res.status(200).json({
+          success: true,
+          error: false,
+          data: allUser
+      });
+
+  } catch (error) {
+      return res.status(400).json({
+          success: false,
+          error: true,
+          message: "Something went wrong"
+      });
+  }
+});
 
 module.exports = taxirideRouter;

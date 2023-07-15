@@ -8,6 +8,7 @@ import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path/path.dart';
 
 class ManageDriver extends StatefulWidget {
   const ManageDriver({Key? key}) : super(key: key);
@@ -28,11 +29,14 @@ final List<String> userIds = ['001', '002'];
 final List<String> entries = ['jhon', 'lis', 'rino', 'ravi'];
 final List<String> userIds2 = ['007', '008', '009', '003'];
 Future approveUser(String userid) async {
+  userid = userid;
   print("u ${userid}");
   var response = await Api().getData('/register/approve/'+userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
+    Navigator.push(context as BuildContext, MaterialPageRoute(builder: (context)=> ManageDriver()));
+
     Fluttertoast.showToast(
       msg: "Approved",
     );
@@ -43,7 +47,7 @@ Future approveUser(String userid) async {
   }
 }
 Future reject(String userid) async {
-  print("u ${userid}");
+
   var response = await Api().getData('/register/reject/'+userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
@@ -57,8 +61,8 @@ Future reject(String userid) async {
     );
   }
 }
-late String userid;
-late String uid;
+ String userid='';
+ String uid='';
 
 class _ManageDriverState extends State<ManageDriver> {
   @override
@@ -98,12 +102,13 @@ class _ManageDriverState extends State<ManageDriver> {
                 padding: const EdgeInsets.all(8),
                 itemCount: snapshot.data!.length,
                 itemBuilder: (BuildContext context, int index) {
-                  uid=snapshot.data![index].lid;
+
+                  userid=snapshot.data![index].lid;
                   print(userid);
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid: uid)));
+                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid:userid)));
                     },
 
                     child: ListTile(

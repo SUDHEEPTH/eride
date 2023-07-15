@@ -115,6 +115,7 @@ class _singtaxiState extends State<singtaxi> {
 
     if(body['success']==true)
     {
+      id();
       print(body);
       Fluttertoast.showToast(
         msg: body['message'].toString(),
@@ -138,9 +139,10 @@ class _singtaxiState extends State<singtaxi> {
 
     }
   }
+
   void id()async{
 
-    final uri = Uri.parse(Api().url+'/register/taxiid');
+    final uri = Uri.parse(Api().url+'/register/driverid');
     final request = http.MultipartRequest('POST', uri);
     final imageStream = http.ByteStream(_image!.openRead());
     final imageLength = await _image!.length();
