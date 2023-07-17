@@ -4,6 +4,7 @@ import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Profileuser.dart';
 import 'package:eride/user/Share1.dart';
 import 'package:eride/user/ShareRideDetasils.dart';
+import 'package:eride/user/Taxiac.dart';
 import 'package:eride/user/YourShare.dart';
 import 'package:eride/user/taxi.dart';
 
@@ -382,8 +383,10 @@ class homepage extends StatefulWidget {
 }
 
 class _homepageState extends State<homepage> {
+  late String axi;
   String username = "";
   String login_id = "";
+String log = "";
 
   late SharedPreferences prefs;
 
@@ -401,6 +404,9 @@ class _homepageState extends State<homepage> {
     print("usr${username}");
     print("usr${login_id}");
 
+
+    print("usssssssssssr${log}");
+
   }
 
 
@@ -410,8 +416,11 @@ class _homepageState extends State<homepage> {
 
   late int login;
 
+
   @override
   Widget build(BuildContext context) {
+    log=login_id;
+    print('log $log');
     return SafeArea(
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -624,8 +633,9 @@ class _homepageState extends State<homepage> {
 
                     SizedBox(width: 10),
                     GestureDetector(
+
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxi( )));
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>Taxi(axi:log)));
                       },
                       child: Container(
                         width: MediaQuery.of(context).size.width/3,
@@ -661,38 +671,73 @@ class _homepageState extends State<homepage> {
                   ],
                 ),
               ),
-              ListView.builder(
-                physics: NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                itemCount: 2,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>ShareRideDetails()));
-                      },
-                      child: ListTile(
-                        leading: Icon(Icons.notifications_active),
-                        title: Text("Joined Ride Details"),
-                        subtitle: Text("John shared a ride from XYZ to ABC"),
-                        trailing: Icon(Icons.arrow_forward_ios),
+
+              SizedBox(height: 25.0),
+              Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        "Notification",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    );
-                  } else {
-                    return GestureDetector(
-                      onTap: (){
-                        Navigator.push(context, MaterialPageRoute(builder: (context)=>YourShare()));
+                    ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 3,
+                      itemBuilder: (BuildContext context, int index) {
+                        if (index == 0) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ShareRideDetails()));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Joined Ride Details"),
+                              subtitle: Text("John shared a ride from XYZ to ABC"),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        }  if (index == 2) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Taxiac()));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("taxi"),
+                              subtitle: Text("Your ride will come in Time XY"),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        }
+                        else {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => YourShare()));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Your Shared Ride"),
+                              subtitle: Text("You are sharing a ride from DEF to GHI"),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        }
                       },
-                      child: ListTile(
-                        leading: Icon(Icons.notifications_active),
-                        title: Text("Your Shared Ride"),
-                        subtitle: Text("You are sharing a ride from DEF to GHI"),
-                        trailing: Icon(Icons.arrow_forward_ios),
-                      ),
-                    );
-                  }
-                },
+                    ),
+                  ],
+                ),
               ),
+
+
+
+
 
             ], // Added closing bracket for the Column widget
           ),

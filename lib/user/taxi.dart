@@ -10,19 +10,71 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Taxi extends StatefulWidget {
-  const Taxi({Key? key}) : super(key: key);
+  final String axi;
+
+  const Taxi({required this.axi});
 
   @override
   State<Taxi> createState() => _TaxiState();
 }
 
 class _TaxiState extends State<Taxi> {
+  String first_name = "";
+  String Phone_no = "";
+  String last_name = "";
+  String address = "";
+  String email = "";
+  String gender = "";
+  String username = "";
+  String idcard = "";
+  String idcardimag = "";
+  String _id = "";
+  String usernamer = "";
+  String login_id = "";
+  late SharedPreferences prefs;
+
+  @override
+  @override
+  void initState() {
+    super.initState();
+    _viewPro();
+  }
+
+  Future<void> _viewPro() async {
+    String se = widget.axi.replaceAll('"', '');
+    print("user selected id is $se");
+    String mid = widget.axi.replaceAll('"', '');
+    var res = await Api().getData('/register/viewselect-user/$se');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name = body['data'][0]['first_name'];
+        first_name = body['data'][0]['first_name'];
+        Phone_no = body['data'][0]['Phone_no'];
+        last_name = body['data'][0]['last_name'];
+        address = body['data'][0]['address'];
+        email = body['data'][0]['email'];
+        gender = body['data'][0]['gender'];
+        username = body['data'][0]['username'];
+        idcard = body['data'][0]['idcard'];
+        _id = body['data'][0]['_id'];
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
 
   DateTime currentDate = DateTime.now();
   DateTime currentTime = DateTime.now();
-  late SharedPreferences prefs;
-  String username = "";
-  String login_id = "";
+
+
+
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController startingPlace = TextEditingController();
@@ -44,24 +96,21 @@ class _TaxiState extends State<Taxi> {
   void taxiRide() async {
     String formattedDate = "${currentDate.year}-${currentDate.month}-${currentDate.day}";
     String formattedTime = "${currentTime.hour}:${currentTime.minute}:${currentTime.second}";
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      username = prefs.getString('username') ?? '';
-      login_id = prefs.getString('login_id') ?? '';
-    });
-    print("username: $username");
-    print("login_id: $login_id");
+    print("login_id: ");
+
+    print("login_id:$_id");
     setState(() {
       _isLoading = true;
     });
 
     var data = {
-      "user_id": login_id.replaceAll('"', ''),
+      "user_id": _id.replaceAll('"', ''),
       "address": startingPlace.text,
       "destination": destination.text,
       "Date": date.text,
       "posting_date":formattedDate,
       "posting_tim":formattedTime,
+      "time":formattedTime,
 
     };
     print(data);

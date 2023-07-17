@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:eride/Admin/model/usermodel.dart';
 import 'package:eride/api/api.dart';
+import 'package:eride/taxi/model/taximodel/taximodel.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -97,6 +98,20 @@ class ApiService {
     }
   }
 
+  Future<List<TaxiModel>> fetchtaxiride() async {
+    var response = await Api().getData('/taxiride/viewtaxi');
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      print((items));
+
+      List<TaxiModel> products = List<TaxiModel>.from(
+          items['data'].map((e) => TaxiModel.fromJson(e)).toList());
+      return products;
+    } else {
+      List<TaxiModel> products = [];
+      return products;
+    }
+  }
 
 
 }

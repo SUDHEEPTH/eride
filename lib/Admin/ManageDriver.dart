@@ -178,63 +178,66 @@ class _ManageDriverState extends State<ManageDriver> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
           FutureBuilder<List<UserModel>>(
-          future: client.fetchdriverstaus(),
-          builder: (BuildContext context,
-          AsyncSnapshot<List<UserModel>> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.separated(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(8),
-                itemCount:  snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  userid=snapshot.data![index].lid;
-                  print(userid);
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid: userid)));
-                    },
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage(containerImages[index]),
-                      ),
-                      title: Text(
-                        snapshot.data![index].fname,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
+            future: client.fetchdriverstaus(),
+            builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    String userid = snapshot.data![index].lid; // Declare userid variable here
+                    print(userid);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Detaildriver(userid: userid),
+                          ),
+                        );
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage(containerImages[index]),
                         ),
-                      ),
-                      subtitle: Text(
-                        'ID: ${snapshot.data![index].id}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
+                        title: Text(
+                          snapshot.data![index].fname,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          color: Colors.red,
+                        subtitle: Text(
+                          'ID: ${snapshot.data![index].id}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                          ),
                         ),
-                        onPressed: () {
-                          // Handle delete button pressed
-                          _showDeleteConfirmationDialog(context, index);
-                        },
+                        trailing: IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                          onPressed: () {
+                            // Handle delete button pressed
+                            _showDeleteConfirmationDialog(context, index);
+                          },
+                        ),
+                        tileColor: Colors.grey.withOpacity(0.4),
                       ),
-                      tileColor: Colors.grey.withOpacity(0.4),
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          }
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            },
           ),
+
         ],
       ),
     );

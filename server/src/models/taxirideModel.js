@@ -13,7 +13,7 @@ const taxirideSchema = new schema({
     ace: { type: String },
     posting_date: { type: String },
     posting_tim: { type: String },
-    img: { type: String },
+    time: { type: String },
   
     
 })

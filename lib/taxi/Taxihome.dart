@@ -1,5 +1,12 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/api/api_services.dart';
+import 'package:eride/taxi/model/taximodel/taximodel.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Message {
   final String sender;
@@ -47,10 +54,73 @@ class Taxihome extends StatefulWidget {
 }
 
 class _TaxihomeState extends State<Taxihome> {
-  final String userPhotoUrl =
-      'https://example.com/user_photo.jpg';
-  final List<Driver> drivers = [
+  String first_name = "";
+  String Phone_no = "";
+  String last_name = "";
+  String address = "";
+  String email = "";
+  String gender = "";
+  String usernames = "";
+  String idcard = "";
+  String idcardimag = "";
+  String _id = "";
+  String mac = '';
+  ApiService client = ApiService();
+  String username = "";
+  String login_id = "";
+  String log = "";
 
+  late SharedPreferences prefs;
+  void initState() {
+    super.initState();
+    _viewPro();
+
+  }
+
+  Future<void> _viewPro() async {
+
+      prefs = await SharedPreferences.getInstance();
+      username = (prefs.getString('username') ?? '');
+      login_id = prefs.getString('login_id') ?? '';
+      print("usr${username}");
+      print("usr${login_id}");
+
+      print("usssssssssssr${log}");
+
+    print("user selected id is $login_id");
+    print("user selected id is $login_id");
+    String mid = login_id.replaceAll('"', '');
+      print("user selected id is $mid");
+
+    var res = await Api().getData('/taxiride/viewtaxi/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name = body['data'][0]['first_name'];
+        Phone_no = body['data'][0]['Phone_no'];
+        last_name = body['data'][0]['last_name'];
+        address = body['data'][0]['address'];
+        email = body['data'][0]['email'];
+        gender = body['data'][0]['gender'];
+        username = body['data'][0]['username'];
+        idcard = body['data'][0]['idcard'];
+        _id = body['data'][0]['_id'];
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+
+
+
+  final String userPhotoUrl = 'https://example.com/user_photo.jpg';
+  final List<Driver> drivers = [
     Driver(
       name: 'joe',
       photoUrl: 'images/images.jpg',
@@ -111,6 +181,26 @@ class _TaxihomeState extends State<Taxihome> {
   }
 
   Widget _buildHomePage() {
+    String userid='';
+    print("uuk: ${_id}");
+    Future approveUser(String userid) async {
+      userid = userid;
+      print("uuk: ${_id}");
+      var response = await Api().getData('/taxiride/accept/$userid/$_id');
+      if (response.statusCode == 200) {
+        var items = json.decode(response.body);
+        print("approve status${items}");
+        Navigator.push(context as BuildContext, MaterialPageRoute(builder: (context)=> Taxihome()));
+
+        Fluttertoast.showToast(
+          msg: "accepted",
+        );
+      } else {
+        Fluttertoast.showToast(
+          msg: "Error",
+        );
+      }
+    }
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +215,7 @@ class _TaxihomeState extends State<Taxihome> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello, User',
+                      'Hello,' + username.replaceAll('"', ''),
                       style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
@@ -133,7 +223,7 @@ class _TaxihomeState extends State<Taxihome> {
                     ),
                     SizedBox(height: 16.0),
                     Text(
-                      'Where do you want to go?',
+                      'Accept request and make profit !',
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
@@ -144,7 +234,7 @@ class _TaxihomeState extends State<Taxihome> {
               Padding(
                 padding: EdgeInsets.only(right: 16.0),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage(userPhotoUrl),
+                  backgroundImage: AssetImage('images/ava3.png'),
                   radius: 30.0,
                 ),
               ),
@@ -214,47 +304,151 @@ class _TaxihomeState extends State<Taxihome> {
           ),
           Expanded(
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
               child: Card(
                 color: Colors.grey.withOpacity(0.5),
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
-                  side:
-                      BorderSide(color: Colors.grey.withOpacity(0.8), width: 1),
+                  side: BorderSide(
+                    color: Colors.grey.withOpacity(0.8),
+                    width: 1,
+                  ),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ListView.builder(
-                    itemCount: drivers.length,
-                    itemBuilder: (context, index) {
-                      final driver = drivers[index];
-                      return ListTile(
-                        leading: CircleAvatar(
-                          radius: 30,
-                          backgroundImage: AssetImage(driver.photoUrl),
-                        ),
-                        title: Text(driver.name),
-                        subtitle: Text('adress: ${driver.adress}'),
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            // Add your logic here
-                          },
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.black, // Background color
+                  padding: const EdgeInsets.only(
+                      top: 10.0, left: 5, right: 5, bottom: 10),
+                  child: FutureBuilder<List<TaxiModel>>(
+                    future: client.fetchtaxiride(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<TaxiModel>> snapshot) {
+                      if (snapshot.hasData) {
+                        return Flexible(
+                          child: ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              userid = snapshot.data![index].id;
+                              print('hi $userid');
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    leading: CircleAvatar(
+                                      radius: 30,
+                                      backgroundImage:
+                                          AssetImage("server/public/images/"),
+                                    ),
+                                    title: Text(
+                                      snapshot.data![index].fname,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'Address: ${snapshot.data![index].address}',
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Text(
+                                          'Destination: ${snapshot.data![index].destination}',
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                          ),
+                                        ),
+                                        SizedBox(height: 2),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.calendar_today,
+                                                    size: 14,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.8),
+                                                  ),
+                                                  SizedBox(width: 4),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Date: ${snapshot.data![index].Date}',
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 8),
+                                                  Icon(
+                                                    Icons.access_time,
+                                                    size: 14,
+                                                    color: Colors.grey
+                                                        .withOpacity(0.8),
+                                                  ),
+                                                  SizedBox(width: 4),
+                                                  Expanded(
+                                                    child: Text(
+                                                      'Time: ${snapshot.data![index].time}',
+                                                      style: TextStyle(
+                                                        fontSize: 14.0,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                    trailing: ElevatedButton(
+                                      onPressed: () {
+                                        approveUser(userid);
+                                      },
+                                      style: ElevatedButton.styleFrom(
+                                        primary: Colors.black,
+                                      ),
+                                      child: Text(
+                                        'Accept',
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      approveUser(mac);
+                                    },
+                                  ),
+                                  SizedBox(height: 5),
+                                  Divider(
+                                    color: Colors.grey.withOpacity(0.8),
+                                    thickness: 1,
+                                    height: 1,
+                                  ),
+                                  SizedBox(height: 5),
+                                ],
+                              );
+                            },
                           ),
-                          child: Text('Accept'),
-                        ),
-                        onTap: () {
-                          // Add your logic for handling driver selection here
-                        },
-                      );
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      }
+                      return Center(child: CircularProgressIndicator());
                     },
                   ),
                 ),
               ),
             ),
-          )
+          ),
+
           // Existing code for the home page
         ],
       ),
@@ -281,8 +475,8 @@ class _TaxihomeState extends State<Taxihome> {
           final chat = chats[index];
           return ListTile(
             leading: CircleAvatar(
-              backgroundImage:
-                  NetworkImage('https://example.com/${chat.name}_photo.jpg'),
+              backgroundImage: AssetImage('images/user_photo.jpg'),
+              radius: 30.0,
             ),
             title: Text(chat.name),
             subtitle: Text(chat.message),
@@ -423,11 +617,11 @@ class _TaxihomeState extends State<Taxihome> {
     );
   }
 
-
   Widget _buildProfilePage() {
     return ProfileUser();
   }
 }
+
 class Chat {
   final String name;
   final String message;
@@ -539,7 +733,6 @@ class ChatSection extends StatelessWidget {
   }
 }
 
-
 class ProfileUser extends StatefulWidget {
   const ProfileUser({Key? key}) : super(key: key);
 
@@ -569,7 +762,6 @@ class _ProfileUserState extends State<ProfileUser>
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leadingWidth: 100,
-
         backgroundColor: Colors.transparent,
         elevation: 0,
         bottom: TabBar(
@@ -618,7 +810,6 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ),
                         ),
-
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -922,9 +1113,6 @@ class _ProfileUserState extends State<ProfileUser>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
-
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -948,9 +1136,6 @@ class _ProfileUserState extends State<ProfileUser>
                           color: Colors.green,
                           thickness: 1,
                         ),
-
-
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -969,7 +1154,6 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -988,7 +1172,6 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1007,13 +1190,11 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                         Divider(
                           color: Colors.green,
                           thickness: 1,
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1032,7 +1213,6 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1051,7 +1231,6 @@ class _ProfileUserState extends State<ProfileUser>
                             ),
                           ],
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1071,12 +1250,10 @@ class _ProfileUserState extends State<ProfileUser>
                           ],
                         ),
                         const SizedBox(height: 20),
-
                         Divider(
                           color: Colors.green,
                           thickness: 1,
                         ),
-
                         const SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1112,8 +1289,6 @@ class _ProfileUserState extends State<ProfileUser>
                               ),
                               textAlign: TextAlign.left,
                             ),
-
-
                           ],
                         ),
                         const SizedBox(height: 20),
@@ -1133,19 +1308,14 @@ class _ProfileUserState extends State<ProfileUser>
                               ),
                               textAlign: TextAlign.left,
                             ),
-
                           ],
                         ),
                         const SizedBox(height: 20),
-
-
-
                       ],
                     ),
                   ),
                 ),
-              )
-          ),
+              )),
         ],
       ),
     );

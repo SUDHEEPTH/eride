@@ -659,6 +659,7 @@ registerRouter.get('/approve/:id', async (req, res) => {
   registerRouter.get('/viewselect-user/:id', async function (req, res) { 
     try {
         const userId = req.params.id; 
+        
 console.log(userId);
         const allUser = await userModel.aggregate([
             
