@@ -56,15 +56,18 @@ carRouter.post('/car', async function (req, res) {
   }
 });
 
-carRouter.get('/carfinb/:district', async function (req, res) {
+carRouter.get('/carfinb/:district/:id', async function (req, res) {
   try {
     const district = req.params.district;
+    const uid = req.params.id;
     const cars = await carModel.find({ District: district });
-
+    const datas = cars.filter((single)=>{
+      return single.user_id != uid
+    })
     return res.status(200).json({
       success: true,
       error: false,
-      cars: cars,
+      cars: datas,
       message: "Cars found by district"
     });
   } catch (error) {

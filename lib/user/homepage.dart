@@ -706,7 +706,7 @@ String log = "";
                         }  if (index == 2) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Taxiac()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Taxiac(axi:log)));
                             },
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),

@@ -44,9 +44,6 @@ taxirideRouter.post('/taxiride', async function (req, res) {
 });
 
 
-
-
-
 taxirideRouter.get('/viewtaxi', async function (req, res) {
   try {
 
@@ -259,5 +256,73 @@ const accept = await taxirideModel.updateOne({ _id: id }, { $set: { Status: 1,ta
     });
   }
 });
+
+
+taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
+  try {
+    const userId = req.params.id; 
+    console.log(userId);
+      const allUser = await taxirideModel.aggregate([
+          {
+            '$lookup': {
+              'from': 'taxi_tbs', 
+              'localField': 'taxi_id', 
+              'foreignField': '_id', 
+              'as': 'result'
+            }
+          },
+          {
+              '$unwind':"$result"
+          },
+          {
+            
+              '$match': { 'user_id': new objectid (userId) } 
+          },
+         
+          {
+              '$group':{
+                '_id': '$_id',
+                'user_id': { '$first': '$result._id' },
+                'address': { '$first': '$address' },
+                'destination': { '$first': '$destination' },
+                'posting_date': { '$first': '$posting_date' },
+                'posting_tim': { '$first': '$posting_tim' },
+                'Date': { '$first': '$Date' },
+                'time': { '$first': '$time' },
+                'Status': { '$first': '$Status' },
+                'taxi_id': { '$first': '$taxi_id' },
+                'first_name': { '$first': '$result.first_name' },
+                'last_name': { '$first': '$result.last_name' },
+                'idcardimag': { '$first': '$result.idcardimag' },
+                'car_num': { '$first': '$result.car_num' },
+                'ace': { '$first': '$result.ace' },
+                
+                'pickup': { '$first': '$result.pickup' },
+
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      }) 
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
 
 module.exports = taxirideRouter;

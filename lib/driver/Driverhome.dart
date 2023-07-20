@@ -1,5 +1,14 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/api/api_services.dart';
 import 'package:floating_bottom_navigation_bar/floating_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+
 
 class Message {
   final String sender;
@@ -33,6 +42,71 @@ class Driverhome extends StatefulWidget {
 }
 
 class _DriverhomeState extends State<Driverhome> {
+
+  String first_name = "";
+  String Phone_no = "";
+  String last_name = "";
+  String address = "";
+  String job = "";
+  String ndays = "";
+  String adres = "";
+  String driver_booking_date = "";
+  String driver_booking_time = "";
+  String status = "";
+  String mac = '';
+  ApiService client = ApiService();
+  String username = "";
+  String login_id = "";
+  String log = "";
+
+  late SharedPreferences prefs;
+  void initState() {
+    super.initState();
+    _viewPro();
+
+  }
+  Future<void> _viewPro() async {
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    print("usr${username}");
+    print("usr${login_id}");
+    String mid = login_id.replaceAll('"', '');
+    print("user selected id is $mid");
+
+    var res = await Api().getData('/driver_booking/viewdriverall/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      var data = body['data'];
+      if (data != null && data.isNotEmpty) {
+        setState(() {
+          first_name = data[0]['first_name'] ?? '';
+          Phone_no = data[0]['Phone_no'] ?? '';
+          last_name = data[0]['last_name'] ?? '';
+          job = data[0]['job'] ?? '';
+          ndays = data[0]['ndays'] ?? '';
+          adres = data[0]['adres'] ?? '';
+          driver_booking_date = data[0]['driver_booking_date'] ?? '';
+          driver_booking_time = data[0]['driver_booking_time'] ?? '';
+          status = data[0]['status'] ?? '';
+          print('objectdfs$driver_booking_date');
+        });
+      } else {
+        Fluttertoast.showToast(
+          msg: 'No data found for the user',
+          backgroundColor: Colors.grey,
+        );
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
   final String userPhotoUrl = '';
 
   int _currentIndex = 0;
@@ -81,6 +155,8 @@ class _DriverhomeState extends State<Driverhome> {
   }
 
   Widget _buildHomePage() {
+
+
     return SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,7 +171,7 @@ class _DriverhomeState extends State<Driverhome> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Hello, User',
+                      'Hello, ${username.replaceAll('"', '')}',
                       style: TextStyle(
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
@@ -193,6 +269,7 @@ class _DriverhomeState extends State<Driverhome> {
             ),
           ),
           Container(
+            width: 400,
             padding: EdgeInsets.symmetric(horizontal: 16.0),
             child: Card(
               color: Colors.grey.withOpacity(0.5),
@@ -213,9 +290,25 @@ class _DriverhomeState extends State<Driverhome> {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+
                     SizedBox(height: 4.0),
                     Text(
-                      "I need a driver for a day to travel around the city.",
+                      job,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      "Adress:",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      adres,
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
@@ -230,20 +323,60 @@ class _DriverhomeState extends State<Driverhome> {
                     ),
                     SizedBox(height: 4.0),
                     Text(
-                      "May 15, 2023",
+                      driver_booking_date,
                       style: TextStyle(
                         fontSize: 16.0,
                       ),
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Add your logic here
-                      },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.black, // Background color
+                    SizedBox(height: 4.0),
+                    Text(
+                      "Number of days for rent:",
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
                       ),
-                      child: Text('Accept'),
                     ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      ndays,
+                      style: TextStyle(
+                        fontSize: 16.0,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Align(
+                          alignment: Alignment.bottomLeft,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Logic for the left button (e.g., navigate to another screen, perform an action, etc.)
+                              print('Left button was pressed!');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.black, // Background color
+                            ),
+                            child: Text('Decline'),
+                          ),
+                        ),
+                        SizedBox(
+                          width:150 ,
+                        ),
+                        Align(
+                          alignment: Alignment.bottomRight,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              // Logic for the right button (e.g., save data, display a message, etc.)
+                              print('Right button was pressed!');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.black, // Background color
+                            ),
+                            child: Text('Accept'),
+                          ),
+                        ),
+                      ],
+                    )
+
                   ],
                 ),
               ),

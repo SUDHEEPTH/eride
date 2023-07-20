@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:eride/api/api.dart';
 import 'package:eride/user/Carrent3.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Carrent2 extends StatefulWidget {
   final String searchValue;
+  final String login_id;
 
-  Carrent2({required this.searchValue});
+  Carrent2({required this.searchValue,required this.login_id});
 
   @override
   State<Carrent2> createState() => _Carrent2State();
@@ -16,14 +18,21 @@ class Carrent2 extends StatefulWidget {
 class _Carrent2State extends State<Carrent2> {
   List<Map<String, dynamic>> cars = [];
 
+
+
   @override
   void initState() {
+
+
     super.initState();
+
     _viewPro();
   }
 
   Future<void> _viewPro() async {
-    var res = await Api().getData('/car/carfinb/${widget.searchValue}');
+print('habsfdh ${widget.login_id}');
+print('habsfdh ${widget.searchValue}');
+    var res = await Api().getData('/car/carfinb/${widget.searchValue}/${widget.login_id.replaceAll('"', '')}');
     var body = json.decode(res.body);
     setState(() {
       cars = (body['cars'] as List<dynamic>).cast<Map<String, dynamic>>();

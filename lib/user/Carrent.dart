@@ -1,6 +1,7 @@
 import 'package:eride/user/Addcarrent.dart';
 import 'package:eride/user/Carrent2.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Carrent extends StatefulWidget {
   @override
@@ -8,6 +9,29 @@ class Carrent extends StatefulWidget {
 }
 
 class _CarrentState extends State<Carrent> {
+
+
+
+  late SharedPreferences prefs;
+  String username = "";
+  String login_id = "";
+  void initState() {
+
+
+    super.initState();
+
+    fetchuser();
+  }
+  fetchuser()async{
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    print("usr${username}");
+    print("usr${login_id}");
+
+
+
+  }
   final TextEditingController _searchController = TextEditingController();
   String searchValue = ''; // Variable to store the search value
 
@@ -24,7 +48,7 @@ class _CarrentState extends State<Carrent> {
 
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (context) => Carrent2(searchValue: searchValue)),
+      MaterialPageRoute(builder: (context) => Carrent2(searchValue: searchValue,login_id:login_id)),
     );
   }
 

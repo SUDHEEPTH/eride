@@ -576,6 +576,7 @@ registerRouter.post('/driver-register', async function (req, res) {
                 car_num : req.body.car_num,
                 idcard: req.body.idcard, 
                 idcardimag: req.body.idcardimag, 
+                price: 750,
             }
             const save_user = await driverMOdel(user_data).save()
             if(save_user){

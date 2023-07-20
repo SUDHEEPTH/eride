@@ -14,6 +14,7 @@ const driverSchema = new schema({
     dob: { type: String },
     idcard: { type: String },
     idcardimag: { type: String },
+    price: { type: String },
     
   
     

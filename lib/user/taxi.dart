@@ -34,7 +34,6 @@ class _TaxiState extends State<Taxi> {
   late SharedPreferences prefs;
 
   @override
-  @override
   void initState() {
     super.initState();
     _viewPro();
@@ -69,36 +68,41 @@ class _TaxiState extends State<Taxi> {
     }
   }
 
-
   DateTime currentDate = DateTime.now();
-  DateTime currentTime = DateTime.now();
-
-
+  TimeOfDay selectedTime = TimeOfDay.now();
 
   bool _isLoading = false;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController startingPlace = TextEditingController();
   final TextEditingController destination = TextEditingController();
-  final TextEditingController time = TextEditingController();
   final TextEditingController date = TextEditingController();
 
   @override
-
   void dispose() {
     startingPlace.dispose();
     destination.dispose();
-    time.dispose();
     date.dispose();
 
     super.dispose();
   }
 
-  void taxiRide() async {
-    String formattedDate = "${currentDate.year}-${currentDate.month}-${currentDate.day}";
-    String formattedTime = "${currentTime.hour}:${currentTime.minute}:${currentTime.second}";
-    print("login_id: ");
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
 
-    print("login_id:$_id");
+    if (picked != null && picked != selectedTime) {
+      setState(() {
+        selectedTime = picked;
+      });
+    }
+  }
+
+  void taxiRide() async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    String formattedTime = selectedTime.format(context);
+
     setState(() {
       _isLoading = true;
     });
@@ -108,17 +112,15 @@ class _TaxiState extends State<Taxi> {
       "address": startingPlace.text,
       "destination": destination.text,
       "Date": date.text,
-      "posting_date":formattedDate,
-      "posting_tim":formattedTime,
-      "time":formattedTime,
-
+      "posting_date": formattedDate,
+      "posting_tim": formattedTime,
+      "time": formattedTime,
     };
-    print(data);
-    var res = await Api().authData(data,'/taxiride/taxiride');
+
+    var res = await Api().authData(data, '/taxiride/taxiride');
     var body = json.decode(res.body);
     print(body);
     if (body['success'] == true) {
-
       Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
@@ -136,7 +138,6 @@ class _TaxiState extends State<Taxi> {
       _isLoading = false;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -215,24 +216,7 @@ class _TaxiState extends State<Taxi> {
                           return null;
                         },
                       ),
-                      SizedBox(height: 16.0),
-                      TextFormField(
-                        controller: time,
-                        decoration: InputDecoration(
-                          labelText: 'time',
-                          filled: true,
-                          fillColor: Colors.green[300]?.withOpacity(0.5),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the time';
-                          }
-                          return null;
-                        },
-                      ),
+
                       SizedBox(height: 16.0),
                       TextFormField(
                         controller: destination,
@@ -277,13 +261,37 @@ class _TaxiState extends State<Taxi> {
                             lastDate: DateTime(2100),
                           );
                           if (date != null) {
-                            return DateTimeField.combine(date,
-                                TimeOfDay.fromDateTime(
-                                    currentValue ?? DateTime.now()));
+                            return DateTimeField.combine(
+                              date,
+                              TimeOfDay.fromDateTime(currentValue ?? DateTime.now()),
+                            );
                           } else {
                             return currentValue;
                           }
                         },
+                      ),
+                      SizedBox(height: 16.0),
+
+                      // Add a Text widget to display the selected time
+                      Text(
+                        'Selected Time: ${selectedTime.format(context)}',
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      SizedBox(height: 16.0),
+                      TextButton(
+                        onPressed: () => _selectTime(context),
+                        child: Text(
+                          'Select Time',
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        style: TextButton.styleFrom(
+                          padding: EdgeInsets.all(15),
+                          primary: Colors.white,
+                          backgroundColor: Colors.green[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
                       ),
                       SizedBox(height: 16.0),
                       Container(
@@ -303,8 +311,7 @@ class _TaxiState extends State<Taxi> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(8.0),
                             ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 12.0, horizontal: 24.0),
+                            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 24.0),
                           ),
                         ),
                       ),
