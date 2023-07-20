@@ -16,8 +16,6 @@ class _CarrentState extends State<Carrent> {
   String username = "";
   String login_id = "";
   void initState() {
-
-
     super.initState();
 
     fetchuser();

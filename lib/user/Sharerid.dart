@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 class StartRidePage extends StatefulWidget {
   const StartRidePage({Key? key}) : super(key: key);
@@ -17,20 +17,41 @@ class StartRidePage extends StatefulWidget {
 }
 
 class _StartRidePageState extends State<StartRidePage> {
+  List<String> keralaDistricts = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad',
+    // Add other districts here...
+  ];
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _startingPlaceController = TextEditingController();
   final TextEditingController _destinationController = TextEditingController();
   final TextEditingController _timeController = TextEditingController();
   final TextEditingController _personController = TextEditingController();
+  final TextEditingController _starting_placedisController = TextEditingController();
+  final TextEditingController _ending_placedisController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
   late DateTime date;
-  String username = "";
-  String login_id = "";
+  String? _startingPlace; // Store selected starting place
+  String? username = "";
+  String? login_id = "";
   bool _isLoading = false;
   late SharedPreferences prefs;
   DateTime currentDate = DateTime.now();
   DateTime currentTime = DateTime.now();
-
-
 
   @override
   void initState() {
@@ -43,15 +64,18 @@ class _StartRidePageState extends State<StartRidePage> {
     _destinationController.dispose();
     _timeController.dispose();
     _personController.dispose();
+    _starting_placedisController.dispose();
+    _ending_placedisController.dispose();
+    _priceController.dispose();
+    _dateController.dispose();
     super.dispose();
   }
 
   Future<void> fetchUser() async {
-
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      username = prefs.getString('username') ?? '';
-      login_id = prefs.getString('login_id') ?? '';
+      username = prefs.getString('username');
+      login_id = prefs.getString('login_id');
     });
     print("username: $username");
     print("login_id: $login_id");
@@ -66,21 +90,23 @@ class _StartRidePageState extends State<StartRidePage> {
     });
 
     var data = {
-      "user_id": login_id.replaceAll('"', ''),
+      "user_id": login_id?.replaceAll('"', ''),
       "starting_place": _startingPlaceController.text,
       "ending_place": _destinationController.text,
-       "starting_time": _timeController.text,
-       "person": _personController.text,
-      "posting_date":formattedDate,
-      "posting_tim":formattedTime,
-
+      "ending_placedis": _ending_placedisController.text,
+      "starting_placedis": _starting_placedisController.text,
+      "starting_time": _timeController.text,
+      "person": _personController.text,
+      "posting_date": formattedDate,
+      "posting_tim": formattedTime,
+      "price": _priceController.text, // Extract text value from the TextEditingController
+      "date": _dateController.text, // Extract text value from the TextEditingController
     };
     print(data);
-    var res = await Api().authData(data,'/shareride/shareride1');
+    var res = await Api().authData(data, '/shareride/shareride1');
     var body = json.decode(res.body);
     print(body);
     if (body['success'] == true) {
-
       Fluttertoast.showToast(
         msg: body['message'].toString(),
         backgroundColor: Colors.grey,
@@ -97,6 +123,16 @@ class _StartRidePageState extends State<StartRidePage> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  String? _validateStartingPlace(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please select a district';
+    }
+    if (!keralaDistricts.contains(value)) {
+      return 'Invalid district name';
+    }
+    return null;
   }
 
   @override
@@ -150,31 +186,100 @@ class _StartRidePageState extends State<StartRidePage> {
                 key: _formKey,
                 child: Column(
                   children: [
+                    TypeAheadFormField<String?>(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: _starting_placedisController,
+                        decoration: const InputDecoration(
+                          labelText: 'Starting Place district',
+                        ),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                      },
+                      itemBuilder: (BuildContext context, String? suggestion) {
+                        return ListTile(
+                          title: Text(suggestion!),
+                        );
+                      },
+                      onSuggestionSelected: (String? suggestion) {
+                        setState(() {
+                          _starting_placedisController.text = suggestion!;
+                          _startingPlace = suggestion; // Store the selected starting place
+                        });
+                      },
+                      validator: (value) {
+                        return value != null && value.isEmpty ? 'Please select a district' : null;
+                      },
+                      autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
+                    ),
+                    const SizedBox(height: 16.0),
                     TextFormField(
                       controller: _startingPlaceController,
                       decoration: const InputDecoration(
-                        labelText: 'Starting Place',
+                        labelText: 'Starting place adress',
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a starting place';
+                          return 'Please enter a Starting place adress';
+                        }
+                        return null;
+                      },
+                    ),
+
+                    const SizedBox(height: 16.0),
+                    TypeAheadFormField<String?>(
+                      textFieldConfiguration: TextFieldConfiguration(
+                        controller: _ending_placedisController,
+                        decoration: const InputDecoration(
+                          labelText: 'destination Place district',
+                        ),
+                      ),
+                      suggestionsCallback: (pattern) {
+                        return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                      },
+                      itemBuilder: (BuildContext context, String? suggestion) {
+                        return ListTile(
+                          title: Text(suggestion!),
+                        );
+                      },
+                      onSuggestionSelected: (String? suggestion) {
+                        setState(() {
+                          _ending_placedisController.text = suggestion!;
+                          _startingPlace = suggestion; // Store the selected starting place
+                        });
+                      },
+                      validator: (value) {
+                        return value != null && value.isEmpty ? 'Please select a district' : null;
+                      },
+                      autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
+                    ),
+                    const SizedBox(height: 16.0),
+                    TextFormField(
+                      controller: _destinationController,
+                      decoration: const InputDecoration(
+                        labelText: 'destination place adress',
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a Starting place adress';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16.0),
                     TextFormField(
-                      controller: _destinationController,
+                      controller: _priceController,
                       decoration: const InputDecoration(
-                        labelText: 'Destination',
+                        labelText: ' enter the fair price',
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a destination';
+                          return 'Please enter a fair for ride';
                         }
                         return null;
                       },
                     ),
+
                     const SizedBox(height: 16.0),
                     TextFormField(
                       controller: _timeController,
@@ -196,13 +301,14 @@ class _StartRidePageState extends State<StartRidePage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter a time';
+                          return 'Please enter the number of person';
                         }
                         return null;
                       },
                     ),
                     const SizedBox(height: 16.0),
                     DateTimeField(
+                      controller: _dateController,
                       onChanged: (value) {
                         setState(() {
                           date = value!;
@@ -243,6 +349,7 @@ class _StartRidePageState extends State<StartRidePage> {
                     const SizedBox(height: 24.0),
                     ElevatedButton(
                       onPressed: () {
+                        _formKey.currentState!.validate();
                         if (_formKey.currentState!.validate()) {
                           startRide();
                         }

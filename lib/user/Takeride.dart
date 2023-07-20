@@ -4,7 +4,9 @@ import 'package:eride/user/Takeride2.dart';
 import 'package:flutter/material.dart';
 
 import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Takeride extends StatefulWidget {
   const Takeride({Key? key}) : super(key: key);
@@ -14,6 +16,78 @@ class Takeride extends StatefulWidget {
 }
 
 class _TakerideState extends State<Takeride> {
+  List<String> keralaDistricts = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad',
+    // Add other districts here...
+  ];
+  String? _startingPlace;
+  final TextEditingController _starting_placedisController = TextEditingController();
+  final TextEditingController _ending_placedisController = TextEditingController();
+  final TextEditingController _personController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  void dispose() {
+    _starting_placedisController.dispose();
+    _ending_placedisController.dispose();
+    _dateController.dispose();
+    _personController.dispose();
+    super.dispose();
+  }
+  late SharedPreferences prefs;
+  String username = "";
+  String login_id = "";
+  void initState() {
+
+    super.initState();
+
+    fetchuser();
+  }
+  fetchuser()async{
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    print("usr${username}");
+    print("usr${login_id}");
+
+
+
+  }
+  final TextEditingController _searchController = TextEditingController();
+  String start = ''; // Variable to store the search value
+  String end = '';
+  String person = '';
+  String date2 = '';
+
+  @override
+
+  void performSearch() {
+    setState(() {
+      start = _starting_placedisController.text;
+      end = _ending_placedisController.text;
+      person = _personController.text;
+      date2 = _dateController.text;
+
+    });
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => Takeride2(searchValue: searchValue,login_id:login_id)),
+    // );
+  }
+
+
   final _formKey = GlobalKey<FormState>();
   late String startingPlace;
   late String destination;
@@ -24,9 +98,15 @@ class _TakerideState extends State<Takeride> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()){
+      setState(() {
+        start = _starting_placedisController.text;
+        end = _ending_placedisController.text;
+        person = _personController.text;
+        date2 = _dateController.text;
+      });
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => Takeride2()),
+        MaterialPageRoute(builder: (context) => Takeride2(start:start,end:end,person:person,date2:date2,login_id:login_id)),
       );
     }
   }
@@ -92,60 +172,80 @@ class _TakerideState extends State<Takeride> {
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      TextFormField(
-                        onChanged: (value) {
+                      TypeAheadFormField<String?>(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: _starting_placedisController,
+                          decoration:  InputDecoration(
+                    labelText: 'starting state',
+                    filled: true,
+                    fillColor: Colors.green[300]?.withOpacity(0.5),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green[300]!),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    prefixIcon: Icon(Icons.location_on),
+                  ),
+                        ),
+                        suggestionsCallback: (pattern) {
+                          return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                        },
+                        itemBuilder: (BuildContext context, String? suggestion) {
+                          return ListTile(
+                            title: Text(suggestion!),
+                          );
+                        },
+                        onSuggestionSelected: (String? suggestion) {
                           setState(() {
-                            startingPlace = value;
+                            _starting_placedisController.text = suggestion!;
+                            _startingPlace = suggestion; // Store the selected starting place
                           });
                         },
-                        decoration: InputDecoration(
-                          labelText: 'Starting Place',
-                          filled: true,
-                          fillColor: Colors.green[300]?.withOpacity(0.5),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green[300]!),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          prefixIcon: Icon(Icons.location_on),
-                        ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the starting place';
-                          }
-                          return null;
+                          return value != null && value.isEmpty ? 'Please select a district' : null;
                         },
+                        autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
                       ),
                       SizedBox(height: 16.0),
-                      TextFormField(
-                        onChanged: (value) {
+                      TypeAheadFormField<String?>(
+                        textFieldConfiguration: TextFieldConfiguration(
+                          controller: _ending_placedisController,
+                          decoration:  InputDecoration(
+                            labelText: 'Destination district',
+                            filled: true,
+                            fillColor: Colors.green[300]?.withOpacity(0.5),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green[300]!),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            prefixIcon: Icon(Icons.location_on),
+                          ),
+                        ),
+                        suggestionsCallback: (pattern) {
+                          return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                        },
+                        itemBuilder: (BuildContext context, String? suggestion) {
+                          return ListTile(
+                            title: Text(suggestion!),
+                          );
+                        },
+                        onSuggestionSelected: (String? suggestion) {
                           setState(() {
-                            destination = value;
+                            _ending_placedisController.text = suggestion!;
+                            _startingPlace = suggestion; // Store the selected starting place
                           });
                         },
-                        decoration: InputDecoration(
-                          labelText: 'Destination',
-                          filled: true,
-                          fillColor: Colors.green[300]?.withOpacity(0.5),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green[300]!),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.green),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          prefixIcon: Icon(Icons.location_on),
-                        ),
                         validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter the destination';
-                          }
-                          return null;
+                          return value != null && value.isEmpty ? 'Please select a district' : null;
                         },
+                        autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
                       ),
                       SizedBox(height: 16.0),
                       Row(
@@ -153,6 +253,7 @@ class _TakerideState extends State<Takeride> {
                           Expanded(
                             flex: 1,
                             child: TextFormField(
+                              controller: _personController,
                               onChanged: (value) {
                                 setState(() {
 
@@ -184,6 +285,7 @@ class _TakerideState extends State<Takeride> {
                           Expanded(
                             flex: 1,
                             child: DateTimeField(
+                              controller: _dateController,
                               onChanged: (value) {
                                 setState(() {
                                   date = value!;

@@ -10,6 +10,9 @@ const share_rideSchema = new schema({
     person: { type: String },
     posting_date: { type: String },
     posting_tim: { type: String },
+    starting_placedis:{ type: String },
+    ending_placedis:{ type: String },
+    date:{ type: String },
    
   
     

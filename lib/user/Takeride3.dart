@@ -1,18 +1,80 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
 import 'package:eride/user/Takeuser.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class Takeride3 extends StatefulWidget {
-  const Takeride3({Key? key}) : super(key: key);
+  final String sid;
+  const Takeride3({ required this.sid});
 
   @override
   State<Takeride3> createState() => _Takeride3State();
 }
 
 class _Takeride3State extends State<Takeride3> {
-  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
+
+ String starting_place ='';
+ String ending_place ='';
+ String starting_time ='';
+ String person ='';
+ String starting_placedis ='';
+ String ending_placedis ='';
+ String status ='';
+ String date ='';
+ String first_name ='';
+ String last_name ='';
+ String sid ='';
+ String date1 ='';
+
+
+ final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
 
   @override
+  void initState() {
+    super.initState();
+    _viewPro();
+
+  }
+
+  Future<void> _viewPro() async {
+
+
+    String mid = widget.sid.replaceAll('"', '');
+    print("user selected id is $mid");
+
+    var res = await Api().getData('/shareride/sharerideview/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name = body['data'][0]['first_name'];
+        starting_place = body['data'][0]['starting_place'];
+        last_name = body['data'][0]['last_name'];
+        ending_place = body['data'][0]['ending_place'];
+        starting_time = body['data'][0]['starting_time'];
+        person = body['data'][0]['person'];
+        starting_placedis = body['data'][0]['starting_placedis'];
+        ending_placedis = body['data'][0]['ending_placedis'];
+
+        sid = body['data'][0]['_id'];
+        date1 = body['data'][0]['date'];
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+
+
+
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -36,7 +98,7 @@ class _Takeride3State extends State<Takeride3> {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             alignment: Alignment.centerLeft,
             child: Text(
-              'May 21, 2023', // Replace with your desired date
+              date1, // Replace with your desired date
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -63,7 +125,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Cochin',
+                              starting_placedis,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -74,7 +136,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'near lulu mall',
+                              starting_place,
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -124,7 +186,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'Bangalore',
+                              ending_placedis,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -135,7 +197,7 @@ class _Takeride3State extends State<Takeride3> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              'near postoffice',
+                              ending_place,
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -237,7 +299,7 @@ class _Takeride3State extends State<Takeride3> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'User',
+                                  first_name,
                                   style: TextStyle(
                                     fontSize: 24.0,
                                     fontWeight: FontWeight.bold,
@@ -294,7 +356,7 @@ class _Takeride3State extends State<Takeride3> {
                 ),
 
                 Padding(
-                  
+
                   padding: const EdgeInsets.symmetric(horizontal: 18),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
