@@ -146,6 +146,35 @@ share_rideRouter.get('/sharerideview/:id', async function (req, res) {
       })
   }
 })
+share_rideRouter.post('/takeride2', async function (req, res) {
+  try {
+    const data = {
+      user_id: req.body.user_id,        
+      shareid: req.body.shareid,   
+      status:"0",     
+      
+    
+};
+
+    const savedData = await takeriseModel(data).save();
+    console.log(savedData);
+    
+    if (savedData) {
+      return res.status(200).json({
+        success: true,
+        error: false,
+        details: savedData,
+        message: "ride shared"
+      });
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: true,
+      message: "Something went wrong"
+    });
+  }
+});
 
 
 

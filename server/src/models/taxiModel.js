@@ -14,6 +14,7 @@ const taxiSchema = new schema({
     car_num: { type: String },
     idcard: { type: String },
     idcardimag: { type: String },
+    profilepic: { type: String },
   
     
 })

@@ -400,6 +400,11 @@ registerRouter.post('/userid', upload.single("file"), (req, res) => {
     return res.json("file uploaded")
   })
 
+registerRouter.post('/userprofilepic', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
+
 registerRouter.post('/user-register', async function (req, res) {
     try {
 
@@ -441,6 +446,7 @@ registerRouter.post('/user-register', async function (req, res) {
                 img1: req.body.img1, 
                 idcard: req.body.idcard, 
                 idcardimag: req.body.idcardimag, 
+                profilepic: req.body.profilepic, 
 
             }
             const save_user = await userModel(user_data).save()
@@ -467,7 +473,10 @@ registerRouter.post('/taxiid', upload.single("file"), (req, res) => {
     console.log("jh",req.file.filename);
     return res.json("file uploaded")
   })
-
+  registerRouter.post('/taxiprofilepic', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
 registerRouter.post('/taxi-register', async function (req, res) {
     try {
 
@@ -509,6 +518,7 @@ registerRouter.post('/taxi-register', async function (req, res) {
                 car_num : req.body.car_num,
                 idcard: req.body.idcard, 
                 idcardimag: req.body.idcardimag, 
+                profilepic: req.body.profilepic, 
             }
             const save_user = await taxiModel(user_data).save()
             if(save_user){
@@ -531,6 +541,10 @@ registerRouter.post('/taxi-register', async function (req, res) {
     }
 })
 registerRouter.post('/driverid', upload.single("file"), (req, res) => {
+    console.log("jh",req.file.filename);
+    return res.json("file uploaded")
+  })
+  registerRouter.post('/driverprofilepic', upload.single("file"), (req, res) => {
     console.log("jh",req.file.filename);
     return res.json("file uploaded")
   })
@@ -577,6 +591,7 @@ registerRouter.post('/driver-register', async function (req, res) {
                 idcard: req.body.idcard, 
                 idcardimag: req.body.idcardimag, 
                 price: 750,
+                profilepic: req.body.profilepic, 
             }
             const save_user = await driverMOdel(user_data).save()
             if(save_user){

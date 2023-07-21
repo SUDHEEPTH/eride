@@ -23,7 +23,10 @@ app.get('/', function (req, res) {
 
 
 app.use(express.static('./public'));
+app.use(express.static('./taxiprofilepic'));
+app.use(express.static('./driverprofilepic'));
 app.use(express.static('./userid'));
+app.use(express.static('./userprofilepic'));
 app.use(express.static('./taxiid'));
 app.use(express.static('./driverid'));
 app.use('/register', registerRouter);

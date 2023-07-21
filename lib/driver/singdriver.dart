@@ -7,6 +7,7 @@ import 'package:eride/login.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 
 
@@ -20,9 +21,11 @@ class singdriver extends StatefulWidget {
 
 class _singdriverState extends State<singdriver> {
   late final _filename;
+  late final _profilename;
   File? imageFile;
   late String storedImage;
   File? _image;
+  File? _proimage;
   final picker = ImagePicker();
 
   bool  _isLoading = false;
@@ -85,6 +88,19 @@ class _singdriverState extends State<singdriver> {
       }
     });
   }
+  Future _proselectImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _proimage = File(pickedFile.path);
+        _profilename = basename(_proimage!.path).toString();
+
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   void registerUser() async {
     // Check if an image is selected
@@ -105,7 +121,8 @@ class _singdriverState extends State<singdriver> {
       "address": _addressController.text,
       "phoneNumber": _phoneNumberController.text,
       "email": _emailController.text,
-      "idcardimag": _filename
+      "idcardimag": _filename,
+      "profilepic": _profilename
 
 
     };
@@ -114,6 +131,7 @@ class _singdriverState extends State<singdriver> {
 
     if(body['success']==true)
     {
+      profile();
       id();
       print(body);
       Fluttertoast.showToast(
@@ -150,6 +168,43 @@ class _singdriverState extends State<singdriver> {
       imageStream,
       imageLength,
       filename: _filename,
+    );
+    request.files.add(multipartFile);
+
+    print("multipart${multipartFile}");
+    final response = await request.send();
+    if(response.statusCode == 200)
+    {
+
+      Fluttertoast.showToast(
+        msg:"success",
+        backgroundColor: Colors.grey,
+      );
+
+
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg:"Failed",
+        backgroundColor: Colors.grey,
+      );
+
+    }
+
+  }
+  void profile()async{
+
+    final uri = Uri.parse(Api().url+'/register/userprofilepic');
+    final request = http.MultipartRequest('POST', uri);
+    final imageStream = http.ByteStream(_proimage!.openRead());
+    final imageLength = await _proimage!.length();
+
+    final multipartFile = http.MultipartFile(
+      'file',
+      imageStream,
+      imageLength,
+      filename: _profilename,
     );
     request.files.add(multipartFile);
 
@@ -232,6 +287,52 @@ class _singdriverState extends State<singdriver> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20,),
+                CircleAvatar(
+                  radius: 70,
+                  backgroundColor: Colors.grey[300], // Background color for the avatar
+                  backgroundImage: _proimage != null ? FileImage(_proimage!) : null,
+                  child: _proimage == null
+                      ? Icon(
+                    Icons.person, // Placeholder icon if no image is selected
+                    size: 50,
+                    color: Colors.grey[600],
+                  )
+                      : null,
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 2.0 ,bottom: 10),
+                  child: ElevatedButton(
+                    onPressed: _proselectImage,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green, // Change button background color to green
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30), // Rounded button edges
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.camera_alt, // Icon before the text
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Select Profile Picture',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white, // Text color
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -324,21 +425,64 @@ class _singdriverState extends State<singdriver> {
                   ),
                   child: TextFormField(
                     controller: _dobController,
-                    validator: (value) {
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime currentDate = DateTime.now();
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: currentDate.subtract(Duration(days: 6570)), // 18 years ago
+                        firstDate: DateTime(1900),
+                        lastDate: currentDate,
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              primaryColor: Colors.green,
+                              accentColor: Colors.green,
+                              colorScheme: ColorScheme.light(primary: Colors.green),
+                              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
 
-                      if (value!.isEmpty) {
-                        return 'Please enter Date of birth';
+                      if (selectedDate != null) {
+                        setState(() {
+                          _dobController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                        });
                       }
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please select Date of Birth';
+                      }
+
+                      DateTime currentDate = DateTime.now();
+                      DateTime selectedDate = DateTime.parse(value);
+
+                      int age = currentDate.year - selectedDate.year;
+                      if (currentDate.month < selectedDate.month ||
+                          (currentDate.month == selectedDate.month && currentDate.day < selectedDate.day)) {
+                        age--;
+                      }
+
+                      if (age < 18) {
+                        return 'You must be at least 18 years old';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      labelText: "Enter Date of birth",
+                      labelText: "Date of Birth",
                       labelStyle: TextStyle(color: Colors.green),
                     ),
                   ),

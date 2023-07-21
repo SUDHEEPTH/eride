@@ -15,6 +15,7 @@ const driverSchema = new schema({
     idcard: { type: String },
     idcardimag: { type: String },
     price: { type: String },
+    profilepic: { type: String },
     
   
     

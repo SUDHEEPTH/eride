@@ -14,6 +14,7 @@ const userSchema = new schema({
     img1: { type: String },
     idcard: { type: String },
     idcardimag: { type: String },
+    profilepic: { type: String },
 
 
 })

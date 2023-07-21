@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:eride/api/api.dart';
+import 'package:eride/user/Takeride.dart';
 import 'package:eride/user/Takeuser.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class Takeride3 extends StatefulWidget {
@@ -28,7 +30,8 @@ class _Takeride3State extends State<Takeride3> {
  String last_name ='';
  String sid ='';
  String date1 ='';
-
+ String login_id ='';
+ bool  _isLoading = false;
 
  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
 
@@ -38,7 +41,7 @@ class _Takeride3State extends State<Takeride3> {
     _viewPro();
 
   }
-
+ late SharedPreferences prefs;
   Future<void> _viewPro() async {
 
 
@@ -71,7 +74,53 @@ class _Takeride3State extends State<Takeride3> {
       );
     }
   }
+ void registerUser() async {
+   // Check if an image is selected
+   prefs = await SharedPreferences.getInstance();
 
+   login_id = prefs.getString('login_id') ?? '';
+print("ds$login_id");
+   print("dsds $sid");
+   setState(() {
+     _isLoading = true;
+   });
+
+   var data = {
+     "user_id":login_id.replaceAll('"', ''),
+     "shareid": sid,
+
+
+   };
+   var res = await Api().authData(data,'/shareride/takeride2');
+   var body = json.decode(res.body);
+
+   if(body['success']==true)
+   {
+
+     print(body);
+     Fluttertoast.showToast(
+       msg: body['message'].toString(),
+       backgroundColor: Colors.grey,
+     );
+
+     Navigator.push(
+       this.context, //add this so it uses the context of the class
+       MaterialPageRoute(
+         builder: (context) => Takeride(),
+       ), //MaterialpageRoute
+     );
+
+
+   }
+   else
+   {
+     Fluttertoast.showToast(
+       msg: body['message'].toString(),
+       backgroundColor: Colors.grey,
+     );
+
+   }
+ }
 
 
 
@@ -467,7 +516,7 @@ class _Takeride3State extends State<Takeride3> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: ElevatedButton(
               onPressed: () {
-
+                registerUser();
               },
               child: Text('Request'),
               style: ElevatedButton.styleFrom(
