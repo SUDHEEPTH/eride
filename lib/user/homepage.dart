@@ -2,6 +2,7 @@
 import 'package:eride/user/Carrent.dart';
 import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Profileuser.dart';
+import 'package:eride/user/Riderequest.dart';
 import 'package:eride/user/Share1.dart';
 import 'package:eride/user/ShareRideDetasils.dart';
 import 'package:eride/user/Taxiac.dart';
@@ -397,15 +398,18 @@ String log = "";
     fetchuser();
   }
 
-  fetchuser()async{
+ fetchuser()async{
     prefs = await SharedPreferences.getInstance();
-    username = (prefs.getString('username') ?? '');
-    login_id = prefs.getString('login_id') ?? '';
-    print("usr${username}");
-    print("usr${login_id}");
+    setState(() {
+      username = (prefs.getString('username') ?? '');
+      login_id = prefs.getString('login_id') ?? '';
+      print("usr${username}");
+      print("usr${login_id}");
 
 
-    print("usssssssssssr${log}");
+      print("usssssssssssr${log}");
+
+    });
 
   }
 
@@ -689,7 +693,7 @@ String log = "";
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 3,
+                      itemCount: 4,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0) {
                           return GestureDetector(
@@ -712,6 +716,18 @@ String log = "";
                               leading: Icon(Icons.notifications_active),
                               title: Text("taxi"),
                               subtitle: Text("Your ride will come in Time XY"),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        }if (index == 3) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Riderequest(axi:log)));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("ride request"),
+                              subtitle: Text(""),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );

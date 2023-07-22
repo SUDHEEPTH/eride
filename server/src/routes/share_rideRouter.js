@@ -53,7 +53,7 @@ share_rideRouter.get('/shareridesearch/:district1/:district2/:date/:id', async f
     console.log(date1);
     const uid = req.params.id;
     console.log(uid);
-    const cars = await share_rideModel.find({ starting_placedis:dis1,ending_placedis: dis2,date: date1});
+    const cars = await share_rideModel.find({ starting_placedis:dis1,ending_placedis: dis2,date:date1});
     
     const datas = cars.filter((single)=>{
       return single.user_id != uid
@@ -107,6 +107,7 @@ share_rideRouter.get('/sharerideview/:id', async function (req, res) {
                   'starting_place':{'$first':'$starting_place'},
                   'ending_place':{'$first':'$ending_place'},
                   'starting_time':{'$first':'$starting_time'},
+                  'price':{'$first':'$price'},
                   'person':{'$first':'$person'},
                   'starting_placedis':{'$first':'$starting_placedis'},
                   'ending_placedis':{'$first':'$ending_placedis'},
@@ -164,7 +165,7 @@ share_rideRouter.post('/takeride2', async function (req, res) {
         success: true,
         error: false,
         details: savedData,
-        message: "ride shared"
+        message: "request shared"
       });
     }
   } catch (error) {
@@ -176,7 +177,116 @@ share_rideRouter.post('/takeride2', async function (req, res) {
   }
 });
 
+share_rideRouter.get('/shareride5/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
 
+      const allUser = await takeriseModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'share_ride_tbs', 
+                'localField': 'shareid', 
+                'foreignField': '_id', 
+                'as': 'share'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$share"
+        },
+      
+            {
+
+              '$match': { 'share.user_id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+              
+                  
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'email':{'$first':'$user.email'},
+                  'gender':{'$first':'$user.gender'},
+                  'shareID':{'$first':'$share._id'},
+                  'shareuser':{'$first':'$share.user_id'},
+                  'profilepic':{'$first':'$user.profilepic'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
+
+
+share_rideRouter.get('/rideacc/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+const oldData = await share_rideModel.findOne({ _id: id });
+console.log(oldData);
+const newNo = parseInt(oldData.person) - 1
+const updatePerson = await share_rideModel.updateOne({ _id: id }, { $set: { person: newNo } });
+const approve = await takeriseModel.updateOne({ shareid: id }, { $set: { status: 1 } });
+ console.log(approve);
+    if (approve && approve.modifiedCount === 1) {
+      return res.status(200).json({
+        success: true,
+        message: 'User approved',
+      });
+    } else if (approve && approve.modifiedCount === 0) {
+      return res.status(400).json({
+        success: false,
+        message: 'User not found or already approved',
+      });
+    } else {
+      throw new Error('Error updating user');
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: 'Something went wrong',
+      details: error.message,
+    });
+  }
+});
 
 
 

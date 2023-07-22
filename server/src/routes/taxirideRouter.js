@@ -4,6 +4,7 @@ const userModel = require('../models/userModel');
 
 const { default: mongoose } = require('mongoose');
 const taxiModel = require('../models/taxiModel');
+const share_rideModel = require('../models/share_rideModel');
 const taxirideRouter = express.Router();
 const objectid = mongoose.Types.ObjectId
 
@@ -324,6 +325,8 @@ taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
       })
   }
 })
+
+
 
 
 module.exports = taxirideRouter;

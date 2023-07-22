@@ -31,6 +31,7 @@ class _Takeride3State extends State<Takeride3> {
  String sid ='';
  String date1 ='';
  String login_id ='';
+ String price ='';
  bool  _isLoading = false;
 
  final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
@@ -65,6 +66,7 @@ class _Takeride3State extends State<Takeride3> {
 
         sid = body['data'][0]['_id'];
         date1 = body['data'][0]['date'];
+        price = body['data'][0]['price'];
 
       });
     } else {
@@ -308,7 +310,7 @@ print("ds$login_id");
                         ),
                       ),
                       Text(
-                        'Rs 900',
+                        'Rs $price',
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
