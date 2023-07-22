@@ -4,6 +4,7 @@ class UserModel{
   final String lname;
   final String lid;
   final String idcardimag;
+  final String profilepic;
 
 
   UserModel({required this.fname,
@@ -11,6 +12,7 @@ class UserModel{
     required this.lname,
     required this.lid,
     required this.idcardimag,
+    required this.profilepic,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class UserModel{
       lname: json['last_name'],
       lid: json['id'],
       idcardimag: json['idcardimag'],
+      profilepic: json['profilepic'],
 
     );
   }

@@ -46,7 +46,16 @@ class _DriverrentState extends State<Driverrent> {
       name: 'jack',
       photoUrl: 'images/images (1).jpg',
       rating: 4.3,
+    ), Driver(
+      name: 'jack',
+      photoUrl: 'images/images (1).jpg',
+      rating: 4.1,
+    ), Driver(
+      name: 'jack',
+      photoUrl: 'images/images (1).jpg',
+      rating: 4.8,
     ),
+
     // Add more drivers here...
   ];
 
@@ -84,7 +93,7 @@ class _DriverrentState extends State<Driverrent> {
           ),
           itemCount: snapshot.data!.length,
           itemBuilder: (context, index) {
-            dx=snapshot.data![index].id;
+            var dx=snapshot.data![index].id;
             final driver = drivers[index];
 
          print('hiiiiiii$dx');
@@ -103,7 +112,7 @@ class _DriverrentState extends State<Driverrent> {
                           top: Radius.circular(10),
                         ),
                         image: DecorationImage(
-                          image: AssetImage("server/public/images/"+snapshot.data![index].idcardimag),
+                          image: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                           fit: BoxFit.cover,
                         ),
                       ),

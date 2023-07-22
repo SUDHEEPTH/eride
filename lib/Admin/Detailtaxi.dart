@@ -24,6 +24,7 @@ class _DetailtaxiState extends State<Detailtaxi> {
   String gender = "";
   String username = "";
   String idcard = "";
+  String profilepic = "";
 
   late SharedPreferences prefs;
 
@@ -46,6 +47,7 @@ class _DetailtaxiState extends State<Detailtaxi> {
       gender = body['data'][0]['gender'];
       username = body['data'][0]['username'];
       idcard = body['data'][0]['idcard'];
+      profilepic = body['data'][0]['profilepic'];
     });
   }
 
@@ -76,7 +78,7 @@ class _DetailtaxiState extends State<Detailtaxi> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage('images/SJG.png'),
+                backgroundImage: AssetImage("server/public/images/"+profilepic),
                 radius: 65,
               ),
             ),

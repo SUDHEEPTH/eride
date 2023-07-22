@@ -34,7 +34,8 @@ carRouter.post('/car', async function (req, res) {
       prize: req.body.prize,
       name: req.body.name,
       location: req.body.location,
-      discription: req.body.discription // Fixed the typo in the field name
+      discription: req.body.discription, // Fixed the typo in the field name
+      Adress: req.body.Adress // Fixed the typo in the field name
     };
 
     const savedData = await carModel.create(data); // Use create() to simplify the saving process

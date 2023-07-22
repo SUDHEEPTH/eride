@@ -202,6 +202,7 @@ console.log(userId);
                   'gender': { '$first': '$gender' },
                   'username': { '$first': '$login.username' },
                   'idcardimag':{'$first':'$idcardimag'},
+                  'profilepic':{'$first':'$profilepic'},
               }
           }
       ]);

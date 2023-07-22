@@ -7,6 +7,9 @@ import 'package:eride/api/api_services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:path/path.dart';
+
+
 
 class ManageTaxi extends StatefulWidget {
   const ManageTaxi({Key? key}) : super(key: key);
@@ -18,13 +21,10 @@ class ManageTaxi extends StatefulWidget {
 List _loadprooducts = [];
 
 final List<String> containerImages = [
-  'ava3.png',
-  'ava3.png',
-  'ava3.png',
-  'ava3.png',
-  'ava3.png',
-  'ava3.png',
-  'ava3.png',
+  'images/ava3.png',
+  'images/ava3.png',
+  'images/ava3.png',
+  'images/ava3.png',
 ];
 final List<String> entries1 = ['mac ', 'rio'];
 final List<String> userIds = ['001', '002'];
@@ -37,6 +37,7 @@ Future approveUser(String userid) async {
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
+
     Fluttertoast.showToast(
       msg: "Approved",
     );
@@ -64,7 +65,7 @@ Future reject(String userid) async {
 }
 
 late String uerid;
-late String userid;
+late String userid2;
 
 class _ManageTaxiState extends State<ManageTaxi> {
   @override
@@ -115,7 +116,7 @@ class _ManageTaxiState extends State<ManageTaxi> {
                         },
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: AssetImage(containerImages[index]),
+                            backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                           ),
                           title: Text(
                             '${snapshot.data![index].fname} ${snapshot.data![index].lname}',
@@ -186,18 +187,19 @@ class _ManageTaxiState extends State<ManageTaxi> {
                     padding: const EdgeInsets.all(8),
                     itemCount: snapshot.data!.length,
                     itemBuilder: (BuildContext context, int index) {
-                      uerid = snapshot.data![index].lid;
+                      var userid2 = snapshot.data![index].lid;
+
                       if (index < containerImages.length) {
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Detailtaxi(userid: uerid)),
+                              MaterialPageRoute(builder: (context) => Detailtaxi(userid: userid2)),
                             );
                           },
                           child: ListTile(
                             leading: CircleAvatar(
-                              backgroundImage: AssetImage(containerImages[index]),
+                              backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                             ),
                             title: Text(
                               snapshot.data![index].fname,

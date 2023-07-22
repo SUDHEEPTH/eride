@@ -28,6 +28,7 @@ class _AddcarrentState extends State<Addcarrent> {
   final TextEditingController _carPriceController = TextEditingController();
   final TextEditingController _carDescriptionController = TextEditingController();
   final TextEditingController _districtController = TextEditingController();
+  final TextEditingController _AdressController = TextEditingController();
   String _automatedValue = 'Manual';
   String _seatsValue = '4';
   String _engineTypeValue = 'Petrol';
@@ -57,6 +58,7 @@ class _AddcarrentState extends State<Addcarrent> {
       "seat": _seatsValue,
       "petrol": _engineTypeValue,
       "car_image": _filename,
+      "Adress": _AdressController.text,
     };
     print(data);
     var res = await Api().authData(data, '/car/car');
@@ -188,6 +190,15 @@ class _AddcarrentState extends State<Addcarrent> {
 
                 decoration: InputDecoration(
                   labelText: 'District',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              SizedBox(height: 16.0),
+              TextFormField(
+                controller: _AdressController,
+
+                decoration: InputDecoration(
+                  labelText: 'Adress',
                   border: OutlineInputBorder(),
                 ),
               ),

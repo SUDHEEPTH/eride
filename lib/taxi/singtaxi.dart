@@ -6,6 +6,7 @@ import 'package:eride/login.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 
 
@@ -19,9 +20,11 @@ class singtaxi extends StatefulWidget {
 
 class _singtaxiState extends State<singtaxi> {
   late final _filename;
+  late final _profilename;
   File? imageFile;
   late String storedImage;
   File? _image;
+  File? _proimage;
   final picker = ImagePicker();
 
   bool  _isLoading = false;
@@ -86,6 +89,19 @@ class _singtaxiState extends State<singtaxi> {
       }
     });
   }
+  Future _proselectImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _proimage = File(pickedFile.path);
+        _profilename = basename(_proimage!.path).toString();
+
+      } else {
+        print('No image selected.');
+      }
+    });
+  }
 
   void registerUser() async {
     // Check if an image is selected
@@ -107,7 +123,8 @@ class _singtaxiState extends State<singtaxi> {
       "address": _addressController.text,
       "phoneNumber": _phoneNumberController.text,
       "email": _emailController.text,
-      "idcardimag": _filename
+      "idcardimag": _filename,
+      "profilepic": _profilename
 
     };
     var res = await Api().authData(data,'/register/taxi-register');
@@ -115,6 +132,7 @@ class _singtaxiState extends State<singtaxi> {
 
     if(body['success']==true)
     {
+      profile();
       id();
       print(body);
       Fluttertoast.showToast(
@@ -152,6 +170,43 @@ class _singtaxiState extends State<singtaxi> {
       imageStream,
       imageLength,
       filename: _filename,
+    );
+    request.files.add(multipartFile);
+
+    print("multipart${multipartFile}");
+    final response = await request.send();
+    if(response.statusCode == 200)
+    {
+
+      Fluttertoast.showToast(
+        msg:"success",
+        backgroundColor: Colors.grey,
+      );
+
+
+    }
+    else
+    {
+      Fluttertoast.showToast(
+        msg:"Failed",
+        backgroundColor: Colors.grey,
+      );
+
+    }
+
+  }
+  void profile()async{
+
+    final uri = Uri.parse(Api().url+'/register/userprofilepic');
+    final request = http.MultipartRequest('POST', uri);
+    final imageStream = http.ByteStream(_proimage!.openRead());
+    final imageLength = await _proimage!.length();
+
+    final multipartFile = http.MultipartFile(
+      'file',
+      imageStream,
+      imageLength,
+      filename: _profilename,
     );
     request.files.add(multipartFile);
 
@@ -224,7 +279,7 @@ class _singtaxiState extends State<singtaxi> {
                   child: Padding(
                     padding: const EdgeInsets.only(top: 8.0),
                     child: Text(
-                      "Register as Taxi",
+                      "Register as user",
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
@@ -233,6 +288,53 @@ class _singtaxiState extends State<singtaxi> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20,),
+                CircleAvatar(
+                  radius: 70,
+                  backgroundColor: Colors.grey[300], // Background color for the avatar
+                  backgroundImage: _proimage != null ? FileImage(_proimage!) : null,
+                  child: _proimage == null
+                      ? Icon(
+                    Icons.person, // Placeholder icon if no image is selected
+                    size: 50,
+                    color: Colors.grey[600],
+                  )
+                      : null,
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.only(top: 2.0 ,bottom: 10),
+                  child: ElevatedButton(
+                    onPressed: _proselectImage,
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green, // Change button background color to green
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30), // Rounded button edges
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.camera_alt, // Icon before the text
+                          color: Colors.white,
+                        ),
+                        SizedBox(width: 10),
+                        Text(
+                          'Select Profile Picture',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white, // Text color
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -242,6 +344,7 @@ class _singtaxiState extends State<singtaxi> {
                   ),
                   child: TextFormField(
                     controller: _userNameController,
+                    maxLength: 12, // Restricting to 7 characters
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter User Name';
@@ -257,9 +360,12 @@ class _singtaxiState extends State<singtaxi> {
                       ),
                       labelText: "Enter User Name",
                       labelStyle: TextStyle(color: Colors.green),
+                      counterText: '', // Set the counterText to an empty string
                     ),
                   ),
                 ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -269,6 +375,7 @@ class _singtaxiState extends State<singtaxi> {
                   ),
                   child: TextFormField(
                     controller: _firstNameController,
+
                     validator: (value) {
 
                       if (value!.isEmpty) {
@@ -315,7 +422,6 @@ class _singtaxiState extends State<singtaxi> {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -325,25 +431,70 @@ class _singtaxiState extends State<singtaxi> {
                   ),
                   child: TextFormField(
                     controller: _dobController,
-                    validator: (value) {
+                    readOnly: true,
+                    onTap: () async {
+                      DateTime currentDate = DateTime.now();
+                      DateTime? selectedDate = await showDatePicker(
+                        context: context,
+                        initialDate: currentDate.subtract(Duration(days: 6570)), // 18 years ago
+                        firstDate: DateTime(1900),
+                        lastDate: currentDate,
+                        builder: (BuildContext context, Widget? child) {
+                          return Theme(
+                            data: ThemeData.light().copyWith(
+                              primaryColor: Colors.green,
+                              accentColor: Colors.green,
+                              colorScheme: ColorScheme.light(primary: Colors.green),
+                              buttonTheme: ButtonThemeData(textTheme: ButtonTextTheme.primary),
+                            ),
+                            child: child!,
+                          );
+                        },
+                      );
 
-                      if (value!.isEmpty) {
-                        return 'Please enter Date of birth';
+                      if (selectedDate != null) {
+                        setState(() {
+                          _dobController.text = DateFormat('yyyy-MM-dd').format(selectedDate);
+                        });
                       }
+                    },
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'Please select Date of Birth';
+                      }
+
+                      DateTime currentDate = DateTime.now();
+                      DateTime selectedDate = DateTime.parse(value);
+
+                      int age = currentDate.year - selectedDate.year;
+                      if (currentDate.month < selectedDate.month ||
+                          (currentDate.month == selectedDate.month && currentDate.day < selectedDate.day)) {
+                        age--;
+                      }
+
+                      if (age < 18) {
+                        return 'You must be at least 18 years old';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.grey),
                       ),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(10.0),
                       ),
-                      labelText: "Enter Date of birth",
+                      labelText: "Date of Birth",
                       labelStyle: TextStyle(color: Colors.green),
                     ),
                   ),
                 ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -352,11 +503,19 @@ class _singtaxiState extends State<singtaxi> {
                     bottom: 10,
                   ),
                   child: TextFormField(
+                    maxLength: 10,
                     controller: _phoneNumberController,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Phone Number';
                       }
+
+                      // Remove any non-digit characters and check the length
+                      String cleanedNumber = value.replaceAll(RegExp(r'\D'), '');
+                      if (cleanedNumber.length != 10) {
+                        return 'Phone Number should be exactly 10 digits';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -368,9 +527,11 @@ class _singtaxiState extends State<singtaxi> {
                       ),
                       labelText: "Enter Phone Number",
                       labelStyle: TextStyle(color: Colors.green),
+                      counterText: '',
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -384,6 +545,14 @@ class _singtaxiState extends State<singtaxi> {
                       if (value!.isEmpty) {
                         return 'Please enter Email';
                       }
+
+                      // Regular expression for basic email format validation
+                      String emailPattern = r'^[a-zA-Z0-9._%+-]+@gmail\.com$';
+                      RegExp regExp = RegExp(emailPattern);
+                      if (!regExp.hasMatch(value)) {
+                        return 'Please enter a valid Gmail address';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -398,6 +567,7 @@ class _singtaxiState extends State<singtaxi> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only( left: 50.0,
                       right: 23,
@@ -464,6 +634,11 @@ class _singtaxiState extends State<singtaxi> {
                       if (value!.isEmpty) {
                         return 'Please enter Car number';
                       }
+                      // Regular expression for a valid car number plate format like DL01AB1234
+                      RegExp carNumberPlateRegex = RegExp(r'^[A-Z]{2}\d{2}[A-Z]{2}\d{4}$');
+                      if (!carNumberPlateRegex.hasMatch(value)) {
+                        return ' It should be in the format like DL01AB1234';
+                      }
                       return null;
                     },
                     decoration: InputDecoration(
@@ -478,6 +653,10 @@ class _singtaxiState extends State<singtaxi> {
                     ),
                   ),
                 ),
+
+
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -558,6 +737,8 @@ class _singtaxiState extends State<singtaxi> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Password';
+                      } else if (value.length < 8) {
+                        return 'Password must be at least 8 characters';
                       }
                       return null;
                     },
@@ -574,6 +755,7 @@ class _singtaxiState extends State<singtaxi> {
                     obscureText: true,
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,

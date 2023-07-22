@@ -114,7 +114,7 @@ class _singdriverState extends State<singdriver> {
       "dob": _dobController.text,
       "username": _userNameController.text,
       "firstName": _firstNameController.text,
-      "lastName": _firstNameController.text,
+      "lastName": _lastNameController.text,
       "password": _passwordController.text,
       "gender": _selectedGender,
       "idcard":_idCardType,
@@ -333,6 +333,7 @@ class _singdriverState extends State<singdriver> {
                   ),
                 ),
 
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -342,6 +343,7 @@ class _singdriverState extends State<singdriver> {
                   ),
                   child: TextFormField(
                     controller: _userNameController,
+                    maxLength: 12, // Restricting to 7 characters
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter User Name';
@@ -357,9 +359,12 @@ class _singdriverState extends State<singdriver> {
                       ),
                       labelText: "Enter User Name",
                       labelStyle: TextStyle(color: Colors.green),
+                      counterText: '', // Set the counterText to an empty string
                     ),
                   ),
                 ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -369,6 +374,7 @@ class _singdriverState extends State<singdriver> {
                   ),
                   child: TextFormField(
                     controller: _firstNameController,
+
                     validator: (value) {
 
                       if (value!.isEmpty) {
@@ -415,7 +421,6 @@ class _singdriverState extends State<singdriver> {
                     ),
                   ),
                 ),
-
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -487,6 +492,8 @@ class _singdriverState extends State<singdriver> {
                     ),
                   ),
                 ),
+
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -495,11 +502,19 @@ class _singdriverState extends State<singdriver> {
                     bottom: 10,
                   ),
                   child: TextFormField(
+                    maxLength: 10,
                     controller: _phoneNumberController,
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Phone Number';
                       }
+
+                      // Remove any non-digit characters and check the length
+                      String cleanedNumber = value.replaceAll(RegExp(r'\D'), '');
+                      if (cleanedNumber.length != 10) {
+                        return 'Phone Number should be exactly 10 digits';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -511,9 +526,11 @@ class _singdriverState extends State<singdriver> {
                       ),
                       labelText: "Enter Phone Number",
                       labelStyle: TextStyle(color: Colors.green),
+                      counterText: '',
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,
@@ -527,6 +544,14 @@ class _singdriverState extends State<singdriver> {
                       if (value!.isEmpty) {
                         return 'Please enter Email';
                       }
+
+                      // Regular expression for basic email format validation
+                      String emailPattern = r'^[a-zA-Z0-9._%+-]+@gmail\.com$';
+                      RegExp regExp = RegExp(emailPattern);
+                      if (!regExp.hasMatch(value)) {
+                        return 'Please enter a valid Gmail address';
+                      }
+
                       return null;
                     },
                     decoration: InputDecoration(
@@ -541,6 +566,7 @@ class _singdriverState extends State<singdriver> {
                     ),
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only( left: 50.0,
                       right: 23,
@@ -675,6 +701,8 @@ class _singdriverState extends State<singdriver> {
                     validator: (value) {
                       if (value!.isEmpty) {
                         return 'Please enter Password';
+                      } else if (value.length < 8) {
+                        return 'Password must be at least 8 characters';
                       }
                       return null;
                     },
@@ -691,6 +719,7 @@ class _singdriverState extends State<singdriver> {
                     obscureText: true,
                   ),
                 ),
+
                 Padding(
                   padding: const EdgeInsets.only(
                     left: 50.0,

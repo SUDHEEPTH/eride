@@ -150,7 +150,7 @@ class _LoginState extends State<Login> {
             Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Text("welcom back Login with your details",
+                child: Text("Welcom back Login with your details",
                     style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -180,6 +180,7 @@ class _LoginState extends State<Login> {
                 right: 50.0,
               ),
               child: TextField(
+                maxLength: 10,
                 controller: passcontroller,
                 decoration: InputDecoration(
                   enabledBorder: OutlineInputBorder(
@@ -192,6 +193,7 @@ class _LoginState extends State<Login> {
                   labelStyle: TextStyle(
                     color: Colors.green,
                   ),
+                  counterText: '',
                 ),
                 obscureText: true, // Hide the password characters
 

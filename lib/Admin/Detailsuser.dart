@@ -25,6 +25,7 @@ class _DetailsuserState extends State<Detailsuser> {
   String username = "";
   String idcard = "";
   String idcardimag = "";
+  String profilepic = "";
 
   late SharedPreferences prefs;
 
@@ -50,6 +51,7 @@ class _DetailsuserState extends State<Detailsuser> {
       username = body['data'][0]['username'];
       idcard = body['data'][0]['idcard'];
       idcardimag = body['data'][0]['idcardimag'];
+      profilepic = body['data'][0]['profilepic'];
     });
   }
 
@@ -80,7 +82,7 @@ class _DetailsuserState extends State<Detailsuser> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage("server/public/images/"+idcardimag),
+                backgroundImage: AssetImage("server/public/images/"+profilepic),
 
                 radius: 65,
               ),

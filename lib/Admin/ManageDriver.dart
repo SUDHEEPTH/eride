@@ -1,7 +1,9 @@
 import 'dart:convert';
 
+
 import 'package:eride/Admin/Detailsdriver.dart';
 import 'package:eride/Admin/Detailsuser.dart';
+import 'package:eride/Admin/ManageTaxi.dart';
 import 'package:eride/Admin/Manageuser.dart';
 import 'package:eride/Admin/model/usermodel.dart';
 import 'package:eride/api/api.dart';
@@ -16,26 +18,20 @@ class ManageDriver extends StatefulWidget {
   @override
   State<ManageDriver> createState() => _ManageDriverState();
 }
+
 List _loadprooducts = [];
 ApiService client = ApiService();
-final List<String> containerImages = [
-  'images/ava3.png',
-  'images/ava3.png',
-  'images/ava3.png',
-  'images/ava3.png',
-];
-final List<String> entries1 = ['rajan ', 'sasi'];
-final List<String> userIds = ['001', '002'];
-final List<String> entries = ['jhon', 'lis', 'rino', 'ravi'];
-final List<String> userIds2 = ['007', '008', '009', '003'];
+
+
+
 Future approveUser(String userid) async {
   userid = userid;
   print("u ${userid}");
-  var response = await Api().getData('/register/approve/'+userid);
+  var response = await Api().getData('/register/approve/' + userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
-    Navigator.push(context as BuildContext, MaterialPageRoute(builder: (context)=> ManageDriver()));
+
 
     Fluttertoast.showToast(
       msg: "Approved",
@@ -46,9 +42,9 @@ Future approveUser(String userid) async {
     );
   }
 }
-Future reject(String userid) async {
 
-  var response = await Api().getData('/register/reject/'+userid);
+Future reject(String userid) async {
+  var response = await Api().getData('/register/reject/' + userid);
   if (response.statusCode == 200) {
     var items = json.decode(response.body);
     print("approve status${items}");
@@ -61,8 +57,9 @@ Future reject(String userid) async {
     );
   }
 }
- String userid='';
- String uid='';
+
+String userid = '';
+String uid = '';
 
 class _ManageDriverState extends State<ManageDriver> {
   @override
@@ -93,82 +90,79 @@ class _ManageDriverState extends State<ManageDriver> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
           ),
           FutureBuilder<List<UserModel>>(
-          future: client.fetchdriver(),
-          builder: (BuildContext context,
-          AsyncSnapshot<List<UserModel>> snapshot) {
-            if (snapshot.hasData) {
-              return ListView.separated(
-                shrinkWrap: true,
-                padding: const EdgeInsets.all(8),
-                itemCount: snapshot.data!.length,
-                itemBuilder: (BuildContext context, int index) {
+            future: client.fetchdriver(),
+            builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
+              if (snapshot.hasData) {
+                return ListView.separated(
+                  shrinkWrap: true,
+                  padding: const EdgeInsets.all(8),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    // Use modulo to ensure the index is within the valid range
+                    int imageIndex = index % containerImages.length;
 
-                  userid=snapshot.data![index].lid;
-                  print(userid);
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => Detaildriver(userid:userid)));
-                    },
-
-                    child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage(containerImages[index]),
-                      ),
-                      title: Text(
-                        snapshot.data![index].fname,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          fontStyle: FontStyle.italic,
+                    var userid = snapshot.data![index].lid;
+                    print(userid);
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                            context, MaterialPageRoute(builder: (context) => Detaildriver(userid: userid)));
+                      },
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                         ),
-                      ),
-                      subtitle: Text(
-                        'ID: ${snapshot.data![index].lid}',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 14,
+                        title: Text(
+                          snapshot.data![index].fname,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                          ),
                         ),
-                      ),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(
-                              Icons.check,
-                              color: Colors.green,
-                            ),
-                            onPressed: () {
-                              // Handle approve button pressed
-                              approveUser(userid);
-                            },
+                        subtitle: Text(
+                          'ID: ${snapshot.data![index].lid}',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
                           ),
-                          IconButton(
-                            icon: Icon(
-                              Icons.close,
-                              color: Colors.red,
+                        ),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.check,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                // Handle approve button pressed
+                                approveUser(userid);
+                              },
                             ),
-                            onPressed: () {
-                              // Handle decline button pressed
-                              reject(userid);
-                            },
-                          ),
-                        ],
+                            IconButton(
+                              icon: Icon(
+                                Icons.close,
+                                color: Colors.red,
+                              ),
+                              onPressed: () {
+                                // Handle decline button pressed
+                                reject(userid);
+                              },
+                            ),
+                          ],
+                        ),
+                        tileColor: Colors.grey.withOpacity(0.4),
                       ),
-                      tileColor: Colors.grey.withOpacity(0.4),
-                    ),
-                  );
-                },
-                separatorBuilder: (BuildContext context, int index) =>
-                const Divider(),
-              );
-            }
-            return Center(child: CircularProgressIndicator());
-          }
-                  ),
-
-
+                    );
+                  },
+                  separatorBuilder: (BuildContext context, int index) => const Divider(),
+                );
+              }
+              return Center(child: CircularProgressIndicator());
+            },
+          ),
           Divider(
             thickness: 2,
             color: Colors.black,
@@ -182,54 +176,57 @@ class _ManageDriverState extends State<ManageDriver> {
             builder: (BuildContext context, AsyncSnapshot<List<UserModel>> snapshot) {
               if (snapshot.hasData) {
                 return ListView.separated(
+
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
                   itemCount: snapshot.data!.length,
                   itemBuilder: (BuildContext context, int index) {
-                    String userid = snapshot.data![index].lid; // Declare userid variable here
-                    print(userid);
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Detaildriver(userid: userid),
+                    var userid2 = snapshot.data![index].lid;
+
+                    if (index < containerImages.length) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => Detaildriver(userid: userid)),
+                          );
+                        },
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                           ),
-                        );
-                      },
-                      child: ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage: AssetImage(containerImages[index]),
-                        ),
-                        title: Text(
-                          snapshot.data![index].fname,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
+                          title: Text(
+                            snapshot.data![index].fname,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
-                        ),
-                        subtitle: Text(
-                          'ID: ${snapshot.data![index].id}',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
+                          subtitle: Text(
+                            'ID: ${snapshot.data![index].lid}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.delete,
-                            color: Colors.red,
+                          trailing: IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: Colors.red,
+                            ),
+                            onPressed: () {
+                              // Handle delete button pressed
+                              _showDeleteConfirmationDialog(context, index);
+                            },
                           ),
-                          onPressed: () {
-                            // Handle delete button pressed
-                            _showDeleteConfirmationDialog(context, index);
-                          },
+                          tileColor: Colors.grey.withOpacity(0.4),
                         ),
-                        tileColor: Colors.grey.withOpacity(0.4),
-                      ),
-                    );
+                      );
+                    } else {
+                      return SizedBox(); // Return an empty SizedBox if the index is out of bounds
+                    }
                   },
                   separatorBuilder: (BuildContext context, int index) => const Divider(),
                 );
@@ -284,19 +281,4 @@ class _ManageDriverState extends State<ManageDriver> {
     entries.removeAt(index);
     containerImages.removeAt(index);
   }
-
-  void _approveUser(int index) {
-    // Perform the approve operation here
-    // For example, update the user status in the database
-    print('User ${entries[index]} approved.');
-  }
-
-  void _declineUser(int index) {
-    // Perform the decline operation here
-    // For example, delete the user from the database
-    print('User ${entries[index]} declined.');
-  }
 }
-
-
-

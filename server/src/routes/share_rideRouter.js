@@ -145,7 +145,7 @@ share_rideRouter.get('/sharerideview/:id', async function (req, res) {
           message:"Something went wrong"
       })
   }
-})
+});
 share_rideRouter.post('/takeride2', async function (req, res) {
   try {
     const data = {

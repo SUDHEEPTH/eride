@@ -26,7 +26,7 @@ driver_bookingRouter.post('/driver_booking', async function (req, res) {
         success: true,
         error: false,
         details: savedData,
-        message: "Registration completed",
+        message: "request sent completed",
       });
     }
   } catch (error) {
@@ -77,6 +77,7 @@ driver_bookingRouter.get('/viewdriver/:id', async function (req, res) {
                   'username':{'$first':'$login.username'},
                   
                   'idcardimag':{'$first':'$idcardimag'},
+                  'profilepic':{'$first':'$profilepic'},
               }
           }
         ])
@@ -157,6 +158,7 @@ driver_bookingRouter.get('/viewdriverall/:id', async function (req, res) {
                   'last_name':{'$first':'$user.last_name'},
                   'driverid':{'$first':'$driver_id'},
                   'driverlog':{'$first':'$driver.login_id'},
+                  'profilepic':{'$first':'$driver.profilepic'},
                   
               }
           }

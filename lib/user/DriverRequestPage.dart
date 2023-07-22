@@ -30,6 +30,7 @@ class _DriverRequestPageState extends State<DriverRequestPage> {
   String idcardimag = "";
   String _id = "";
   String login_id = "";
+  String profilepic = "";
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late SharedPreferences prefs;
 
@@ -66,6 +67,8 @@ class _DriverRequestPageState extends State<DriverRequestPage> {
         Phone_no = body['data'][0]['Phone_no'];
         last_name = body['data'][0]['last_name'];
         idcardimag = body['data'][0]['idcardimag'];
+        idcardimag = body['data'][0]['idcardimag'];
+        profilepic = body['data'][0]['profilepic'];
         _id = body['data'][0]['_id'];
       });
     } else {
@@ -170,7 +173,7 @@ print('hoi  $_id');
                 Center(
                   child: CircleAvatar(
                     radius: 80,
-                    backgroundImage: AssetImage("server/public/images/$idcardimag"),
+                    backgroundImage: AssetImage("server/public/images/$profilepic"),
                   ),
                 ),
                 SizedBox(height: 16),

@@ -4,6 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../api/api.dart';
+Widget buildInfoRow(String label, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 18),
+    child: Row(
+      children: [
+        Text(
+          label,
+          style: TextStyle(fontSize: 16, color: Colors.blue[500], fontWeight: FontWeight.bold),
+        ),
+        SizedBox(width: 10),
+        Text(
+          value,
+          style: TextStyle(fontSize: 17, color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+      ],
+    ),
+  );
+}
+
 
 class Detaildriver extends StatefulWidget {
   final String userid;
@@ -25,6 +44,7 @@ class _DetaildriverState extends State<Detaildriver> {
   String username = "";
   String idcard = "";
   String idcardimag = "";
+  String profilepic = "";
 
   late SharedPreferences prefs;
 
@@ -49,6 +69,7 @@ class _DetaildriverState extends State<Detaildriver> {
       idcard = body['data'][0]['idcard'];
       idcard = body['data'][0]['idcard'];
       idcardimag = body['data'][0]['idcardimag'];
+      profilepic = body['data'][0]['profilepic'];
       print("img${idcardimag}");
     });
   }
@@ -80,7 +101,7 @@ class _DetaildriverState extends State<Detaildriver> {
             Padding(
               padding: const EdgeInsets.only(top: 10.0),
               child: CircleAvatar(
-                backgroundImage: AssetImage("server/public/images/"+idcardimag),
+                backgroundImage: AssetImage("server/public/images/"+profilepic),
                 radius: 65,
               ),
             ),

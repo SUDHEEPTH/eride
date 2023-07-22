@@ -15,6 +15,7 @@ const carSchema = new schema({
     name: { type: String },
     location: { type: String },
     discription: { type: String },
+    Adress: { type: String },
 })
 
 const carModel = mongoose.model('car_tb',carSchema)

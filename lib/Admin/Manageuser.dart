@@ -58,6 +58,7 @@ class _ManageuserState extends State<Manageuser> {
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
       print("approve status${items}");
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Manageuser()));
       Fluttertoast.showToast(
         msg: "reject",
       );
@@ -108,14 +109,14 @@ class _ManageuserState extends State<Manageuser> {
                   shrinkWrap: true,
                   padding: const EdgeInsets.all(8),
                   itemBuilder: (BuildContext context, int index) {
-                     userid=snapshot.data![index].lid;
+                     var userid=snapshot.data![index].lid;
                      print(userid);
                     return  GestureDetector(
                       onTap: (){Navigator.push(context, MaterialPageRoute(builder: (context)=>Detailsuser(userid: userid)));},
 
                       child: ListTile(
                         leading: CircleAvatar(
-                          backgroundImage: AssetImage(containerImages[index]),
+                          backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                         ),
                         title: Text(
                           snapshot.data![index].fname,
@@ -205,7 +206,7 @@ class _ManageuserState extends State<Manageuser> {
                         },
                         child: ListTile(
                           leading: CircleAvatar(
-                            backgroundImage: AssetImage(containerImages[index]),
+                            backgroundImage: AssetImage("server/public/images/"+snapshot.data![index].profilepic),
                           ),
                           title: Text(
                             snapshot.data![index].fname,

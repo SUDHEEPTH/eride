@@ -55,6 +55,7 @@ registerRouter.get('/viewstatus-driver', async function (req, res) {
                     'username':{'$first':'$login.username'},
                     
                     'idcardimag':{'$first':'$idcardimag'},
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
           ])
@@ -116,7 +117,7 @@ registerRouter.get('/view-taxi', async function (req, res) {
                     'gender':{'$first':'$gender'},
                     'username':{'$first':'$login.username'},
                     'idcardimag':{'$first':'$idcardimag'},
-                    
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
           ])
@@ -177,7 +178,7 @@ registerRouter.get('/viewstatus-taxi', async function (req, res) {
                   'gender':{'$first':'$gender'},
                   'username':{'$first':'$login.username'},
                   'idcardimag':{'$first':'$idcardimag'},
-                  
+                  'profilepic':{'$first':'$profilepic'},
               }
           }
         ])
@@ -239,7 +240,7 @@ registerRouter.get('/view-users', async function (req, res) {
                     'gender':{'$first':'$gender'},
                     'username':{'$first':'$login.username'},
                     'idcardimag':{'$first':'$idcardimag'},
-                    
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
           ])
@@ -304,7 +305,7 @@ registerRouter.get('/viewstatus-users', async function (req, res) {
                     'gender':{'$first':'$gender'},
                     'username':{'$first':'$login.username'},
                     'idcardimag':{'$first':'$idcardimag'},
-                    
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
           ])
@@ -366,7 +367,7 @@ registerRouter.get('/view-driver', async function (req, res) {
                   'gender':{'$first':'$gender'},
                   'username':{'$first':'$login.username'},
                   'idcardimag':{'$first':'$idcardimag'},
-                  
+                  'profilepic':{'$first':'$profilepic'},
               }
           }
         ])
@@ -707,6 +708,7 @@ console.log(userId);
                     'gender': { '$first': '$gender' },
                     'username': { '$first': '$login.username' },
                     'idcardimag':{'$first':'$idcardimag'},
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
         ]);
@@ -767,6 +769,7 @@ console.log(userId);
                     'gender': { '$first': '$gender' },
                     'username': { '$first': '$login.username' },
                     'idcardimag':{'$first':'$idcardimag'},
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
         ]);
@@ -828,6 +831,7 @@ console.log(userId);
                     'gender': { '$first': '$gender' },
                     'username': { '$first': '$login.username' },
                     'idcardimag':{'$first':'$idcardimag'},
+                    'profilepic':{'$first':'$profilepic'},
                 }
             }
         ]);

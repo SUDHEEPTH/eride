@@ -13,6 +13,7 @@ const share_rideSchema = new schema({
     starting_placedis:{ type: String },
     ending_placedis:{ type: String },
     date:{ type: String },
+    price:{ type: String },
    
   
     

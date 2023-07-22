@@ -117,7 +117,7 @@ class _singuserState extends State<singuser> {
       "dob": _dobController.text,
       "username": _userNameController.text,
       "firstName": _firstNameController.text,
-      "lastName": _firstNameController.text,
+      "lastName": _lastNameController.text,
       "password": _passwordController.text,
       "gender": _selectedGender,
       "idcard":_idCardType,
