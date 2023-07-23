@@ -18,8 +18,9 @@ taxirideRouter.post('/taxiride', async function (req, res) {
       posting_tim: req.body.posting_tim,
       Date: req.body.Date,
       Status: '0',
-      pickup: '0',
+      pickup: '60',
       ace: '0',
+      total: '0',
       taxi_id:null,
       time: req.body.time,
     };
@@ -81,6 +82,8 @@ taxirideRouter.get('/viewtaxi', async function (req, res) {
                 'first_name': { '$first': '$login.first_name' },
                 'last_name': { '$first': '$login.last_name' },
                 'idcardimag': { '$first': '$login.idcardimag' },
+                'pickup': { '$first': '$pickup' },
+                'profilepic': { '$first': '$login.profilepic' },
 
 
                   
@@ -231,11 +234,13 @@ console.log(userId);
   }
 });
 
-taxirideRouter.get('/accept/:id/:taxi', async (req, res) => {
+taxirideRouter.get('/accept/:id/:taxi/:total', async (req, res) => {
   try {
     const id = req.params.id;
     const taxiid =new objectid (req.params.taxi);
-const accept = await taxirideModel.updateOne({ _id: id }, { $set: { Status: 1,taxi_id:taxiid } });
+    const total1 =req.params.fareAmount;
+    
+const accept = await taxirideModel.updateOne({ _id: id }, { $set: { Status: 1,taxi_id:taxiid,total:total1 } });
  console.log(accept);
     if (accept && accept.modifiedCount === 1) {
       return res.status(200).json({
@@ -300,6 +305,7 @@ taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
                 'ace': { '$first': '$result.ace' },
                 
                 'pickup': { '$first': '$result.pickup' },
+                'profilepic': { '$first': '$result.profilepic' },
 
                   
               }

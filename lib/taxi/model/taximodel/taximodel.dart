@@ -10,6 +10,9 @@ class TaxiModel{
   final String time;
   final String idcardimag;
   final String id;
+  final String pickup;
+  final String profilepic;
+  final String user_id;
 
 
   TaxiModel({required this.fname,
@@ -23,6 +26,9 @@ class TaxiModel{
     required this.time,
     required this.idcardimag,
     required this.id,
+    required this.pickup,
+    required this.profilepic,
+    required this.user_id,
   });
 
   factory TaxiModel.fromJson(Map<String, dynamic> json) {
@@ -38,6 +44,10 @@ class TaxiModel{
       Date: json['Date'],
       time: json['time'],
       idcardimag: json['idcardimag'],
+      pickup: json['pickup'],
+      profilepic: json['profilepic'],
+      user_id: json['user_id'],
+
 
     );
   }
