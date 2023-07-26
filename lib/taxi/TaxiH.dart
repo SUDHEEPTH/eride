@@ -4,6 +4,7 @@ import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/taxi/model/taximodel/taximodel.dart';
+import 'package:eride/taxi/taxiprofile.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -17,70 +18,72 @@ class TaxiH extends StatefulWidget {
 }
 
 class _TaxiHState extends State<TaxiH> {
-  String amount='';
-  void _showBottomSheet( String dx, String userid) {
+  String amount = '';
+  void _showBottomSheet(String dx, String userid) {
     showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext ctx) {
-          return Padding(
-            padding: EdgeInsets.only(
-                top: 20,
-                left: 20,
-                right: 20,
-                bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-              child: Column(
-          mainAxisSize: MainAxisSize.min, // Use min to make the bottom sheet wrap its content
-          children: [
-            Container(
-              padding: EdgeInsets.all(16),
-              child: TextFormField(
-                controller: _distance,
-                style: TextStyle(color: Colors.black, fontSize: 15),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(5),
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: EdgeInsets.all(16),
+                child: TextFormField(
+                  controller: _distance,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  onChanged: (value) {
+                    // Calculate the fare amount when the distance is entered or changed
+                    double distance = double.tryParse(value) ?? 0.0;
+                    double fareAmount = distance * double.parse(dx);
+                    setState(() {
+                      amount = fareAmount.toStringAsFixed(2);
+                    });
+                  },
+                  decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    hintText: 'Distance/km',
                   ),
-                  hintText: 'Distance/km',
                 ),
               ),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Amount of km: ${dx}',
-              style: TextStyle(fontSize: 16),
-            ),
-            SizedBox(height: 8),
-            Text(
-              'Estimated Fare:',
-              style: TextStyle(fontSize: 16),
-            ),
-            Text(
-              '\₹$amount',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                // Replace the arguments with the actual distance and fare per km in your area.
-              //  calculateFare();
-                    fareAmount= double.parse(_distance.text)*double.parse(dx.toString());
-                  setState(() {
-                     amount=fareAmount.toString();
-                     print("amount${amount}");
-                  });
-                    approveUser(userid);
-              },
-              style: ElevatedButton.styleFrom(
-                primary: Colors.black,
+              SizedBox(height: 8),
+              Text(
+                'Amount of km: $dx',
+                style: TextStyle(fontSize: 16),
               ),
-              child: Text('Calculate Fare and Accept'),
-            ),
-          ],
-        ));
+              SizedBox(height: 8),
+              Text(
+                'Estimated Fare:',
+                style: TextStyle(fontSize: 16),
+              ),
+              Text(
+                '\₹$amount',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  calculateFare(double.tryParse(_distance.text) ?? 0.0, double.parse(dx), userid);
+                  Navigator.pop(context); // Close the bottom sheet after calculating fare
+                },
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.black,
+                ),
+                child: Text('Calculate Fare'),
+              ),
+            ],
+          ),
+        );
       },
     );
   }
-
 
 
   void initState() {
@@ -88,6 +91,7 @@ class _TaxiHState extends State<TaxiH> {
     _viewPro();
 
   }
+
   String first_name = "";
   String Phone_no = "";
   String last_name = "";
@@ -107,8 +111,10 @@ class _TaxiHState extends State<TaxiH> {
   String pickup = "";
   late SharedPreferences prefs;
   double fareAmount = 0.0;
-  TextEditingController _distance  = TextEditingController();
+  TextEditingController _distance = TextEditingController();
   TextEditingController _peramount = TextEditingController();
+  Map<String, double> fareAmounts = {};
+
   Future<void> _viewPro() async {
 
     prefs = await SharedPreferences.getInstance();
@@ -150,51 +156,46 @@ class _TaxiHState extends State<TaxiH> {
     }
   }
 
-    String userid='';
-    void calculateFare(double distanceInKm, double farePerKm,String userid) {
-      // Replace the farePerKm with the actual fare charged by taxi services in your area.
-      setState(() {
-        fareAmount = distanceInKm * farePerKm;
-      //  approveUser(userid);
-      });
+  void calculateFare(double distanceInKm, double farePerKm, String userid) {
+    // Replace the farePerKm with the actual fare charged by taxi services in your area.
+    double fareAmount = distanceInKm * farePerKm;
+    setState(() {
+      fareAmounts[userid] = fareAmount;
+    });
+  }
+
+  Future approveUser(String userid) async {
+    double fareAmountForRequest = fareAmounts[userid] ?? 0.0;
+    if (fareAmountForRequest <= 0) {
+      Fluttertoast.showToast(
+        msg: "Please calculate the fare before accepting the request.",
+      );
+      return;
     }
 
-    Future approveUser(String userid) async {
-      if (fareAmount <= 0) {
-        Fluttertoast.showToast(
-          msg: "Please calculate the fare before accepting the request.",
-        );
-        return;
-      }
+    userid = userid;
+    var response = await Api().getData('/taxiride/accept/$userid/$_id/$fareAmountForRequest');
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      print("body${items}");
+      print("approve status${items}");
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Taxihome()));
 
-      userid = userid;
-      print("uuk: ${amount}");
-      print("uuk: ${_id}");
-      var response = await Api().getData('/taxiride/accept/$userid/$_id/$fareAmount');
-      if (response.statusCode == 200) {
-        var items = json.decode(response.body);
-        print("body${items}");
-        print("approve status${items}");
-        Navigator.push(context as BuildContext, MaterialPageRoute(builder: (context)=> Taxihome()));
-
-        Fluttertoast.showToast(
-          msg: "accepted",
-        );
-      } else {
-        Fluttertoast.showToast(
-          msg: "Error",
-        );
-      }
+      Fluttertoast.showToast(
+        msg: "accepted",
+      );
+    } else {
+      Fluttertoast.showToast(
+        msg: "Error",
+      );
     }
-
-
-
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-       body: Column(
+        body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(height: 24.0),
@@ -207,7 +208,7 @@ class _TaxiHState extends State<TaxiH> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Hello,' + username.replaceAll('"', ''),
+                        'Hello, ${first_name.replaceAll('"', '')}',
                         style: TextStyle(
                           fontSize: 24.0,
                           fontWeight: FontWeight.bold,
@@ -225,13 +226,20 @@ class _TaxiHState extends State<TaxiH> {
                 ),
                 Padding(
                   padding: EdgeInsets.only(right: 16.0),
-                  child: CircleAvatar(
-                    backgroundImage: AssetImage("server/public/images/"+profilepic),
-                    radius: 30.0,
+                  child: GestureDetector(
+                    onTap: () {
+                      ProfileTaxi();
+                      // Action for the gesture tap event
+                    },
+                    child: CircleAvatar(
+                      backgroundImage: AssetImage("server/public/images/" + profilepic),
+                      radius: 30.0,
+                    ),
                   ),
                 ),
               ],
             ),
+
             SizedBox(height: 24.0),
             Padding(
               padding: const EdgeInsets.only(left: 10.0, right: 10),
@@ -318,8 +326,8 @@ class _TaxiHState extends State<TaxiH> {
                             child: ListView.builder(
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
-                               String dx= snapshot.data![index].pickup;
-                                userid = snapshot.data![index].id;
+                                String dx = snapshot.data![index].pickup;
+                                String userid = snapshot.data![index].id;
                                 print('hi $userid');
                                 return Expanded(
                                   child: Card(
@@ -402,10 +410,9 @@ class _TaxiHState extends State<TaxiH> {
                                                   ),
                                                 ],
                                               ),
-
                                               SizedBox(height: 8),
                                               Text(
-                                                'Amount of km: ${snapshot.data![index].pickup}',
+                                                'Amount of km: $dx',
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               SizedBox(height: 8),
@@ -414,38 +421,35 @@ class _TaxiHState extends State<TaxiH> {
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                               Text(
-                                                '\₹$fareAmount',
+                                                '\₹${fareAmounts[userid] ?? 0.0}',
                                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                                               ),
                                               ElevatedButton(
                                                 onPressed: () {
-                                                  _showBottomSheet( snapshot.data![index].pickup, snapshot.data![index].id);
+                                                  _showBottomSheet(dx, userid);
                                                 },
                                                 style: ElevatedButton.styleFrom(
                                                   primary: Colors.black,
                                                 ),
                                                 child: Text('Calculate Fare'),
                                               ),
+                                              ElevatedButton(
+                                                onPressed: () {
+                                                  if (fareAmounts[userid] == null || fareAmounts[userid]! <= 0) {
+                                                    Fluttertoast.showToast(
+                                                      msg: "Please calculate the fare before accepting the request.",
+                                                    );
+                                                  } else {
+                                                    approveUser(userid);
+                                                  }
+                                                },
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Colors.black,
+                                                ),
+                                                child: Text('Accept'),
+                                              ),
                                             ],
                                           ),
-                                        /*  trailing: ElevatedButton(
-                                            onPressed: () {
-                                              approveUser(userid);
-                                            },
-                                            style: ElevatedButton.styleFrom(
-                                              primary: Colors.black,
-                                            ),
-                                            child: Text(
-                                              'Accept',
-                                              style: TextStyle(
-                                                fontSize: 12.0,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            approveUser(mac);
-                                          },*/
                                         ),
                                       ],
                                     ),
@@ -460,13 +464,10 @@ class _TaxiHState extends State<TaxiH> {
                         return Center(child: CircularProgressIndicator());
                       },
                     ),
-
                   ),
                 ),
               ),
             ),
-
-            // Existing code for the home page
           ],
         ),
       ),

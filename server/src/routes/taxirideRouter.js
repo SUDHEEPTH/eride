@@ -145,6 +145,7 @@ console.log(userId);
                   'gender': { '$first': '$gender' },
                   'username': { '$first': '$login.username' },
                   'idcardimag':{'$first':'$idcardimag'},
+                  'profilepic':{'$first':'$profilepic'},
               }
           }
       ]);
@@ -234,7 +235,7 @@ console.log(userId);
   }
 });
 
-taxirideRouter.get('/accept/:id/:taxi/:total', async (req, res) => {
+taxirideRouter.get('/accept/:id/:taxi/:fareAmount', async (req, res) => {
   try {
     const id = req.params.id;
     const taxiid =new objectid (req.params.taxi);

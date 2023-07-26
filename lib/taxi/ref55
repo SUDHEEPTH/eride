@@ -1,292 +1,36 @@
- Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        leadingWidth: 100,
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        bottom: TabBar(
-          controller: _tabController,
-          labelColor: Colors.green,
-          tabs: const [
-            Tab(text: 'Only Me'),
-            Tab(text: 'Account'),
-          ],
-        ),
-      ),
-      backgroundColor: Colors.grey[200], // Set your preferred background color or image
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          // Only Me content
-          SingleChildScrollView(
-            child: Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Container(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 10.0),
-                      child: CircleAvatar(
-                        backgroundImage:
-                        AssetImage("server/public/images/" + profilepic),
-                        radius: 65,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20.0, horizontal: 20),
-                      decoration: BoxDecoration(
-                        color: Colors.blueGrey[100], // Set container background color
-                        border: Border.all(
-                          color: Colors.grey,
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      margin: const EdgeInsets.all(16.0),
-                      // Set container padding
-                      child: ListView(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        children: [
-                          buildInfoRow("ID:", username),
-                          buildInfoRow("First Name:", first_name),
-                          buildInfoRow("Last Name:", last_name),
-                          buildInfoRow("Email:", email),
-                          buildInfoRow("Mobile number:", Phone_no),
-                          buildInfoRow("Gender:", gender),
-                          buildInfoRow("Id card:", idcard),
-                          SizedBox(height: 10),
-                          Container(
-                            width: 500,
-                            height: 200,
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(8.0),
-                              image: DecorationImage(
-                                image:
-                                AssetImage("server/public/images/"+idcardimag),
-
-                              ),
-                            ),
-                          ),
-                          buildInfoRow("Address:", address),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-
-            ),
-          ),
-
-          // Account content
-          Container(
-            color: Colors.white,
-            child: SingleChildScrollView(
-              child: Card(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Container(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'First Name',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                first_name,
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              // Action for "Edit profile picture" button
-                            },
-                            child: CircleAvatar(
-                              radius: 45,
-                              backgroundImage: AssetImage(
-                                'assets/profile_pic.png', // Replace with your profile picture
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          // Action for "Change Profile Picture" button
-                        },
-                        icon: Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          'Change Profile Picture',
-                          style: TextStyle(
-                            fontSize: 18,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 10.0,
-                          ),
-                        ),
-                      ),
-                      // Add new user profile update fields below this line
-                      const SizedBox(height: 20),
-                      TextFormField(
-                        initialValue: first_name, // Populate the field with user data
-                        onChanged: (value) {
-                          setState(() {
-                            first_name = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'First Name',
-                          border: OutlineInputBorder(),
-                        ),
-                        // You can handle user input and update the user's first name here
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        initialValue: last_name, // Populate the field with user data
-                        onChanged: (value) {
-                          setState(() {
-                            last_name = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Last Name',
-                          border: OutlineInputBorder(),
-                        ),
-                        // You can handle user input and update the user's last name here
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        initialValue: email, // Populate the field with user data
-                        onChanged: (value) {
-                          setState(() {
-                            email = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Email',
-                          border: OutlineInputBorder(),
-                        ),
-                        // You can handle user input and update the user's email here
-                      ),
-                      const SizedBox(height: 10),
-                      TextFormField(
-                        initialValue: Phone_no, // Populate the field with user data
-                        onChanged: (value) {
-                          setState(() {
-                            Phone_no = value;
-                          });
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'Phone Number',
-                          border: OutlineInputBorder(),
-                        ),
-                        // You can handle user input and update the user's phone number here
-                      ),
-                      const SizedBox(height: 20),
-                      ElevatedButton.icon(
-                        onPressed: () {
-                          // Action for "Save Profile Changes" button
-                          // You can handle saving the profile changes here
-                        },
-                        icon: Icon(
-                          Icons.save,
-                          color: Colors.white,
-                        ),
-                        label: Text(
-                          'Save Profile Changes',
-                          style: TextStyle(
-                            fontSize: 18,
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.green,
-                          elevation: 2,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 10.0,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Helper function to create the info row with label and value
-  // Helper function to create the info row with label and value
-  // Helper function to create the info row with label and value
-  Widget buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(width: 8),
-          Expanded(
-            child: Wrap(
-              children: [
-                Text(
-                  value,
-                  style: TextStyle(fontSize: 16), // You can adjust the font size as needed
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+ // _update() async {
+  //   setState(() {
+  //     var _isLoading = true;
+  //   });
+  //   String se = widget.id;
+  //   var data = {
+  //
+  //     "email": passwordController.text,
+  //     "phone": phoneController.text,
+  //
+  //   };
+  //   print(data);
+  //   var res = await Api().authData(data, '/product/update-single-product/' + se);
+  //   var body = json.decode(res.body);
+  //
+  //   if (body['success'] == true) {
+  //     print(body);
+  //
+  //     Fluttertoast.showToast(
+  //       msg: body['message'].toString(),
+  //       backgroundColor: Colors.grey,
+  //     );
+  //     Navigator.push(
+  //       context,
+  //       MaterialPageRoute(
+  //         builder: (context) => Prdt(
+  //         ),
+  //       ),
+  //     );
+  //   } else {
+  //     Fluttertoast.showToast(
+  //       msg: body['message'].toString(),
+  //       backgroundColor: Colors.grey,
+  //     );
+  //   }
+  // }

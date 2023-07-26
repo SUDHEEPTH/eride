@@ -8,9 +8,10 @@ const driver_bookingRouter = require('./src/routes/driver_bookingRouter');
 const paymentRouter = require('./src/routes/paymentRouter');
 const reviewRouter = require('./src/routes/reviewRouter');
 const share_rideRouter = require('./src/routes/share_rideRouter');
-
+const taxihRouter = require('./src/routes/taxihRouter');
 const taxirideRouter = require('./src/routes/taxirideRouter');
-taxirideRouter
+
+
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/payment', paymentRouter);
 app.use('/review', reviewRouter);
 app.use('/shareride', share_rideRouter);
 app.use('/taxiride', taxirideRouter);
+app.use('/taxih', taxihRouter);
 
 mongoose.connect('mongodb+srv://dxad004:dxad004@cluster0.mnvtpxk.mongodb.net/E-rideDB?retryWrites=true&w=majority').then(()=>{
   app.listen(3000, function () {
