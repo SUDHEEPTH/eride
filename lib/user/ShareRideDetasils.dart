@@ -1,5 +1,11 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/api/api_services.dart';
 import 'package:eride/user/Takeuser.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class ShareRideDetails extends StatefulWidget {
@@ -10,6 +16,7 @@ class ShareRideDetails extends StatefulWidget {
 }
 
 class _ShareRideDetailsState extends State<ShareRideDetails> {
+
   final String userPhotoUrl = 'https://example.com/user_photo.jpg'; // Replace with the user's photo URL
 
   @override

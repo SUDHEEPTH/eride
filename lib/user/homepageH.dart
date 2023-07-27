@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:eride/api/api.dart';
+import 'package:eride/api/api_services.dart';
 import 'package:eride/user/Carrent.dart';
 import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Riderequest.dart';
@@ -7,6 +11,7 @@ import 'package:eride/user/Taxiac.dart';
 import 'package:eride/user/YourShare.dart';
 import 'package:eride/user/taxi.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class homepage extends StatefulWidget {
@@ -19,7 +24,22 @@ class _homepageState extends State<homepage> {
   String username = "";
   String login_id = "";
   String log = "";
+  String first_name = "";
+  String Phone_no = "";
+  String last_name = "";
+  String address = "";
+  String email = "";
+  String gender = "";
+  String usernames = "";
+  String idcard = "";
+  String idcardimag = "";
+  String _id = "";
+  String mac = '';
+  ApiService client = ApiService();
 
+
+  String profilepic = "";
+  String pickup = "";
   late SharedPreferences prefs;
 
   @override
@@ -27,6 +47,7 @@ class _homepageState extends State<homepage> {
     // TODO: implement initState
     super.initState();
     fetchuser();
+
   }
 
   fetchuser()async{
@@ -97,7 +118,7 @@ class _homepageState extends State<homepage> {
                       //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
                       // },
                       child: CircleAvatar(
-                        backgroundImage: NetworkImage(userPhotoUrl),
+                        backgroundImage: AssetImage("server/public/images/" + profilepic),
                         radius: 30.0,
                       ),
                     ),

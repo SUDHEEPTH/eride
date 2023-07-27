@@ -177,6 +177,83 @@ share_rideRouter.post('/takeride2', async function (req, res) {
   }
 });
 
+
+
+share_rideRouter.get('/sharerideview2/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await share_rideModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          
+          {
+              '$unwind':"$user"
+          },
+      
+            {
+
+              '$match': { 'user.login_id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  
+                  'starting_place':{'$first':'$starting_place'},
+                  'ending_place':{'$first':'$ending_place'},
+                  'starting_time':{'$first':'$starting_time'},
+                  'price':{'$first':'$price'},
+                  'person':{'$first':'$person'},
+                  'starting_placedis':{'$first':'$starting_placedis'},
+                  'ending_placedis':{'$first':'$ending_placedis'},
+                 
+                  'status':{'$first':'$status'},
+                  'date':{'$first':'$date'},
+                  
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'userid':{'$first':'$user._id'},
+                  'userlogin_id':{'$first':'$user.login_id'},
+                  
+                  
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+});
+
 share_rideRouter.get('/shareride5/:id', async function (req, res) {
   try {
     const userId= req.params.id; 
@@ -255,6 +332,83 @@ share_rideRouter.get('/shareride5/:id', async function (req, res) {
   }
 })
 
+share_rideRouter.get('/shareride6/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await takeriseModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'share_ride_tbs', 
+                'localField': 'shareid', 
+                'foreignField': '_id', 
+                'as': 'share'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$share"
+        },
+      
+            {
+
+              '$match': { 'share._id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+              
+                  
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'email':{'$first':'$user.email'},
+                  'gender':{'$first':'$user.gender'},
+                  'shareID':{'$first':'$share._id'},
+                  'shareuser':{'$first':'$share.user_id'},
+                  'profilepic':{'$first':'$user.profilepic'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
 
 
 share_rideRouter.get('/rideacc/:id', async (req, res) => {
