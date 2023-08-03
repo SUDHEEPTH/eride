@@ -15,44 +15,35 @@ class Riderequest extends StatefulWidget {
 }
 
 class _RiderequestState extends State<Riderequest> {
-  bool _isLoading = false;
+  List<ridemodel> products = []; // Store the fetched data here
+  bool _isLoading = true;
+
+  @override
   void initState() {
     super.initState();
     fetchcart();
-
   }
 
-
-  Future<List<ridemodel>> fetchcart() async {
+  Future<void> fetchcart() async {
     String mid = widget.axi.replaceAll('"', '');
     var response =
     await Api().getData('/shareride/shareride5/${widget.axi.replaceAll('"', '')}');
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
-      List<ridemodel> products = List<ridemodel>.from(
+      products = List<ridemodel>.from(
           items['data'].map((e) => ridemodel.fromJson(e)).toList());
-      setState(() {
-        // Update the state with the retrieved data
-        // You can store it in a List or other variables as needed
-        // Example: myList = products;
-      });
-      return products;
-    } else {
-      List<ridemodel> products = [];
-      return products;
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
-  @override
 
-
-
-
-  Future approveUser(String shareid) async {
-    print("u ${shareid}");
-    var response = await Api().getData('/shareride/rideacc/'+ shareid);
+  Future<void> approveUser(String shareid) async {
+    print("u $shareid");
+    var response = await Api().getData('/shareride/rideacc/' + shareid);
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
-      print("approve status${items}");
+      print("approve status $items");
       Navigator.push(context, MaterialPageRoute(builder: (context) => Homeuser()));
       Fluttertoast.showToast(
         msg: "Approved",
@@ -82,100 +73,94 @@ class _RiderequestState extends State<Riderequest> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: FutureBuilder<List<ridemodel>>(
-        future: fetchcart(),
-        builder: (BuildContext context, AsyncSnapshot<List<ridemodel>> snapshot) {
-          if (snapshot.hasData) {
-            return ListView.separated(
-              padding: EdgeInsets.all(8),
-              itemCount: snapshot.data!.length,
-              separatorBuilder: (context, index) => SizedBox(height: 8),
-              itemBuilder: (BuildContext context, int index) {
-                String m=snapshot.data![index].shareid;
-print("object $m");
-                return Padding(
-                  padding: EdgeInsets.all(8.0),
+      body: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.separated(
+        padding: EdgeInsets.all(8),
+        itemCount: products.length,
+        separatorBuilder: (context, index) => SizedBox(height: 8),
+        itemBuilder: (BuildContext context, int index) {
+          String m = products[index].shareid;
+          print("object $m");
+          return Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.5),
-                              spreadRadius: 2,
-                              blurRadius: 5,
-                              offset: Offset(0, 3),
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16.0, bottom: 15),
+                        child: Row(
                           children: [
                             Padding(
-                              padding: const EdgeInsets.only(left: 16.0, bottom: 15),
-                              child: Row(
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(right: 8),
-                                    child: GestureDetector(
-                                      // onTap: () {
-                                      //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
-                                      // },
-                                      child: CircleAvatar(
-                                        backgroundImage:
-                                        AssetImage("server/public/images/" + snapshot.data![index].profilepic),
-                                        radius: 30.0,
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        snapshot.data![index].first_name,
-                                        style: TextStyle(
-                                          fontSize: 15.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
+                              padding: EdgeInsets.only(right: 8),
+                              child: GestureDetector(
+                                // onTap: () {
+                                //   Navigator.push(context, MaterialPageRoute(builder: (context)=>_buildProfilePage()));
+                                // },
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                  AssetImage("server/public/images/" + products[index].profilepic),
+                                  radius: 30.0,
+                                ),
                               ),
                             ),
-                            Text('Email:${snapshot.data![index].email}'),
-                            Text('Phone number:${snapshot.data![index].Phone_no}'),
-                            Text('Gender:${snapshot.data![index].gender}'),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  approveUser(snapshot.data![index].shareid..replaceAll('"', ''));
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  primary: Colors.black,
-                                ),
-                                child: Text(
-                                  'accept',
+                            Column(
+                              children: [
+                                Text(
+                                  products[index].first_name,
                                   style: TextStyle(
-                                    fontSize: 14.0,
-                                    color: Colors.white,
+                                    fontSize: 15.0,
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
                           ],
                         ),
                       ),
+                      Text('Email:${products[index].email}'),
+                      Text('Phone number:${products[index].Phone_no}'),
+                      Text('Gender:${products[index].gender}'),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            approveUser(products[index].shareid.replaceAll('"', ''));
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.black,
+                          ),
+                          child: Text(
+                            'accept',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                );
-              },
-            );
-          }
-          return Center(child: CircularProgressIndicator());
+                ),
+              ],
+            ),
+          );
         },
       ),
     );

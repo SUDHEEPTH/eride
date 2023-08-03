@@ -1,24 +1,33 @@
 const express = require('express');
 const paymentModel = require('../models/paymentModel');
+const taxirideModel = require('../models/taxirideModel');
 paymentModel
-
+taxirideModel
 const paymentRouter = express.Router();
+
+
 
 paymentRouter.post('/payment', async function (req, res) {
   try {
     const data = {
       user_id: req.body.user_id,        
-      driver_id: req.body.driver_id,
+      resive_id: req.body.resive_id,
       amount: req.body.amount,
       date: req.body.date,
       time: req.body.time,
       status: req.body.status,
+      what: req.body.what,
     };
 
     const savedData = await paymentModel(data).save();
     console.log(savedData);
     
     if (savedData) {
+      // Now, update ace = 1 in the taxirideModel
+      const filter = { _id: req.body.what }; // Assuming `what` field contains the document ID
+      const update = { ace: 1 };
+      const updatedTaxiRide = await taxirideModel.findOneAndUpdate(filter, update, { new: true });
+
       return res.status(200).json({
         success: true,
         error: false,
@@ -34,5 +43,7 @@ paymentRouter.post('/payment', async function (req, res) {
     });
   }
 });
+
+
 
 module.exports = paymentRouter;

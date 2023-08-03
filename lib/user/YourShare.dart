@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
+import 'package:eride/user/model/ridemodel.dart';
+import 'package:eride/user/model/take.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -16,6 +18,8 @@ class YourShare extends StatefulWidget {
 
 class _YourShareState extends State<YourShare> {
   List<Map<String, dynamic>> cars = [];
+  List<ridemodel> products = [];
+  bool _isLoading = true;
   String username = "";
   String login_id = "";
   String log = "";
@@ -37,21 +41,19 @@ class _YourShareState extends State<YourShare> {
   String starting_placedis = '';
   String ending_placedis = '';
   String date = '';
-  ApiService client = ApiService();
-
-
   String profilepic = "";
   String pickup = "";
   late SharedPreferences prefs;
+  ApiService client = ApiService();
+
+
+
   void initState() {
-    // TODO: implement initState
     super.initState();
     _viewPro();
-
   }
 
   Future<void> _viewPro() async {
-
     prefs = await SharedPreferences.getInstance();
     username = (prefs.getString('username') ?? '');
     login_id = prefs.getString('login_id') ?? '';
@@ -72,15 +74,8 @@ class _YourShareState extends State<YourShare> {
     if (body != null && body['success'] == true) {
       setState(() {
         first_name = body['data'][0]['first_name'];
-
         last_name = body['data'][0]['last_name'];
-
-
-
-
-
         _id = body['data'][0]['_id'];
-
         starting_place = body['data'][0]['starting_place'];
         ending_place = body['data'][0]['ending_place'];
         starting_time = body['data'][0]['starting_time'];
@@ -90,7 +85,8 @@ class _YourShareState extends State<YourShare> {
         date = body['data'][0]['date'] ?? 'N/A';
         starting_time = body['data'][0]['starting_time'] ?? 'N/A';
 
-        _viewPro2(_id);
+        // Call fetchcart with the updated _id
+        fetchcart(_id);
       });
     } else {
       Fluttertoast.showToast(
@@ -99,15 +95,18 @@ class _YourShareState extends State<YourShare> {
       );
     }
   }
-  Future<void> _viewPro2(String id) async {
-    print('habsfdh ${id}');
-    String hj=id.replaceAll('"', '');
 
-    var res = await Api().getData('/shareride/shareride6/${hj}');
-    var body = json.decode(res.body);
+  Future<void> fetchcart(String ID) async {
+    print("object$ID");
+    var response = await Api().getData('/shareride/shareride6/${ID.replaceAll('"', '')}');
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      products = List<ridemodel>.from(
+        items['data'].map((e) => ridemodel.fromJson(e)).toList(),
+      );
+    }
     setState(() {
-      cars = (body['cars'] as List<dynamic>).cast<Map<String, dynamic>>();
-      print(cars);
+      _isLoading = false;
     });
   }
   final List<String> userPhotoUrl = [
@@ -145,20 +144,20 @@ class _YourShareState extends State<YourShare> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
             alignment: Alignment.centerLeft,
-            child: Row( // Use Row to display date and starting_time side by side
+            child: Row(
               children: [
                 Text(
-                  date, // Replace with your desired date
+                  date,
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(width: 16), // Add some space between the date and starting_time
+                SizedBox(width: 16),
                 Column(
                   children: [
                     Text(
-                      starting_time, // Replace with your desired starting_time
+                      starting_time,
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -169,7 +168,6 @@ class _YourShareState extends State<YourShare> {
               ],
             ),
           ),
-
           Expanded(
             child: ListView(
               children: [
@@ -199,7 +197,7 @@ class _YourShareState extends State<YourShare> {
                           Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                             starting_place,
+                              starting_place,
                               style: TextStyle(
                                 fontSize: 16,
                               ),
@@ -337,17 +335,8 @@ class _YourShareState extends State<YourShare> {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: NeverScrollableScrollPhysics(),
-                  itemCount: cars.length,
+                  itemCount: products.length,
                   itemBuilder: (context, index) {
-                    final car = cars[index];
-                    String first_name1 = car['first_name'] ?? '';
-                    String profilepic1 = car['profilepic'] ?? '';
-                    String last_name1 = car['profilepic'] ?? '';
-                    String Phone_no1 = car['Phone_no'] ?? '';
-                    String email1 = car['email'] ?? '';
-                    String gender = car['gender'] ?? '';
-                    String shareID = car['shareID'] ?? '';
-                    String shareuser = car['shareuser'] ?? '';
                     return Container(
                       margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                       decoration: BoxDecoration(
@@ -367,12 +356,11 @@ class _YourShareState extends State<YourShare> {
                           // Handle the onTap action
                         },
                         leading: CircleAvatar(
-                          backgroundImage: AssetImage("server/public/images/" + profilepic1),
-
+                          backgroundImage: AssetImage("server/public/images/" + products[index].profilepic),
                           radius: 25.0,
                         ),
                         title: Text(
-                          first_name1,
+                          products[index].first_name,
                           style: TextStyle(
                             fontSize: 20.0,
                             fontWeight: FontWeight.bold,

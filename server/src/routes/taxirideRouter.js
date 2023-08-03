@@ -21,6 +21,7 @@ taxirideRouter.post('/taxiride', async function (req, res) {
       pickup: '60',
       ace: '0',
       total: '0',
+      com:'0',
       taxi_id:null,
       time: req.body.time,
     };
@@ -290,12 +291,13 @@ taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
           {
               '$group':{
                 '_id': '$_id',
-                'user_id': { '$first': '$result._id' },
+                'user_id': { '$first': '$user_id' },
                 'address': { '$first': '$address' },
                 'destination': { '$first': '$destination' },
                 'posting_date': { '$first': '$posting_date' },
                 'posting_tim': { '$first': '$posting_tim' },
                 'Date': { '$first': '$Date' },
+                'total': { '$first': '$total' },
                 'time': { '$first': '$time' },
                 'Status': { '$first': '$Status' },
                 'taxi_id': { '$first': '$taxi_id' },
@@ -332,6 +334,112 @@ taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
       })
   }
 })
+taxirideRouter.get('/viewtaxi5/:id', async function (req, res) {
+  try {
+    const userId = req.params.id; 
+    console.log(userId);
+      const allUser = await taxirideModel.aggregate([
+          {
+            '$lookup': {
+              'from': 'taxi_tbs', 
+              'localField': 'taxi_id', 
+              'foreignField': '_id', 
+              'as': 'result'
+            }
+          },
+          {
+              '$unwind':"$result"
+          },
+          {
+            
+              '$match': { 'taxi_id': new objectid (userId),'Status':"1",'com':"0" } 
+          },
+         
+          {
+              '$group':{
+                '_id': '$_id',
+                'user_id': { '$first': '$user_id' },
+                'address': { '$first': '$address' },
+                'taxi_id': { '$first': '$taxi_id' },
+                
+                'destination': { '$first': '$destination' },
+                'posting_date': { '$first': '$posting_date' },
+                'posting_tim': { '$first': '$posting_tim' },
+                'Date': { '$first': '$Date' },
+                'total': { '$first': '$total' },
+                'time': { '$first': '$time' },
+                'Status': { '$first': '$Status' },
+                'taxi_id': { '$first': '$taxi_id' },
+                'first_name': { '$first': '$result.first_name' },
+                'last_name': { '$first': '$result.last_name' },
+                'idcardimag': { '$first': '$result.idcardimag' },
+                'car_num': { '$first': '$result.car_num' },
+                'ace': { '$first': '$ace' },
+                'com': { '$first': '$com' },
+                
+                'pickup': { '$first': '$result.pickup' },
+                'profilepic': { '$first': '$result.profilepic' },
+                
+
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      }) 
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
+
+
+taxirideRouter.get('/approve6/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const taxiride = await taxirideModel.findOne({ _id: id, ace: 1 });
+
+    if (!taxiride) {
+      return res.status(400).json({
+        success: false,
+        message: 'Not paid',
+      });
+    }
+
+    const approve = await taxirideModel.updateOne({ _id: id }, { $set: { com: 1 } });
+    console.log(approve);
+
+    if (approve && approve.modifiedCount === 1) {
+      return res.status(200).json({
+        success: true,
+        message: 'RIDE completed',
+      });
+    } else {
+      throw new Error('Error updating taxiride');
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: 'Something went wrong',
+      details: error.message,
+    });
+  }
+});
 
 
 

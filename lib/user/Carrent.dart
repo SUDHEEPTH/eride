@@ -1,6 +1,7 @@
 import 'package:eride/user/Addcarrent.dart';
 import 'package:eride/user/Carrent2.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Carrent extends StatefulWidget {
@@ -10,7 +11,24 @@ class Carrent extends StatefulWidget {
 
 class _CarrentState extends State<Carrent> {
 
-
+  String? _startingPlace;
+  List<String> keralaDistricts = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad',
+    // Add other districts here...
+  ];
 
   late SharedPreferences prefs;
   String username = "";
@@ -75,22 +93,31 @@ class _CarrentState extends State<Carrent> {
             padding: const EdgeInsets.all(8.0),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: TextField(
-                controller: _searchController,
-                decoration: InputDecoration(
-                  hintText: 'Search... location',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.clear),
-                    onPressed: () => _searchController.clear(),
-                  ),
-                  prefixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    onPressed: performSearch, // Call performSearch() when search button is pressed
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+              child: TypeAheadFormField<String?>(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: _searchController,
+                  decoration: const InputDecoration(
+                    labelText: 'Starting Place district',
                   ),
                 ),
+                suggestionsCallback: (pattern) {
+                  return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                },
+                itemBuilder: (BuildContext context, String? suggestion) {
+                  return ListTile(
+                    title: Text(suggestion!),
+                  );
+                },
+                onSuggestionSelected: (String? suggestion) {
+                  setState(() {
+                    _searchController.text = suggestion!;
+                    _startingPlace = suggestion; // Store the selected starting place
+                  });
+                },
+                validator: (value) {
+                  return value != null && value.isEmpty ? 'Please select a district' : null;
+                },
+                autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
               ),
             ),
           ),

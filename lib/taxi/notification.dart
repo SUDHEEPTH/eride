@@ -2,21 +2,23 @@ import 'dart:convert';
 
 import 'package:eride/api/api.dart';
 import 'package:eride/driver/Driverhome.dart';
+import 'package:eride/taxi/TaxiH.dart';
+import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/user/Payment.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class Taxiac extends StatefulWidget {
+class notification extends StatefulWidget {
   final String axi;
-  const Taxiac({required this.axi});
+  const notification({required this.axi});
 
   @override
-  State<Taxiac> createState() => _TaxiacState();
+  State<notification> createState() => _notificationState();
 }
 
-class _TaxiacState extends State<Taxiac> {
+class _notificationState extends State<notification> {
   String first_name = "";
   String Phone_no = "";
   String last_name = "";
@@ -39,6 +41,7 @@ class _TaxiacState extends State<Taxiac> {
   String taxi_id = "";
   String user_id = "";
   String tcid = "";
+  String ace = "";
   late SharedPreferences prefs;
   @override
   void initState() {
@@ -50,7 +53,7 @@ class _TaxiacState extends State<Taxiac> {
     String se = widget.axi.replaceAll('"', '');
     print("user selected id is $se");
     String mid = widget.axi.replaceAll('"', '');
-    var res = await Api().getData('/taxiride/viewuse/$se');
+    var res = await Api().getData('/taxiride/viewtaxi/$se');
     var body = json.decode(res.body);
     print("response body: $body");
 
@@ -72,7 +75,7 @@ class _TaxiacState extends State<Taxiac> {
 
   Future<void> _viewPr() async {
     print('haloo$mac');
-    var res = await Api().getData('/taxiride/viewtaxi2/$mac');
+    var res = await Api().getData('/taxiride/viewtaxi5/$mac');
     var body = json.decode(res.body);
     print("response body: $body");
 
@@ -89,12 +92,33 @@ class _TaxiacState extends State<Taxiac> {
         taxi_id = body['data'][0]['taxi_id'];
         user_id = body['data'][0]['user_id'];
         tcid = body['data'][0]['_id'];
+        ace = body['data'][0]['ace'];
         total5 = total;
       });
     } else {
       Fluttertoast.showToast(
         msg: 'Failed to fetch user data',
         backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+  Future complete(String userid) async {
+    print("u ${userid}");
+    var response = await Api().getData('/taxiride/approve6/' + userid);
+    if (response.statusCode == 200) {
+      var items = json.decode(response.body);
+      print("approve status${items}");
+
+      Fluttertoast.showToast(
+        msg: "RIDE completed",
+
+      );
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Taxihome()));
+
+    } else {
+      Fluttertoast.showToast(
+        msg: "Not paid",
       );
     }
   }
@@ -118,8 +142,8 @@ class _TaxiacState extends State<Taxiac> {
       ),
       body: Center(
         child: Container(
-          width: 300, // Adjust the width as needed
-          height: 275,
+          width: 350, // Adjust the width as needed
+          height: 330,
           decoration: BoxDecoration(
             color: Colors.green.withOpacity(0.2),
             borderRadius: BorderRadius.circular(8.0),
@@ -186,29 +210,59 @@ class _TaxiacState extends State<Taxiac> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => Payment5(price:total,revid:taxi_id,useid:user_id,tcid1:tcid),
-                      ),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    primary: Colors.black,
-                  ),
-                  child: Text(
-                    'pay',
-                    style: TextStyle(
-                      fontSize: 14.0,
-                      color: Colors.white,
-                    ),
-                  ),
+              SizedBox(height: 8.0),
+
+              SizedBox(height: 8.0),
+              Text(
+                'Payment: ${ace == "1" ? '"Payment Received"' : '"Not Paid"'}',
+                style: GoogleFonts.poppins(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: ace == "1" ? Colors.green : Colors.red,
                 ),
               ),
+              SizedBox(height: 8.0),
+              Row(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      // Add your functionality for the "Report user" button here
+                    },
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.black,
+                    ),
+                    child: Text(
+                      'Report user',
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ), // Remove the comma here
+
+                  Expanded(
+                    child: Align(
+                      alignment: Alignment.centerRight,
+                      child: ElevatedButton(
+                        onPressed: () {
+                         complete(tcid);
+                            },
+                        style: ElevatedButton.styleFrom(
+                          primary: Colors.black,
+                        ),
+                        child: Text(
+                          'COMPLETE',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
             ],
           ),
         ),

@@ -286,7 +286,7 @@ share_rideRouter.get('/shareride5/:id', async function (req, res) {
       
             {
 
-              '$match': { 'share.user_id': new objectid (userId) } 
+              '$match': { 'share.user_id': new objectid (userId),'status':'0', } 
           },
 
          
@@ -296,6 +296,7 @@ share_rideRouter.get('/shareride5/:id', async function (req, res) {
               
                   
                   'first_name':{'$first':'$user.first_name'},
+                  'status':{'$first':'$status'},
                   'last_name':{'$first':'$user.last_name'},
                   'Phone_no':{'$first':'$user.Phone_no'},
                   'email':{'$first':'$user.email'},

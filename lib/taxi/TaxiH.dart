@@ -4,7 +4,10 @@ import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/taxi/model/taximodel/taximodel.dart';
+import 'package:eride/taxi/notification.dart';
 import 'package:eride/taxi/taxiprofile.dart';
+import 'package:eride/user/ShareRideDetasils.dart';
+import 'package:eride/user/YourShare.dart';
 
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -39,7 +42,6 @@ class _TaxiHState extends State<TaxiH> {
                   controller: _distance,
                   style: TextStyle(color: Colors.black, fontSize: 15),
                   onChanged: (value) {
-                    // Calculate the fare amount when the distance is entered or changed
                     double distance = double.tryParse(value) ?? 0.0;
                     double fareAmount = distance * double.parse(dx);
                     setState(() {
@@ -71,7 +73,7 @@ class _TaxiHState extends State<TaxiH> {
               ElevatedButton(
                 onPressed: () {
                   calculateFare(double.tryParse(_distance.text) ?? 0.0, double.parse(dx), userid);
-                  Navigator.pop(context); // Close the bottom sheet after calculating fare
+                  Navigator.pop(context);
                 },
                 style: ElevatedButton.styleFrom(
                   primary: Colors.black,
@@ -85,16 +87,16 @@ class _TaxiHState extends State<TaxiH> {
     );
   }
 
-
   void initState() {
     super.initState();
     _viewPro();
-
   }
 
   String first_name = "";
+  String  first_name2 = "";
   String Phone_no = "";
   String last_name = "";
+  String last_name2 = "";
   String address = "";
   String email = "";
   String gender = "";
@@ -116,23 +118,12 @@ class _TaxiHState extends State<TaxiH> {
   Map<String, double> fareAmounts = {};
 
   Future<void> _viewPro() async {
-
     prefs = await SharedPreferences.getInstance();
     username = (prefs.getString('username') ?? '');
     login_id = prefs.getString('login_id') ?? '';
-    print("usr${username}");
-    print("usr${login_id}");
-
-    print("usssssssssssr${log}");
-
-    print("user selected id is $login_id");
-    print("user selected id is $login_id");
     String mid = login_id.replaceAll('"', '');
-    print("user selected id is $mid");
-
     var res = await Api().getData('/taxiride/viewtaxi/$mid');
     var body = json.decode(res.body);
-    print("response body: $body");
 
     if (body != null && body['success'] == true) {
       setState(() {
@@ -146,7 +137,24 @@ class _TaxiHState extends State<TaxiH> {
         idcard = body['data'][0]['idcard'];
         _id = body['data'][0]['_id'];
         profilepic = body['data'][0]['profilepic'];
+        _viewPr(_id);
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
 
+  Future<void> _viewPr(String h) async {
+    var res = await Api().getData('/taxiride/viewtaxi5/$h');
+    var body = json.decode(res.body);
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name2 = body['data'][0]['first_name'];
+        last_name2 = body['data'][0]['last_name'];
       });
     } else {
       Fluttertoast.showToast(
@@ -157,7 +165,6 @@ class _TaxiHState extends State<TaxiH> {
   }
 
   void calculateFare(double distanceInKm, double farePerKm, String userid) {
-    // Replace the farePerKm with the actual fare charged by taxi services in your area.
     double fareAmount = distanceInKm * farePerKm;
     setState(() {
       fareAmounts[userid] = fareAmount;
@@ -177,8 +184,6 @@ class _TaxiHState extends State<TaxiH> {
     var response = await Api().getData('/taxiride/accept/$userid/$_id/$fareAmountForRequest');
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
-      print("body${items}");
-      print("approve status${items}");
       Navigator.push(context, MaterialPageRoute(builder: (context) => Taxihome()));
 
       Fluttertoast.showToast(
@@ -229,7 +234,6 @@ class _TaxiHState extends State<TaxiH> {
                   child: GestureDetector(
                     onTap: () {
                       ProfileTaxi();
-                      // Action for the gesture tap event
                     },
                     child: CircleAvatar(
                       backgroundImage: AssetImage("server/public/images/" + profilepic),
@@ -304,6 +308,7 @@ class _TaxiHState extends State<TaxiH> {
             ),
             Expanded(
               child: Container(
+                height: 500,
                 padding: EdgeInsets.symmetric(horizontal: 8.0),
                 child: Card(
                   color: Colors.grey.withOpacity(0.5),
@@ -324,135 +329,133 @@ class _TaxiHState extends State<TaxiH> {
                         if (snapshot.hasData) {
                           return Expanded(
                             child: ListView.builder(
+                              shrinkWrap: true,
                               itemCount: snapshot.data!.length,
                               itemBuilder: (context, index) {
                                 String dx = snapshot.data![index].pickup;
                                 String userid = snapshot.data![index].id;
-                                print('hi $userid');
-                                return Expanded(
-                                  child: Card(
-                                    elevation: 4,
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10),
-                                    ),
-                                    margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                                    child: Column(
-                                      children: [
-                                        ListTile(
-                                          leading: CircleAvatar(
-                                            radius: 30,
-                                            backgroundImage: AssetImage(
-                                              "server/public/images/" + snapshot.data![index].profilepic,
-                                            ),
-                                          ),
-                                          title: Text(
-                                            snapshot.data![index].fname,
-                                            style: TextStyle(
-                                              fontSize: 18.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          subtitle: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(height: 4),
-                                              Text(
-                                                'Address: ${snapshot.data![index].address}',
-                                                style: TextStyle(
-                                                  fontSize: 14.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              SizedBox(height: 2),
-                                              Text(
-                                                'Destination: ${snapshot.data![index].destination}',
-                                                style: TextStyle(
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                              SizedBox(height: 2),
-                                              Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.calendar_today,
-                                                          size: 14,
-                                                          color: Colors.grey.withOpacity(0.8),
-                                                        ),
-                                                        SizedBox(width: 4),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Date: ${snapshot.data![index].Date}',
-                                                            style: TextStyle(
-                                                              fontSize: 14.0,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 8),
-                                                        Icon(
-                                                          Icons.access_time,
-                                                          size: 14,
-                                                          color: Colors.grey.withOpacity(0.8),
-                                                        ),
-                                                        SizedBox(width: 4),
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Time: ${snapshot.data![index].time}',
-                                                            style: TextStyle(
-                                                              fontSize: 14.0,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                'Amount of km: $dx',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              SizedBox(height: 8),
-                                              Text(
-                                                'Estimated Fare:',
-                                                style: TextStyle(fontSize: 16),
-                                              ),
-                                              Text(
-                                                '\₹${fareAmounts[userid] ?? 0.0}',
-                                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  _showBottomSheet(dx, userid);
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  primary: Colors.black,
-                                                ),
-                                                child: Text('Calculate Fare'),
-                                              ),
-                                              ElevatedButton(
-                                                onPressed: () {
-                                                  if (fareAmounts[userid] == null || fareAmounts[userid]! <= 0) {
-                                                    Fluttertoast.showToast(
-                                                      msg: "Please calculate the fare before accepting the request.",
-                                                    );
-                                                  } else {
-                                                    approveUser(userid);
-                                                  }
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  primary: Colors.black,
-                                                ),
-                                                child: Text('Accept'),
-                                              ),
-                                            ],
+                                return Card(
+                                  elevation: 4,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  child: Column(
+                                    children: [
+                                      ListTile(
+                                        leading: CircleAvatar(
+                                          radius: 30,
+                                          backgroundImage: AssetImage(
+                                            "server/public/images/" + snapshot.data![index].profilepic,
                                           ),
                                         ),
-                                      ],
-                                    ),
+                                        title: Text(
+                                          snapshot.data![index].fname,
+                                          style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            SizedBox(height: 4),
+                                            Text(
+                                              'Address: ${snapshot.data![index].address}',
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Text(
+                                              'Destination: ${snapshot.data![index].destination}',
+                                              style: TextStyle(
+                                                fontSize: 14.0,
+                                              ),
+                                            ),
+                                            SizedBox(height: 2),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons.calendar_today,
+                                                        size: 14,
+                                                        color: Colors.grey.withOpacity(0.8),
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Date: ${snapshot.data![index].Date}',
+                                                          style: TextStyle(
+                                                            fontSize: 14.0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 8),
+                                                      Icon(
+                                                        Icons.access_time,
+                                                        size: 14,
+                                                        color: Colors.grey.withOpacity(0.8),
+                                                      ),
+                                                      SizedBox(width: 4),
+                                                      Expanded(
+                                                        child: Text(
+                                                          'Time: ${snapshot.data![index].time}',
+                                                          style: TextStyle(
+                                                            fontSize: 14.0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'Amount of km: $dx',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            SizedBox(height: 8),
+                                            Text(
+                                              'Estimated Fare:',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            Text(
+                                              '\₹${fareAmounts[userid] ?? 0.0}',
+                                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                _showBottomSheet(dx, userid);
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.black,
+                                              ),
+                                              child: Text('Calculate Fare'),
+                                            ),
+                                            ElevatedButton(
+                                              onPressed: () {
+                                                if (fareAmounts[userid] == null || fareAmounts[userid]! <= 0) {
+                                                  Fluttertoast.showToast(
+                                                    msg: "Please calculate the fare before accepting the request.",
+                                                  );
+                                                } else {
+                                                  approveUser(userid);
+                                                }
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                primary: Colors.black,
+                                              ),
+                                              child: Text('Accept'),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 );
                               },
@@ -468,6 +471,44 @@ class _TaxiHState extends State<TaxiH> {
                 ),
               ),
             ),
+            SizedBox(height: 10,),
+            if (first_name2.isNotEmpty)
+              Container(
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Text(
+                        "Notification",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(builder: (context) => notification(axi: login_id,)));
+                          },
+                          child: ListTile(
+                            leading: Icon(Icons.notifications_active),
+                            title: Text("Joined TAXI Details"),
+                            subtitle: Text(first_name2),
+                            trailing: Icon(Icons.arrow_forward_ios),
+                          ),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+
+
           ],
         ),
       ),

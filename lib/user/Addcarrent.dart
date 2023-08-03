@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:eride/api/api.dart';
@@ -18,6 +19,24 @@ class Addcarrent extends StatefulWidget {
 }
 
 class _AddcarrentState extends State<Addcarrent> {
+  List<String> keralaDistricts = [
+    'Alappuzha',
+    'Ernakulam',
+    'Idukki',
+    'Kannur',
+    'Kasaragod',
+    'Kollam',
+    'Kottayam',
+    'Kozhikode',
+    'Malappuram',
+    'Palakkad',
+    'Pathanamthitta',
+    'Thiruvananthapuram',
+    'Thrissur',
+    'Wayanad',
+    // Add other districts here...
+  ];
+  String? _startingPlace;
   late final _filename;
   File? imageFile;
   late String storedImage;
@@ -185,13 +204,31 @@ class _AddcarrentState extends State<Addcarrent> {
                 ),
               ),
               SizedBox(height: 16.0),
-              TextFormField(
-                controller: _districtController,
-
-                decoration: InputDecoration(
-                  labelText: 'District',
-                  border: OutlineInputBorder(),
+              TypeAheadFormField<String?>(
+                textFieldConfiguration: TextFieldConfiguration(
+                  controller: _districtController,
+                  decoration: const InputDecoration(
+                    labelText: 'Starting Place district',
+                  ),
                 ),
+                suggestionsCallback: (pattern) {
+                  return keralaDistricts.where((district) => district.toLowerCase().contains(pattern.toLowerCase()));
+                },
+                itemBuilder: (BuildContext context, String? suggestion) {
+                  return ListTile(
+                    title: Text(suggestion!),
+                  );
+                },
+                onSuggestionSelected: (String? suggestion) {
+                  setState(() {
+                    _districtController.text = suggestion!;
+                    _startingPlace = suggestion; // Store the selected starting place
+                  });
+                },
+                validator: (value) {
+                  return value != null && value.isEmpty ? 'Please select a district' : null;
+                },
+                autovalidateMode: AutovalidateMode.always, // Trigger validation on focus change
               ),
               SizedBox(height: 16.0),
               TextFormField(

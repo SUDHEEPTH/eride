@@ -31,6 +31,7 @@ class _TakerideState extends State<Takeride> {
     'Thiruvananthapuram',
     'Thrissur',
     'Wayanad',
+    'Bangaloor',
     // Add other districts here...
   ];
   String? _startingPlace;

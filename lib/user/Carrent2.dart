@@ -70,6 +70,7 @@ print('habsfdh ${widget.searchValue}');
           String cseats = car['seat'] ?? '';
           String cengineType = car['petrol'] ?? '';
           String crentPrice = car['prize'] ?? '';
+          String car_image = car['car_image'] ?? '';
 
           return Padding(
             padding: EdgeInsets.all(8.0),
@@ -85,6 +86,7 @@ print('habsfdh ${widget.searchValue}');
                       clocation: clocation,
                       cautomated: cautomated,
                       cseats: cseats,
+                      car_image: car_image,
                       cengineType: cengineType,
                       crentPrice: crentPrice, clication: '',
                     ),
@@ -121,7 +123,7 @@ print('habsfdh ${widget.searchValue}');
                       child: Stack(
                         children: [
                           Image.asset(
-                            cpicture,
+                            "server/public/images/" + car_image,
                             fit: BoxFit.fill,
                           ),
                         ],

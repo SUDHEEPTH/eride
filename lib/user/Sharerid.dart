@@ -32,6 +32,8 @@ class _StartRidePageState extends State<StartRidePage> {
     'Thiruvananthapuram',
     'Thrissur',
     'Wayanad',
+    'Bangaloor',
+
     // Add other districts here...
   ];
 

@@ -15,6 +15,7 @@ const taxirideSchema = new schema({
     posting_tim: { type: String },
     time: { type: String },
     total: { type: String },
+    com: { type: String },
   
     
 })

@@ -1,6 +1,7 @@
 import 'package:eride/user/Inquirynow.dart';
 import 'package:eride/user/Rentalconditions.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Carrent3 extends StatefulWidget {
   final String cname;
@@ -11,8 +12,9 @@ class Carrent3 extends StatefulWidget {
   final String cseats;
   final String cengineType;
   final String crentPrice;
+  final String car_image;
 
-  Carrent3({required this.cname, required this.cprice, required this.cpicture, required this.clication, required this.cautomated, required this.cseats, required this.cengineType, required this.crentPrice, required String clocation});
+  Carrent3({required this.cname, required this.cprice, required this.cpicture, required this.clication, required this.cautomated, required this.cseats, required this.cengineType, required this.crentPrice,required this.car_image, required String clocation});
 
 
 
@@ -82,7 +84,7 @@ class _Carrent3State extends State<Carrent3> {
                         child: Stack(
                           children: [
                             Image.asset(
-                              widget.cpicture,
+                              "server/public/images/" + widget.car_image,
                               fit: BoxFit.fill,
                             ),
                           ],
@@ -172,9 +174,20 @@ class _Carrent3State extends State<Carrent3> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => Inquirynow()),
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => Inquirynow()),
+                        // );
+
+                        // Show the toast message when the button is clicked
+                        Fluttertoast.showToast(
+                          msg: "Enquiry sent!",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0,
                         );
                       },
                       style: ElevatedButton.styleFrom(
@@ -193,6 +206,7 @@ class _Carrent3State extends State<Carrent3> {
                         ),
                       ),
                     ),
+
                   ),
                 ),
               ],
