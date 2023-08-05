@@ -13,9 +13,9 @@ const driver_bookingSchema = new schema({
     status: { type: String },
     job: { type: String },
     price: { type: String },
-    status: { type: String },
-    
-  
+    status: { type: String  },
+    ace: { type: String  },
+    com: { type: String  },
     
 })
 

@@ -46,8 +46,7 @@ class _YourShareState extends State<YourShare> {
   late SharedPreferences prefs;
   ApiService client = ApiService();
 
-
-
+  @override
   void initState() {
     super.initState();
     _viewPro();
@@ -72,7 +71,7 @@ class _YourShareState extends State<YourShare> {
     print("response body: $body");
 
     if (body != null && body['success'] == true) {
-      setState(() {
+      setState(() async {
         first_name = body['data'][0]['first_name'];
         last_name = body['data'][0]['last_name'];
         _id = body['data'][0]['_id'];
@@ -86,7 +85,7 @@ class _YourShareState extends State<YourShare> {
         starting_time = body['data'][0]['starting_time'] ?? 'N/A';
 
         // Call fetchcart with the updated _id
-        fetchcart(_id);
+        await fetchcart(_id);
       });
     } else {
       Fluttertoast.showToast(
@@ -104,11 +103,14 @@ class _YourShareState extends State<YourShare> {
       products = List<ridemodel>.from(
         items['data'].map((e) => ridemodel.fromJson(e)).toList(),
       );
+
+      // Call setState here to update the products list after fetching data
+      setState(() {
+        _isLoading = false;
+      });
     }
-    setState(() {
-      _isLoading = false;
-    });
   }
+
   final List<String> userPhotoUrl = [
     'images/ava3.png',
     'images/computer.jpg',
@@ -384,8 +386,25 @@ class _YourShareState extends State<YourShare> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(Colors.red),
+                          foregroundColor: MaterialStateProperty.all(Colors.white),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.cancel),
+                            SizedBox(width: 8),
+                            Text('Cancel Ride'),
+                          ],
+                        ),
+                      ),
+
+                      Spacer(),
+
                       ElevatedButton(
                         onPressed: () {},
                         style: ButtonStyle(
@@ -403,6 +422,7 @@ class _YourShareState extends State<YourShare> {
                     ],
                   ),
                 ),
+
                 SizedBox(height: 8),
               ],
             ),

@@ -16,6 +16,8 @@ driver_bookingRouter.post('/driver_booking', async function (req, res) {
       ndays: req.body.ndays,
       adres:req.body.adres,
        status:'0',
+       ace:'0',
+       com:'0',
        job:req.body.job,// Fixed the field name
     };
     const savedData = await new driver_bookingModel(data).save();
@@ -77,6 +79,7 @@ driver_bookingRouter.get('/viewdriver/:id', async function (req, res) {
                   'username':{'$first':'$login.username'},
                   'idcardimag':{'$first':'$idcardimag'},
                   'profilepic':{'$first':'$profilepic'},
+                  'price':{'$first':'$price'},
               }
           }
         ])
@@ -146,6 +149,7 @@ driver_bookingRouter.get('/viewdriverg/:id', async function (req, res) {
                   'idcardimag':{'$first':'$idcardimag'},
                   'profilepic':{'$first':'$profilepic'},
                   'idcard':{'$first':'$idcard'},
+                  'price':{'$first':'$price'},
                   'username':{'$first':'$login.username'},
               }
           }
@@ -235,6 +239,180 @@ driver_bookingRouter.get('/viewdriverall/:id', async function (req, res) {
                   'driverid':{'$first':'$driver_id'},
                   'driverlog':{'$first':'$driver.login_id'},
                   'profilepic':{'$first':'$driver.profilepic'},
+                  'price':{'$first':'$driver.price'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
+driver_bookingRouter.get('/viewdriverall2/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await driver_bookingModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'driver_tbs', 
+                'localField': 'driver_id', 
+                'foreignField': '_id', 
+                'as': 'driver'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$driver"
+        },
+      
+            {
+
+              '$match': { 'driver.login_id': new objectid (userId),
+              'status':'1'
+            } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  'driver_booking_time':{'$first':'$driver_booking_time'},
+                  'driver_booking_date':{'$first':'$driver_booking_date'},
+                  'adres':{'$first':'$adres'},
+                  'ndays':{'$first':'$ndays'},
+                  'status':{'$first':'$status'},
+                  'ndays':{'$first':'$ndays'},
+                  'ace':{'$first':'$ace'},
+                  'job':{'$first':'$job'},
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'driverid':{'$first':'$driver_id'},
+                  'driverlog':{'$first':'$driver.login_id'},
+                  'profilepic':{'$first':'$driver.profilepic'},
+                  'price':{'$first':'$driver.price'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
+driver_bookingRouter.get('/viewdriverall9/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await driver_bookingModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'driver_tbs', 
+                'localField': 'driver_id', 
+                'foreignField': '_id', 
+                'as': 'driver'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$driver"
+        },
+      
+            {
+
+              '$match': { 'user.login_id': new objectid (userId),
+              'status':'1'
+            } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  'driver_booking_time':{'$first':'$driver_booking_time'},
+                  'driver_booking_date':{'$first':'$driver_booking_date'},
+                  'adres':{'$first':'$adres'},
+                  'ndays':{'$first':'$ndays'},
+                  'status':{'$first':'$status'},
+                  'ndays':{'$first':'$ndays'},
+                  'ace':{'$first':'$ace'},
+                  'job':{'$first':'$job'},
+                  'first_name':{'$first':'$user.first_name'},
+                  'dfirst_name':{'$first':'$driver.first_name'},
+                  'userid':{'$first':'$user.login_id'},
+                  'userid2':{'$first':'$user._id'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'driverid':{'$first':'$driver_id'},
+                  'driverlog':{'$first':'$driver.login_id'},
+                  'profilepic':{'$first':'$driver.profilepic'},
+                  'price':{'$first':'$driver.price'},
                   
               }
           }
@@ -313,6 +491,43 @@ const accept = await driver_bookingModel.updateOne({ _id: id }, { $set: { status
       });
     } else {
       throw new Error('Error updating user');
+    }
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      message: 'Something went wrong',
+      details: error.message,
+    });
+  }
+});
+
+
+
+
+driver_bookingRouter.get('/approve8/:id', async (req, res) => {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    const taxiride = await driver_bookingModel.findOne({ _id: id, ace: 1 });
+    console.log(taxiride);
+
+    if (!taxiride) {
+      return res.status(400).json({
+        success: false,
+        message: 'Not paid',
+      });
+    }
+
+    const approve = await driver_bookingModel.updateOne({ _id: id }, { $set: { com: 1 } });
+    console.log(approve);
+
+    if (approve && approve.modifiedCount === 1) {
+      return res.status(200).json({
+        success: true,
+        message: 'RIDE completed',
+      });
+    } else {
+      throw new Error('Error updating taxiride');
     }
   } catch (error) {
     return res.status(400).json({

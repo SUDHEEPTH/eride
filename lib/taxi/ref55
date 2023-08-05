@@ -1,35 +1,77 @@
- // _update() async {
-  //   setState(() {
-  //     var _isLoading = true;
-  //   });
-  //   String se = widget.id;
-  //   var data = {
-  //
-  //     "email": passwordController.text,
-  //     "phone": phoneController.text,
-  //
-  //   };
-  //   print(data);
-  //   var res = await Api().authData(data, '/product/update-single-product/' + se);
+ SizedBox(height: 20),
+             if (adres2.isNotEmpty)
+            Container(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Text(
+                      "Notification",
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  ListView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemCount: 1,
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => notification2(axi: login_id,)));
+                        },
+                        child: ListTile(
+                          leading: Icon(Icons.notifications_active),
+                          title: Text("Joined TAXI Details"),
+                          subtitle: Text(adres2),
+                          trailing: Icon(Icons.arrow_forward_ios),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Future<void> _viewPro() async {
+  //   String se = widget.axi.replaceAll('"', '');
+  //   print("user selected id is $se");
+  //   String mid = widget.axi.replaceAll('"', '');
+  //   var res = await Api().getData('/taxiride/viewtaxi/$se');
   //   var body = json.decode(res.body);
+  //   print("response body: $body");
   //
-  //   if (body['success'] == true) {
-  //     print(body);
+  //   if (body != null && body['success'] == true) {
+  //     setState(() {
+  //       id = body['data'][0]['_id'];
   //
-  //     Fluttertoast.showToast(
-  //       msg: body['message'].toString(),
-  //       backgroundColor: Colors.grey,
-  //     );
-  //     Navigator.push(
-  //       context,
-  //       MaterialPageRoute(
-  //         builder: (context) => Prdt(
-  //         ),
-  //       ),
-  //     );
+  //       mac = id;
+  //       print('haloo$mac');
+  //       _viewPr();
+  //     });
   //   } else {
   //     Fluttertoast.showToast(
-  //       msg: body['message'].toString(),
+  //       msg: 'Failed to fetch user data',
   //       backgroundColor: Colors.grey,
   //     );
   //   }

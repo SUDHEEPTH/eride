@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:eride/user/Carrent.dart';
+import 'package:eride/user/Driverjob.dart';
 import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Riderequest.dart';
 import 'package:eride/user/Share1.dart';
@@ -57,11 +58,10 @@ class _homepageState extends State<homepage> {
       login_id = prefs.getString('login_id') ?? '';
       print("usr${username}");
       print("usr${login_id}");
-
-
       print("usssssssssssr${log}");
 
-    });
+    }
+    );
 
   }
 
@@ -345,7 +345,7 @@ class _homepageState extends State<homepage> {
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
-                      itemCount: 4,
+                      itemCount: 5,
                       itemBuilder: (BuildContext context, int index) {
                         if (index == 0) {
                           return GestureDetector(
@@ -371,7 +371,8 @@ class _homepageState extends State<homepage> {
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );
-                        }if (index == 3) {
+                        }
+                        if (index == 3) {
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => Riderequest(axi:log)));
@@ -379,6 +380,19 @@ class _homepageState extends State<homepage> {
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
                               title: Text("ride request"),
+                              subtitle: Text(""),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        }
+                        if (index == 4) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Driverjob(axi:login_id)));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Driver Request"),
                               subtitle: Text(""),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
