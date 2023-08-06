@@ -35,6 +35,7 @@ class _DriverHState extends State<DriverH> {
   String login_idf = "";
   String first_name2 = "";
   String adres2 = "";
+  String first_name500 = "";
 
   late SharedPreferences prefs;
   void initState() {
@@ -42,6 +43,7 @@ class _DriverHState extends State<DriverH> {
     _viewPro();
     _viewPro2();
     _viewPr();
+
   }
 
   Future<void> _viewPro() async {
@@ -84,6 +86,8 @@ class _DriverHState extends State<DriverH> {
       );
     }
   }
+
+
 
   Future<void> _viewPro2() async {
     prefs = await SharedPreferences.getInstance();

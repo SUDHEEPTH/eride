@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:eride/api/api.dart';
 import 'package:eride/api/api_services.dart';
 import 'package:eride/user/Carrent.dart';
+import 'package:eride/user/Carrent99.dart';
 import 'package:eride/user/Driverjob.dart';
 import 'package:eride/user/Driverrent.dart';
 import 'package:eride/user/Riderequest.dart';
@@ -10,6 +11,7 @@ import 'package:eride/user/Share1.dart';
 import 'package:eride/user/ShareRideDetasils.dart';
 import 'package:eride/user/Taxiac.dart';
 import 'package:eride/user/YourShare.dart';
+import 'package:eride/user/carrent500.dart';
 import 'package:eride/user/taxi.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -62,6 +64,8 @@ class _homepageState extends State<homepage> {
   String  tcid = '';
   String total5 = '';
   String ID10 = '';
+  String first_name500 = '';
+  String car_id55 = '';
 
   String profilepic = "";
   String pickup = "";
@@ -77,6 +81,8 @@ class _homepageState extends State<homepage> {
     _viewPro99();
     _viewPro100();
     _viewPr200();
+    _viewPr500();
+    _viewPr555();
   }
 
 
@@ -94,7 +100,7 @@ class _homepageState extends State<homepage> {
     String mid = login_id.replaceAll('"', '');
     print("user selected id is $mid");
 
-    var res = await Api().getData('/shareride/shareride88/$mid');
+    var res = await Api().getData('/shareride/shareride880/$mid');
     var body = json.decode(res.body);
     print("response body: $body");
 
@@ -153,7 +159,30 @@ print(' jbfsg$s_id');
       );
     }
   }
+  Future<void> _viewPr500() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = (prefs.getString('username') ?? '');
+      login_id = prefs.getString('login_id') ?? '';
+    });
 
+    var res = await Api().getData('/car_renting/carrent5/${login_id.replaceAll('"', '')}');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name500 = body['data'][0]['first_name'];
+
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
   Future<void> _viewPro100() async {
     prefs = await SharedPreferences.getInstance();
     username = (prefs.getString('username') ?? '');
@@ -297,6 +326,30 @@ print(' jbfsg$s_id');
   List _loadprooducts = [];
 
   late int login;
+  Future<void> _viewPr555() async {
+
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+
+    var res = await Api().getData('/car_renting/carrent255/${login_id.replaceAll('"', '')}');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+
+        car_id55 = body['data'][0]['car_id'];
+
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
 
 
   @override
@@ -666,7 +719,7 @@ print(' jbfsg$s_id');
                             },
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
-                              title: Text("ride request from $starting_placedis770 to$ending_placedis770"),
+                              title: Text("ride request from $starting_placedis770 to $ending_placedis770"),
                               subtitle: Text("DATE:$dat770"),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
@@ -703,6 +756,60 @@ print(' jbfsg$s_id');
                     ],
                   ),
                 ),
+
+              if (first_name500.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Carrent99(axi:log)));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Car rent request "),
+                              subtitle: Text("From $first_name500 "),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              if (car_id55.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => carrent500(axi:log)));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Car rent  "),
+                              subtitle: Text("CAR ID $car_id55 "),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
 
 
 

@@ -387,7 +387,7 @@ driver_bookingRouter.get('/viewdriverall9/:id', async function (req, res) {
             {
 
               '$match': { 'user.login_id': new objectid (userId),
-              'status':'1'
+              'status':'1','com':'0'
             } 
           },
 

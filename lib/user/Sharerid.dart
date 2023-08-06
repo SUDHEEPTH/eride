@@ -50,8 +50,9 @@ class _StartRidePageState extends State<StartRidePage> {
   String? _startingPlace; // Store selected starting place
   String? username = "";
   String? login_id = "";
-  bool _isLoading = false;
+
   late SharedPreferences prefs;
+  bool _isLoading = false;
   DateTime currentDate = DateTime.now();
   DateTime currentTime = DateTime.now();
 

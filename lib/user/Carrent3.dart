@@ -1,7 +1,14 @@
-import 'package:eride/user/Inquirynow.dart';
-import 'package:eride/user/Rentalconditions.dart';
+import 'dart:convert';
+
+import 'package:datetime_picker_formfield_new/datetime_picker_formfield.dart';
+import 'package:eride/api/api.dart';
+import 'package:eride/user/homepage.dart';
+import 'package:eride/user/homepageH.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:eride/user/Rentalconditions.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Carrent3 extends StatefulWidget {
   final String cname;
@@ -13,19 +20,100 @@ class Carrent3 extends StatefulWidget {
   final String cengineType;
   final String crentPrice;
   final String car_image;
+  final String carid;
 
-  Carrent3({required this.cname, required this.cprice, required this.cpicture, required this.clication, required this.cautomated, required this.cseats, required this.cengineType, required this.crentPrice,required this.car_image, required String clocation});
-
-
+  Carrent3({
+    required this.cname,
+    required this.cprice,
+    required this.cpicture,
+    required this.clication,
+    required this.cautomated,
+    required this.cseats,
+    required this.cengineType,
+    required this.crentPrice,
+    required this.car_image,
+    required String clocation,
+    required this.carid,
+  });
 
   @override
   State<Carrent3> createState() => _Carrent3State();
 }
 
 class _Carrent3State extends State<Carrent3> {
+  DateTime currentDate = DateTime.now();
+  DateTime currentTime = DateTime.now();
+  int numberOfDays = 1;
+  DateTime? selectedDate;
+  bool termsAccepted = false;
+  bool _isLoading = false;
+  String? username = "";
+  String? login_id = "";
+
+  late SharedPreferences prefs;
+  final TextEditingController number = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
+  late DateTime date;
+  void dispose() {
+    number.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    number.text = numberOfDays.toString();
+  }
+
+  void startRide() async {
+    prefs = await SharedPreferences.getInstance();
+    setState(() {
+      username = prefs.getString('username');
+      login_id = prefs.getString('login_id');
+    });
+    String formattedDate = "${currentDate.year}-${currentDate.month}-${currentDate.day}";
+    String formattedTime = "${currentTime.hour}:${currentTime.minute}:${currentTime.second}";
+print('vvv$login_id');
+print('vnjh$widget.carid');
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      "date": _dateController.text,
+      "days": number.text,
+      "car_renting_date": formattedDate,
+      "car_renting_time": formattedTime,
+      "user_id": login_id?.replaceAll('"', ''),
+      "carid": widget.carid.replaceAll('"', ''),
+    };
+
+    var res = await Api().authData(data, '/car_renting/car_renting');
+    var body = json.decode(res.body);
+
+    if (body['success'] == true) {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+
+      Navigator.push(context, MaterialPageRoute(builder: (context) => Homeuser()));
+    } else {
+      Fluttertoast.showToast(
+        msg: body['message'].toString(),
+        backgroundColor: Colors.grey,
+      );
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         leadingWidth: 100,
@@ -145,7 +233,7 @@ class _Carrent3State extends State<Carrent3> {
                     child: ListTile(
                       leading: Icon(Icons.arrow_forward_ios),
                       title: Text(
-                        'Rental Conditions',
+                        'Terms And Conditions',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -154,61 +242,69 @@ class _Carrent3State extends State<Carrent3> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [Color(0xFF00C853), Color(0xFF00A043)],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                      borderRadius: BorderRadius.circular(14.0),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0xFF00E676).withOpacity(0.4),
-                          offset: Offset(0.0, 4.0),
-                          blurRadius: 8.0,
-                        ),
-                      ],
-                    ),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => Inquirynow()),
-                        // );
-
-                        // Show the toast message when the button is clicked
-                        Fluttertoast.showToast(
-                          msg: "Enquiry sent!",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.CENTER,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
+                SizedBox(height: 16),
+                Row(
+                  children: [
+                    Checkbox(
+                      value: termsAccepted,
+                      onChanged: (value) {
+                        setState(() {
+                          termsAccepted = value ?? false;
+                        });
                       },
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.transparent,
-                        minimumSize: Size(double.infinity, 60.0),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-                        child: Text(
-                          'Inquire Now',
-                          style: TextStyle(fontSize: 20.0, color: Colors.white),
-                        ),
-                      ),
                     ),
-
-                  ),
+                    Text('I accept the terms and conditions'),
+                  ],
                 ),
+                if (termsAccepted) ...[
+                  SizedBox(height: 16),
+                  TextFormField(
+                    controller: number,
+                    keyboardType: TextInputType.number,
+                    onChanged: (value) {
+                      setState(() {
+                        numberOfDays = int.tryParse(value) ?? 1;
+                      });
+                    },
+                    decoration: InputDecoration(
+                      labelText: 'Number of Days',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 16),
+                  DateTimeField(
+                    controller: _dateController,
+                    onChanged: (value) {
+                      setState(() {
+                        date = value!;
+                      });
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Date',
+                      border: OutlineInputBorder(),
+                      suffixIcon: Icon(Icons.calendar_today),
+                    ),
+                    format: DateFormat("yyyy-MM-dd"),
+                    onShowPicker: (context, currentValue) {
+                      return showDatePicker(
+                        context: context,
+                        firstDate: DateTime.now(),
+                        initialDate: currentValue ?? DateTime.now(),
+                        lastDate: DateTime(2100),
+                      );
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: _isLoading ? null : startRide,
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Text(
+                      'Start Ride',
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ],
               ],
             ),
           );

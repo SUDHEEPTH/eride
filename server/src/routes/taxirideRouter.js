@@ -285,7 +285,7 @@ taxirideRouter.get('/viewtaxi2/:id', async function (req, res) {
           },
           {
             
-              '$match': { 'user_id': new objectid (userId) } 
+              '$match': { 'user_id': new objectid (userId),'com':'0' } 
           },
          
           {

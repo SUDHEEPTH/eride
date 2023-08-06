@@ -71,6 +71,7 @@ print('habsfdh ${widget.searchValue}');
           String cengineType = car['petrol'] ?? '';
           String crentPrice = car['prize'] ?? '';
           String car_image = car['car_image'] ?? '';
+          String car_id = car['_id'] ?? '';
 
           return Padding(
             padding: EdgeInsets.all(8.0),
@@ -89,6 +90,7 @@ print('habsfdh ${widget.searchValue}');
                       car_image: car_image,
                       cengineType: cengineType,
                       crentPrice: crentPrice, clication: '',
+                      carid:car_id
                     ),
                   ),
                 );

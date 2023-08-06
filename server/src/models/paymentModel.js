@@ -10,7 +10,7 @@ const paymentSchema = new schema({
     date: { type: String },
     time: { type: String },
     status: { type: String },
-    what: { type: mongoose.Types.ObjectId, ref:' driver_booking_tb',ref:' taxiride_tb',ref:' share_ride_tb'},
+    what: { type: mongoose.Types.ObjectId, ref:' driver_booking_tb',ref:' taxiride_tb',ref:' share_ride_tb',ref:'car_renting_tb'},
  
   
     
