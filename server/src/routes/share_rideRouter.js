@@ -153,8 +153,9 @@ share_rideRouter.post('/takeride2', async function (req, res) {
       user_id: req.body.user_id,        
       shareid: req.body.shareid,   
       status:"0",     
+      pay:"1",     
+      cancel:"0",     
       
-    
 };
 
     const savedData = await takeriseModel(data).save();
@@ -218,6 +219,164 @@ share_rideRouter.get('/sharerideview2/:id', async function (req, res) {
                  
                   'status':{'$first':'$status'},
                   'date':{'$first':'$date'},
+                  'date':{'$first':'$date'},
+                  'user_id2':{'$first':'$user_id'},
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'userid':{'$first':'$user._id'},
+                  'userlogin_id':{'$first':'$user.login_id'},
+                  
+                  
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+});
+
+
+share_rideRouter.get('/sharerideview22/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await share_rideModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          
+          {
+              '$unwind':"$user"
+          },
+      
+            {
+
+              '$match': { '_id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  
+                  'starting_place':{'$first':'$starting_place'},
+                  'ending_place':{'$first':'$ending_place'},
+                  'starting_time':{'$first':'$starting_time'},
+                  'price':{'$first':'$price'},
+                  'person':{'$first':'$person'},
+                  'starting_placedis':{'$first':'$starting_placedis'},
+                  'ending_placedis':{'$first':'$ending_placedis'},
+                 
+                  'status':{'$first':'$status'},
+                  'date':{'$first':'$date'},
+                  'date':{'$first':'$date'},
+                  'user_id2':{'$first':'$user_id'},
+                  'first_name':{'$first':'$user.first_name'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'pic':{'$first':'$user.profilepic'},
+                  'userid':{'$first':'$user._id'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'email':{'$first':'$user.email'},
+                  'userlogin_id':{'$first':'$user.login_id'},
+                  
+                  
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+});
+
+
+share_rideRouter.get('/sharerideview66/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await share_rideModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          
+          {
+              '$unwind':"$user"
+          },
+      
+            {
+
+              '$match': { 'user_id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  
+                  'starting_place':{'$first':'$starting_place'},
+                  'ending_place':{'$first':'$ending_place'},
+                  'starting_time':{'$first':'$starting_time'},
+                  'price':{'$first':'$price'},
+                  'person':{'$first':'$person'},
+                  'starting_placedis':{'$first':'$starting_placedis'},
+                  'ending_placedis':{'$first':'$ending_placedis'},
+                 
+                  'status':{'$first':'$status'},
+                  'date':{'$first':'$date'},
+                  'user_id2':{'$first':'$user_id'},
                   
                   'first_name':{'$first':'$user.first_name'},
                   'last_name':{'$first':'$user.last_name'},
@@ -304,6 +463,7 @@ share_rideRouter.get('/shareride5/:id', async function (req, res) {
                   'shareID':{'$first':'$share._id'},
                   'shareuser':{'$first':'$share.user_id'},
                   'profilepic':{'$first':'$user.profilepic'},
+                  'user_id2':{'$first':'$user_id'},
                   
               }
           }
@@ -332,6 +492,91 @@ share_rideRouter.get('/shareride5/:id', async function (req, res) {
       })
   }
 })
+share_rideRouter.get('/shareride88/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await takeriseModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'share_ride_tbs', 
+                'localField': 'shareid', 
+                'foreignField': '_id', 
+                'as': 'share'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$share"
+        },
+      
+            {
+
+              '$match': { 'share.user_id': new objectid (userId),'status':"1" } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+              
+                  
+                  'first_name':{'$first':'$user.first_name'},
+                  'status':{'$first':'$status'},
+                  'user_idt':{'$first':'$user_id'},
+                  'shareidt':{'$first':'$shareid'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'email':{'$first':'$user.email'},
+                  'gender':{'$first':'$user.gender'},
+                  'shareID':{'$first':'$share._id'},
+                  'shareuser':{'$first':'$share.user_id'},
+                  'starting_placedis':{'$first':'$share.starting_placedis'},
+                  'ending_placedis':{'$first':'$share.ending_placedis'},
+                  'date':{'$first':'$share.date'},
+                  'profilepic':{'$first':'$user.profilepic'},
+                  'user_id2':{'$first':'$user_id'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
 
 share_rideRouter.get('/shareride6/:id', async function (req, res) {
   try {
@@ -375,12 +620,100 @@ share_rideRouter.get('/shareride6/:id', async function (req, res) {
               
                   
                   'first_name':{'$first':'$user.first_name'},
+                  'user_id':{'$first':'$user_id'},
                   'last_name':{'$first':'$user.last_name'},
                   'Phone_no':{'$first':'$user.Phone_no'},
                   'email':{'$first':'$user.email'},
                   'gender':{'$first':'$user.gender'},
                   'shareID':{'$first':'$share._id'},
                   'shareuser':{'$first':'$share.user_id'},
+                  'profilepic':{'$first':'$user.profilepic'},
+                  
+              }
+          }
+        ])
+      if(!allUser){
+         return res.status(400).json({
+              success:false,
+              error:true,
+              message:"No data exist"
+          })
+      }
+      return res.status(200).json({
+          success:true,
+          error:false,
+          data:allUser
+      })
+      
+
+    
+    
+  } catch (error) {
+      return res.status(400).json({
+          success:false,
+          error: true,
+          message:"Something went wrong"
+      })
+  }
+})
+
+share_rideRouter.get('/shareride77/:id', async function (req, res) {
+  try {
+    const userId= req.params.id; 
+        console.log(userId);
+
+      const allUser = await takeriseModel.aggregate([
+          {
+              '$lookup': {
+                  'from': 'user_tbs', 
+                  'localField': 'user_id', 
+                  'foreignField': 'login_id', 
+                  'as': 'user'
+              }
+          },
+          {
+            '$lookup': {
+                'from': 'share_ride_tbs', 
+                'localField': 'shareid', 
+                'foreignField': '_id', 
+                'as': 'share'
+            }
+        },
+          {
+              '$unwind':"$user"
+          },
+        
+          {
+            '$unwind':"$share"
+        },
+      
+            {
+
+              '$match': { 'user_id': new objectid (userId) } 
+          },
+
+         
+          {
+              '$group':{
+                  '_id':'$_id',
+                  'pay':{'$first':'$pay'},
+                  
+                  'first_name':{'$first':'$user.first_name'},
+                  'user_id':{'$first':'$user_id'},
+                  'last_name':{'$first':'$user.last_name'},
+                  'Phone_no':{'$first':'$user.Phone_no'},
+                  'email':{'$first':'$user.email'},
+                  'gender':{'$first':'$user.gender'},
+                  'shareID':{'$first':'$share._id'},
+                  
+                  'starting_place':{'$first':'$share.starting_place'},
+                  'ending_place':{'$first':'$share.ending_place'},
+                  'starting_time':{'$first':'$share.starting_time'},
+                  'starting_placedis':{'$first':'$share.starting_placedis'},
+                  'ending_placedis':{'$first':'$share.ending_placedis'},
+                  'user_id2':{'$first':'$share.user_id'},
+                  'price':{'$first':'$share.price'},
+                  'date':{'$first':'$share.date'},
                   'profilepic':{'$first':'$user.profilepic'},
                   
               }

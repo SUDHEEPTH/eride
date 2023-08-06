@@ -7,6 +7,8 @@ const takeriseSchema = new schema({
     shareid: { type: mongoose.Types.ObjectId, ref:'share_ride_tb' },
     
     status: { type: String }, 
+    pay: { type: String }, 
+    cancel: { type: String }, 
 })
 
 const takeriseModel = mongoose.model('takeride_tb',takeriseSchema)

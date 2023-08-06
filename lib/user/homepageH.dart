@@ -36,8 +36,32 @@ class _homepageState extends State<homepage> {
   String idcardimag = "";
   String _id = "";
   String mac = '';
-  ApiService client = ApiService();
+  String s_id = '';
+  String shareID = '';
+  String starting_placedis = '';
+  String starting_placedis77= '';
+  String starting_placedis770= '';
+  String ending_placedis77= '';
+  String ending_placedis770= '';
+  String dat77= '';
+  String dat770= '';
+  String ending_placedis = '';
+  String userid99 = '';
 
+  ApiService client = ApiService();
+  String first_name44 = '';
+  String last_name44 = '';
+  String address44 = '';
+  String car_num = '';
+  String destination = '';
+  String total = '';
+  String  Date = '';
+  String time = '';
+  String  taxi_id = '';
+  String user_id = '';
+  String  tcid = '';
+  String total5 = '';
+  String ID10 = '';
 
   String profilepic = "";
   String pickup = "";
@@ -48,9 +72,120 @@ class _homepageState extends State<homepage> {
     // TODO: implement initState
     super.initState();
     fetchuser();
-
+    _viewPro();
+    _viewPro77();
+    _viewPro99();
+    _viewPro100();
+    _viewPr200();
   }
 
+
+  Future<void> _viewPro() async {
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    print("usr${username}");
+    print("usr${login_id}");
+
+    print("usssssssssssr${log}");
+
+    print("user selected id is $login_id");
+    print("user selected id is $login_id");
+    String mid = login_id.replaceAll('"', '');
+    print("user selected id is $mid");
+
+    var res = await Api().getData('/shareride/shareride88/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+
+        s_id = body['data'][0]['shareidt'];
+
+        dat770 = body['data'][0]['date'];
+        starting_placedis770 = body['data'][0]['starting_placedis'];
+        ending_placedis770 = body['data'][0]['ending_placedis'];
+
+
+print(' jbfsg$s_id');
+
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+  Future<void> _viewPr200() async {
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    String se =login_id.replaceAll('"', '');
+    print('haloo$se');
+    var res = await Api().getData('/driver_booking/viewdriverall9/$se');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      var data = body['data'];
+      if (data != null && data.isNotEmpty) {
+        setState(() {
+
+          ID10 = data[0]['_id'] ?? '';
+
+
+
+        });
+      } else {
+        Fluttertoast.showToast(
+          msg: 'No data found for the user',
+          backgroundColor: Colors.grey,
+        );
+      }
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+  Future<void> _viewPro100() async {
+    prefs = await SharedPreferences.getInstance();
+    username = (prefs.getString('username') ?? '');
+    login_id = prefs.getString('login_id') ?? '';
+    print("usr${username}");
+    print("usr${login_id}");
+
+    print("usssssssssssr${log}");
+
+    print("user selected id is $login_id");
+    print("user selected id is $login_id");
+    String mid = login_id.replaceAll('"', '');
+    print("user selected id is $mid");
+
+    var res = await Api().getData('/shareride/sharerideview2/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        dat77 = body['data'][0]['date'];
+        starting_placedis77 = body['data'][0]['starting_placedis'];
+        ending_placedis77 = body['data'][0]['ending_placedis'];
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
   fetchuser()async{
     prefs = await SharedPreferences.getInstance();
     setState(() {
@@ -64,7 +199,98 @@ class _homepageState extends State<homepage> {
     );
 
   }
+  Future<void> _viewPro77() async {
+    prefs = await SharedPreferences.getInstance();
+    login_id = prefs.getString('login_id') ?? '';
+    print("user selected id is $login_id");
 
+    if (login_id.isEmpty) {
+      // Handle the case where login_id is null or empty (e.g., show an error message or navigate to login)
+      Fluttertoast.showToast(
+        msg: 'User not logged in.',
+        backgroundColor: Colors.grey,
+      );
+      return;
+    }
+
+    String mid = login_id.replaceAll('"', '');
+    print("user selected id is $mid");
+
+    var res = await Api().getData('/shareride/shareride77/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        // Update state with fetched data
+        shareID = body['data'][0]['shareID'];
+        starting_placedis = body['data'][0]['starting_placedis'];
+        ending_placedis = body['data'][0]['ending_placedis'];
+
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+
+
+
+  Future<void> _viewPro99() async {
+    prefs = await SharedPreferences.getInstance();
+    login_id = prefs.getString('login_id') ?? '';
+    print("user selected id is $login_id");
+
+    String mid =login_id.replaceAll('"', '');
+    var res = await Api().getData('/taxiride/viewuse/$mid');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        userid99 = body['data'][0]['_id'];
+        profilepic = body['data'][0]['profilepic'];
+
+        print('haloo$mac');
+        _viewPr44();
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
+  Future<void> _viewPr44() async {
+    print('halooffff$userid99');
+    var res = await Api().getData('/taxiride/viewtaxi2/$userid99');
+    var body = json.decode(res.body);
+    print("response body: $body");
+
+    if (body != null && body['success'] == true) {
+      setState(() {
+        first_name44 = body['data'][0]['first_name'];
+        last_name44 = body['data'][0]['last_name'];
+        address44 = body['data'][0]['address'];
+        car_num = body['data'][0]['car_num'];
+       destination = body['data'][0]['destination'];
+        total = body['data'][0]['total'];
+         Date = body['data'][0]['Date'];
+        time = body['data'][0]['time'];
+         taxi_id = body['data'][0]['taxi_id'];
+        user_id = body['data'][0]['user_id'];
+        tcid = body['data'][0]['_id'];
+        total5 = total;
+      });
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Failed to fetch user data',
+        backgroundColor: Colors.grey,
+      );
+    }
+  }
 
   final String userPhotoUrl = 'https://example.com/user_photo.jpg';
   // Replace with the user's photo URL
@@ -327,21 +553,25 @@ class _homepageState extends State<homepage> {
                   ],
                 ),
               ),
-
+              SizedBox(height: 10,),
+              Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Text(
+                    "Notification",
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: 25.0),
+              if (starting_placedis.isNotEmpty)
               Container(
                 child: Column(
                   children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Text(
-                        "Notification",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+
                     ListView.builder(
                       physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
@@ -350,42 +580,60 @@ class _homepageState extends State<homepage> {
                         if (index == 0) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => ShareRideDetails()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => ShareRideDetails(macx:shareID)));
                             },
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
-                              title: Text("Joined Ride Details"),
-                              subtitle: Text("John shared a ride from XYZ to ABC"),
-                              trailing: Icon(Icons.arrow_forward_ios),
-                            ),
-                          );
-                        }  if (index == 2) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Taxiac(axi:log)));
-                            },
-                            child: ListTile(
-                              leading: Icon(Icons.notifications_active),
-                              title: Text("taxi"),
-                              subtitle: Text("Your ride will come in Time XY"),
+                              title: Text("Joined Ride Details ${starting_placedis}to ${ending_placedis}"),
+                              subtitle: Text("John shared a ride from ${starting_placedis}to ${ending_placedis}"),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );
                         }
-                        if (index == 3) {
+
+
+                      },
+                    ),
+                  ],
+                ),
+              ),
+              if (starting_placedis77.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => Riderequest(axi:log)));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => YourShare(kid:s_id)));
                             },
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
-                              title: Text("ride request"),
-                              subtitle: Text(""),
+                              title: Text("Your Shared Ride from $starting_placedis77 to $ending_placedis77"),
+                              subtitle: Text("You are sharing Date:$dat77"),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );
-                        }
-                        if (index == 4) {
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+              if (ID10.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => Driverjob(axi:login_id)));
@@ -393,29 +641,72 @@ class _homepageState extends State<homepage> {
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
                               title: Text("Driver Request"),
-                              subtitle: Text(""),
+                              subtitle: Text("REQUEST ID:$ID10"),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );
-                        }
-                        else {
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              if (starting_placedis770.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
                           return GestureDetector(
                             onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => YourShare()));
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Riderequest(axi:log,)));
                             },
                             child: ListTile(
                               leading: Icon(Icons.notifications_active),
-                              title: Text("Your Shared Ride"),
-                              subtitle: Text("You are sharing a ride from DEF to GHI"),
+                              title: Text("ride request from $starting_placedis770 to$ending_placedis770"),
+                              subtitle: Text("DATE:$dat770"),
                               trailing: Icon(Icons.arrow_forward_ios),
                             ),
                           );
-                        }
-                      },
-                    ),
-                  ],
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+
+              if (first_name44.isNotEmpty)
+                Container(
+                  child: Column(
+                    children: [
+
+                      ListView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: 1,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) => Taxiac(axi:log)));
+                            },
+                            child: ListTile(
+                              leading: Icon(Icons.notifications_active),
+                              title: Text("Taxi accepted by $first_name44"),
+                              subtitle: Text("Your ride will come in Time $time"),
+                              trailing: Icon(Icons.arrow_forward_ios),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+
+
+
 
 
 

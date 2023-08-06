@@ -10,7 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class YourShare extends StatefulWidget {
-  const YourShare({Key? key}) : super(key: key);
+  final String kid;
+  const YourShare({required this.kid});
 
   @override
   State<YourShare> createState() => _YourShareState();
@@ -46,10 +47,13 @@ class _YourShareState extends State<YourShare> {
   late SharedPreferences prefs;
   ApiService client = ApiService();
 
-  @override
+
+
   void initState() {
     super.initState();
     _viewPro();
+
+    fetchcart();
   }
 
   Future<void> _viewPro() async {
@@ -71,7 +75,7 @@ class _YourShareState extends State<YourShare> {
     print("response body: $body");
 
     if (body != null && body['success'] == true) {
-      setState(() async {
+      setState(() {
         first_name = body['data'][0]['first_name'];
         last_name = body['data'][0]['last_name'];
         _id = body['data'][0]['_id'];
@@ -84,8 +88,7 @@ class _YourShareState extends State<YourShare> {
         date = body['data'][0]['date'] ?? 'N/A';
         starting_time = body['data'][0]['starting_time'] ?? 'N/A';
 
-        // Call fetchcart with the updated _id
-        await fetchcart(_id);
+
       });
     } else {
       Fluttertoast.showToast(
@@ -95,22 +98,19 @@ class _YourShareState extends State<YourShare> {
     }
   }
 
-  Future<void> fetchcart(String ID) async {
-    print("object$ID");
-    var response = await Api().getData('/shareride/shareride6/${ID.replaceAll('"', '')}');
+  Future<void> fetchcart() async {
+    print("object${widget.kid}");
+    var response = await Api().getData('/shareride/shareride6/${widget.kid.replaceAll('"', '')}');
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
       products = List<ridemodel>.from(
         items['data'].map((e) => ridemodel.fromJson(e)).toList(),
       );
-
-      // Call setState here to update the products list after fetching data
-      setState(() {
-        _isLoading = false;
-      });
     }
+    setState(() {
+      _isLoading = false;
+    });
   }
-
   final List<String> userPhotoUrl = [
     'images/ava3.png',
     'images/computer.jpg',
@@ -408,14 +408,14 @@ class _YourShareState extends State<YourShare> {
                       ElevatedButton(
                         onPressed: () {},
                         style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(Colors.red),
+                          backgroundColor: MaterialStateProperty.all(Colors.green),
                           foregroundColor: MaterialStateProperty.all(Colors.white),
                         ),
                         child: Row(
                           children: [
-                            Icon(Icons.cancel),
+                            Icon(Icons.approval),
                             SizedBox(width: 8),
-                            Text('Cancel Ride'),
+                            Text('Ride completed'),
                           ],
                         ),
                       ),

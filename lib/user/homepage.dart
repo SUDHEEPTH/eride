@@ -66,13 +66,13 @@ class _HomeuserState extends State<Homeuser> {
       case 0:
         currentPage = _buildHomePage();
         break;
+      // case 3:
+      //   currentPage = _buildMessagePage();
+      //   break;
       case 1:
-        currentPage = _buildMessagePage();
-        break;
-      case 2:
         currentPage = _buildPaymentPage();
         break;
-      case 3:
+      case 2:
         currentPage = _buildProfilePage();
         break;
       default:
@@ -88,7 +88,7 @@ class _HomeuserState extends State<Homeuser> {
         currentIndex: _currentIndex,
         items: [
           FloatingNavbarItem(icon: Icons.home, title: 'Home'),
-          FloatingNavbarItem(icon: Icons.chat_bubble_outline, title: 'Message'),
+          // FloatingNavbarItem(icon: Icons.chat_bubble_outline, title: 'Message'),
           FloatingNavbarItem(icon: Icons.payment_outlined, title: 'Payment'),
           FloatingNavbarItem(icon: Icons.person, title: 'Profile'),
         ],

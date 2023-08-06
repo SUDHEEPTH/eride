@@ -6,6 +6,7 @@ import 'package:eride/driver/Driverhome.dart';
 import 'package:eride/taxi/TaxiH.dart';
 import 'package:eride/taxi/Taxihome.dart';
 import 'package:eride/user/Payment.dart';
+import 'package:eride/user/homepage.dart';
 import 'package:eride/user/paymentdriver.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -145,7 +146,7 @@ class _DriverjobState extends State<Driverjob> {
         msg: "RIDE completed",
 
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> Taxihome()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Homeuser()));
 
     } else {
       Fluttertoast.showToast(

@@ -137,7 +137,7 @@ class _notification2State extends State<notification2> {
         msg: "RIDE completed",
 
       );
-      Navigator.push(context, MaterialPageRoute(builder: (context)=> Taxihome()));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=> Driverhome()));
 
     } else {
       Fluttertoast.showToast(

@@ -302,7 +302,7 @@ driver_bookingRouter.get('/viewdriverall2/:id', async function (req, res) {
             {
 
               '$match': { 'driver.login_id': new objectid (userId),
-              'status':'1'
+              'status':'1','com':'0'
             } 
           },
 

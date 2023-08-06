@@ -74,7 +74,7 @@ class _notificationState extends State<notification> {
   }
 
   Future<void> _viewPr() async {
-    print('haloo$mac');
+    print('halkkko: $mac');
     var res = await Api().getData('/taxiride/viewtaxi5/$mac');
     var body = json.decode(res.body);
     print("response body: $body");
@@ -104,7 +104,7 @@ class _notificationState extends State<notification> {
   }
 
   Future complete(String userid) async {
-    print("u ${userid}");
+    print("uccccc ${userid}");
     var response = await Api().getData('/taxiride/approve6/' + userid);
     if (response.statusCode == 200) {
       var items = json.decode(response.body);
